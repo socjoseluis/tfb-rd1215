@@ -1,0 +1,8 @@
+codigo,nombre,marca_modelo,num_serie,anio,linea
+EQ-101,Válido uno,ACME P200,SN-2001,2020,Línea 1
+,Sin código,ACME X10,SN-2002,2020,
+EQ-102,,ACME X20,SN-2003,2020,
+EQ-103,Con año no numérico,ACME X30,SN-2004,N/D,
+EQ-104,Duplicado A,ACME X40,SN-2005,2017,Línea 2
+EQ-104,Duplicado B,ACME X41,SN-2006,2018,Línea 2
+EQ-105,Válido dos,ACME X50,SN-2007,2022,

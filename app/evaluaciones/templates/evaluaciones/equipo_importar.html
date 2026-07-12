@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>Importar equipos</title>
+</head>
+<body>
+    <h1>Importación por lotes de equipos</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <p>
+            <label for="fichero">Fichero (.xlsx o .csv):</label>
+            <input type="file" name="fichero" id="fichero" accept=".xlsx,.csv" required>
+        </p>
+        <button type="submit">Importar</button>
+    </form>
+
+    {% if resultado %}
+        {% if resultado.error_fichero %}
+            <p><strong>Error:</strong> {{ resultado.error_fichero }}</p>
+        {% else %}
+            <h2>Resultado de la importación</h2>
+            <p>Equipos importados: {{ resultado.importados }}</p>
+            <p>Líneas nuevas creadas: {{ resultado.lineas_nuevas|length }}
+                {% if resultado.lineas_nuevas %}({{ resultado.lineas_nuevas|join:", " }}){% endif %}
+            </p>
+            {% if resultado.rechazadas %}
+                <h3>Filas rechazadas</h3>
+                <table border="1" cellpadding="4">
+                    <tr><th>Fila</th><th>Motivo</th></tr>
+                    {% for num_fila, motivo in resultado.rechazadas %}
+                        <tr><td>{{ num_fila }}</td><td>{{ motivo }}</td></tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                <p>No se ha rechazado ninguna fila.</p>
+            {% endif %}
+        {% endif %}
+    {% endif %}
+
+    <p><a href="{% url 'evaluaciones:equipo_alta' %}">Dar de alta un equipo individual</a></p>
+</body>
+</html>

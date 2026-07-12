@@ -1,0 +1,7 @@
+codigo,nombre,marca_modelo,num_serie,anio,linea
+EQ-001,Prensa hidráulica,ACME P200,SN-1001,2015,Línea 1
+EQ-002,Cizalla,ACME C50,SN-1002,2018,Línea 1
+EQ-003,Taladro de columna,Bosch TC10,SN-1003,2020,Línea 2
+EQ-004,Compresor,,,,
+EQ-005,Sierra de cinta,Makita SC30,SN-1005,2019,línea 2
+EQ-006,Soldadora,Lincoln SW100,SN-1006,2021,Línea 3

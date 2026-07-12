@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>Equipo {{ equipo.codigo }}</title>
+</head>
+<body>
+    <h1>{{ equipo.nombre }}</h1>
+    <ul>
+        <li>Código: {{ equipo.codigo }}</li>
+        <li>Marca / modelo: {{ equipo.marca_modelo|default:"—" }}</li>
+        <li>Nº de serie: {{ equipo.num_serie|default:"—" }}</li>
+        <li>Año: {{ equipo.anio|default:"—" }}</li>
+        <li>Línea: {{ equipo.linea|default:"—" }}</li>
+    </ul>
+    <p><a href="{% url 'evaluaciones:equipo_alta' %}">Dar de alta otro equipo</a></p>
+</body>
+</html>

@@ -11,6 +11,7 @@ class Linea(models.Model):
 
 
 class Equipo(models.Model):
+    codigo = models.CharField(max_length=50, unique=True)
     linea = models.ForeignKey(
         Linea,
         on_delete=models.PROTECT,
