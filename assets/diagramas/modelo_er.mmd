@@ -1,0 +1,44 @@
+erDiagram
+  LINEA ||--o{ EQUIPO : agrupa
+  EQUIPO ||--o{ EVALUACION : "es objeto de"
+  EVALUACION ||--o{ RESPUESTA : contiene
+  CRITERIO ||--o{ RESPUESTA : "se responde en"
+  GRUPO_CRITERIO ||--o{ CRITERIO : agrupa
+  LINEA {
+    int id PK
+    string nombre
+    string ubicacion
+  }
+  EQUIPO {
+    int id PK
+    int linea_id "FK,nullable"
+    string nombre
+    string marca_modelo
+    string num_serie
+    int anio
+  }
+  GRUPO_CRITERIO {
+    int id PK
+    string nombre
+    string fuente_normativa
+    int orden
+  }
+  CRITERIO {
+    int id PK
+    int grupo_id FK
+    string enunciado
+    int orden
+  }
+  EVALUACION {
+    int id PK
+    int equipo_id FK
+    datetime fecha
+    bool en_revision
+  }
+  RESPUESTA {
+    int id PK
+    int evaluacion_id FK
+    int criterio_id FK
+    string resultado
+    text indicaciones
+  }
