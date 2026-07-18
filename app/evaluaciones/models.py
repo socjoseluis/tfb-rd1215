@@ -10,6 +10,19 @@ class Linea(models.Model):
         return self.nombre
 
 
+class TipoEquipo(models.Model):
+    """Tipo de equipo a efectos del Anexo I.2 del RD 1215/1997.
+
+    Un equipo puede ser de varios tipos a la vez: una carretilla elevadora es
+    equipo móvil (Anexo I.2.1) y equipo de elevación de cargas (Anexo I.2.2).
+    """
+
+    nombre = models.CharField(max_length=100, unique=True)
+
+    def __str__(self):
+        return self.nombre
+
+
 class Equipo(models.Model):
     codigo = models.CharField(max_length=50, unique=True)
     linea = models.ForeignKey(
@@ -23,15 +36,36 @@ class Equipo(models.Model):
     marca_modelo = models.CharField(max_length=200, blank=True)
     num_serie = models.CharField(max_length=100, blank=True)
     anio = models.PositiveIntegerField(null=True, blank=True)
+    tipos = models.ManyToManyField(
+        TipoEquipo,
+        blank=True,
+        related_name='equipos',
+    )
 
     def __str__(self):
         return self.nombre
+
+    def grupos_aplicables(self):
+        """Grupos de criterios que corresponden a este equipo."""
+        return GrupoCriterio.objects.filter(
+            models.Q(tipos_aplicables__isnull=True)
+            | models.Q(tipos_aplicables__in=self.tipos.all())
+        ).distinct()
 
 
 class GrupoCriterio(models.Model):
     nombre = models.CharField(max_length=200)
     fuente_normativa = models.CharField(max_length=200, blank=True)
     orden = models.PositiveIntegerField(default=0)
+    tipos_aplicables = models.ManyToManyField(
+        TipoEquipo,
+        blank=True,
+        related_name='grupos',
+        help_text=(
+            'Tipos de equipo a los que aplica este grupo. '
+            'Sin ninguno, aplica a todos los equipos.'
+        ),
+    )
 
     class Meta:
         ordering = ['orden']
