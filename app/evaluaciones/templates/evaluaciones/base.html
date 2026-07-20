@@ -6,6 +6,27 @@
     <title>{% block titulo %}Evaluación de equipos{% endblock %}</title>
     {# Bootstrap 5.3.3 (MIT), servido en local para no depender de una red externa. #}
     <link rel="stylesheet" href="{% static 'evaluaciones/bootstrap.min.css' %}">
+    <style>
+        /* Anchos iguales en las cuatro tablas de la portada, una por línea de
+           producción: así sus columnas quedan alineadas entre sí. Los anchos
+           solo se respetan con table-layout fijo. */
+        .tabla-equipos { table-layout: fixed; }
+        .tabla-equipos th:nth-child(1), .tabla-equipos td:nth-child(1) { width: 16%; }
+        .tabla-equipos th:nth-child(2), .tabla-equipos td:nth-child(2) { width: 34%; }
+        .tabla-equipos th:nth-child(3), .tabla-equipos td:nth-child(3) { width: 25%; }
+        .tabla-equipos th:nth-child(4), .tabla-equipos td:nth-child(4) { width: 25%; }
+
+        /* En pantallas estrechas no caben cuatro columnas de texto sin partir
+           palabras. Se oculta la de tipos, que puede consultarse en la ficha
+           del equipo, y el ancho se reparte entre las tres que importan en
+           campo: qué equipo es y en qué estado está su evaluación. */
+        @media (max-width: 767.98px) {
+            .tabla-equipos th:nth-child(3), .tabla-equipos td:nth-child(3) { display: none; }
+            .tabla-equipos th:nth-child(1), .tabla-equipos td:nth-child(1) { width: 22%; }
+            .tabla-equipos th:nth-child(2), .tabla-equipos td:nth-child(2) { width: 44%; }
+            .tabla-equipos th:nth-child(4), .tabla-equipos td:nth-child(4) { width: 34%; }
+        }
+    </style>
 </head>
 <body class="bg-body-tertiary">
     <nav class="navbar navbar-expand navbar-dark bg-dark">
