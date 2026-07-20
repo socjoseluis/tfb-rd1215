@@ -50,6 +50,19 @@ class Equipo(models.Model):
         blank=True,
         related_name='equipos',
         verbose_name='Tipos de equipo',
+        help_text=(
+            'Marque todos los que apliquen; un mismo equipo puede ser de '
+            'varios tipos. Si no es de ninguno, déjelo sin marcar.'
+        ),
+    )
+    tipos_confirmados = models.BooleanField(
+        'Tipos confirmados',
+        default=False,
+        help_text=(
+            'Alguien ha revisado a qué tipos del Anexo I.2 pertenece el '
+            'equipo. Distingue un equipo que no es de ninguno de otro cuyo '
+            'tipo todavía no se ha comprobado.'
+        ),
     )
 
     def __str__(self):

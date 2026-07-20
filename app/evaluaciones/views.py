@@ -1,11 +1,10 @@
 from django.forms import modelformset_factory
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 
-from .forms import EquipoForm
+from .forms import EquipoForm, EquipoTiposForm
 from .importador import importar_equipos
-from .models import (
-    Criterio, Equipo, Evaluacion, GrupoCriterio, Linea, Respuesta, TipoEquipo,
-)
+from .models import Criterio, Equipo, Evaluacion, Respuesta
 
 
 def equipo_alta(request):
@@ -33,8 +32,37 @@ def equipo_importar(request):
     return render(request, 'evaluaciones/equipo_importar.html', {'resultado': resultado})
 
 
+def equipo_tipos(request, pk):
+    equipo = get_object_or_404(Equipo, pk=pk)
+    # Si se llega aquí desde el intento de evaluar, hay que volver allí.
+    evaluar = '1' in (request.GET.get('evaluar'), request.POST.get('evaluar'))
+
+    if request.method == 'POST':
+        form = EquipoTiposForm(request.POST, instance=equipo)
+        if form.is_valid():
+            form.save()
+            if evaluar:
+                return redirect('evaluaciones:evaluacion_nueva', pk=equipo.pk)
+            return redirect('evaluaciones:equipo_detalle', pk=equipo.pk)
+    else:
+        form = EquipoTiposForm(instance=equipo)
+
+    return render(request, 'evaluaciones/equipo_tipos.html', {
+        'equipo': equipo,
+        'form': form,
+        'evaluar': evaluar,
+    })
+
+
 def evaluacion_nueva(request, pk):
     equipo = get_object_or_404(Equipo, pk=pk)
+
+    # Los equipos importados por lotes llegan sin tipo: hay que preguntarlo
+    # antes de evaluar, porque de él dependen los criterios aplicables.
+    if not equipo.tipos_confirmados:
+        url = reverse('evaluaciones:equipo_tipos', kwargs={'pk': equipo.pk})
+        return redirect(f'{url}?evaluar=1')
+
     criterios = list(
         Criterio.objects.filter(grupo__in=equipo.grupos_aplicables())
     )

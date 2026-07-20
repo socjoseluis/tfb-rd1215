@@ -12,6 +12,17 @@
         <li>Nº de serie: {{ equipo.num_serie|default:"—" }}</li>
         <li>Año: {{ equipo.anio|default:"—" }}</li>
         <li>Línea: {{ equipo.linea|default:"—" }}</li>
+        <li>
+            Tipos:
+            {% if equipo.tipos.all %}
+                {{ equipo.tipos.all|join:", " }}
+            {% elif equipo.tipos_confirmados %}
+                ninguno del Anexo I.2
+            {% else %}
+                <em>sin confirmar</em>
+            {% endif %}
+            (<a href="{% url 'evaluaciones:equipo_tipos' pk=equipo.pk %}">cambiar</a>)
+        </li>
     </ul>
     <p><a href="{% url 'evaluaciones:evaluacion_nueva' pk=equipo.pk %}">Evaluar este equipo</a></p>
     <p><a href="{% url 'evaluaciones:equipo_alta' %}">Dar de alta otro equipo</a></p>
