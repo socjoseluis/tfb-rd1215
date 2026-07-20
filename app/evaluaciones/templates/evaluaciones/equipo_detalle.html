@@ -1,30 +1,42 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="utf-8">
-    <title>Equipo {{ equipo.codigo }}</title>
-</head>
-<body>
-    <h1>{{ equipo.nombre }}</h1>
-    <ul>
-        <li>Código: {{ equipo.codigo }}</li>
-        <li>Marca / modelo: {{ equipo.marca_modelo|default:"—" }}</li>
-        <li>Nº de serie: {{ equipo.num_serie|default:"—" }}</li>
-        <li>Año: {{ equipo.anio|default:"—" }}</li>
-        <li>Línea: {{ equipo.linea|default:"—" }}</li>
-        <li>
-            Tipos:
-            {% if equipo.tipos.all %}
-                {{ equipo.tipos.all|join:", " }}
-            {% elif equipo.tipos_confirmados %}
-                ninguno del Anexo I.2
-            {% else %}
-                <em>sin confirmar</em>
-            {% endif %}
-            (<a href="{% url 'evaluaciones:equipo_tipos' pk=equipo.pk %}">cambiar</a>)
-        </li>
-    </ul>
-    <p><a href="{% url 'evaluaciones:evaluacion_nueva' pk=equipo.pk %}">Evaluar este equipo</a></p>
-    <p><a href="{% url 'evaluaciones:equipo_alta' %}">Dar de alta otro equipo</a></p>
-</body>
-</html>
+{% extends "evaluaciones/base.html" %}
+
+{% block titulo %}Equipo {{ equipo.codigo }}{% endblock %}
+{% block encabezado %}{{ equipo.nombre }}{% endblock %}
+
+{% block contenido %}
+    <div class="card mb-3">
+        <div class="card-body">
+            <dl class="row mb-0">
+                <dt class="col-sm-3">Código</dt>
+                <dd class="col-sm-9">{{ equipo.codigo }}</dd>
+
+                <dt class="col-sm-3">Marca / modelo</dt>
+                <dd class="col-sm-9">{{ equipo.marca_modelo|default:"—" }}</dd>
+
+                <dt class="col-sm-3">Nº de serie</dt>
+                <dd class="col-sm-9">{{ equipo.num_serie|default:"—" }}</dd>
+
+                <dt class="col-sm-3">Año</dt>
+                <dd class="col-sm-9">{{ equipo.anio|default:"—" }}</dd>
+
+                <dt class="col-sm-3">Línea</dt>
+                <dd class="col-sm-9">{{ equipo.linea|default:"—" }}</dd>
+
+                <dt class="col-sm-3">Tipos</dt>
+                <dd class="col-sm-9">
+                    {% if equipo.tipos.all %}
+                        {{ equipo.tipos.all|join:", " }}
+                    {% elif equipo.tipos_confirmados %}
+                        ninguno del Anexo I.2
+                    {% else %}
+                        <span class="badge text-bg-warning">sin confirmar</span>
+                    {% endif %}
+                    <a class="ms-2" href="{% url 'evaluaciones:equipo_tipos' pk=equipo.pk %}">cambiar</a>
+                </dd>
+            </dl>
+        </div>
+    </div>
+
+    <a class="btn btn-primary" href="{% url 'evaluaciones:evaluacion_nueva' pk=equipo.pk %}">Evaluar este equipo</a>
+    <a class="btn btn-outline-secondary" href="{% url 'evaluaciones:equipo_alta' %}">Dar de alta otro equipo</a>
+{% endblock %}

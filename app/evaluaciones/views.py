@@ -1,3 +1,4 @@
+from django import forms
 from django.forms import modelformset_factory
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
@@ -8,6 +9,11 @@ from .models import Criterio, Equipo, Evaluacion, Respuesta
 
 
 def equipo_alta(request):
+    """Alta individual de un equipo con validación de datos (RF-01).
+
+    Quien da de alta un equipo a mano responde también por sus tipos, así
+    que el formulario los marca como confirmados aunque no señale ninguno.
+    """
     if request.method == 'POST':
         form = EquipoForm(request.POST)
         if form.is_valid():
@@ -19,11 +25,22 @@ def equipo_alta(request):
 
 
 def equipo_detalle(request, pk):
+    """Ficha de un equipo.
+
+    Es la base de la consulta en modo solo lectura (RF-10), pendiente
+    todavía del control de acceso por autenticación: hoy la ficha es
+    pública.
+    """
     equipo = get_object_or_404(Equipo, pk=pk)
     return render(request, 'evaluaciones/equipo_detalle.html', {'equipo': equipo})
 
 
 def equipo_importar(request):
+    """Importación por lotes desde .xlsx o .csv con validación (RF-02).
+
+    Las filas que no superan la validación se rechazan una a una, con su
+    motivo, sin abortar la importación de las demás.
+    """
     resultado = None
     if request.method == 'POST':
         fichero = request.FILES.get('fichero')
@@ -33,6 +50,13 @@ def equipo_importar(request):
 
 
 def equipo_tipos(request, pk):
+    """Indicar a qué tipos del Anexo I.2 pertenece un equipo (apoyo a RF-04).
+
+    La importación por lotes (RF-02) no trae el tipo, y de él dependen los
+    criterios aplicables. Guardar marca el equipo como confirmado aunque no
+    se señale ningún tipo: un equipo fijo no es de ninguno, y eso es una
+    respuesta, no un dato que falte.
+    """
     equipo = get_object_or_404(Equipo, pk=pk)
     # Si se llega aquí desde el intento de evaluar, hay que volver allí.
     evaluar = '1' in (request.GET.get('evaluar'), request.POST.get('evaluar'))
@@ -55,6 +79,17 @@ def equipo_tipos(request, pk):
 
 
 def evaluacion_nueva(request, pk):
+    """Evaluar la conformidad de un equipo frente al RD 1215/1997 (RF-04).
+
+    Los criterios que se presentan no son fijos: dependen de los tipos del
+    equipo según el Anexo I.2, de modo que un equipo fijo responde solo a
+    las disposiciones generales del Anexo I.1.
+
+    Cada evaluación se guarda como un registro nuevo y nunca sobrescribe
+    las anteriores (RF-03). La evaluación solo se crea si todas las
+    respuestas son válidas, para que no queden evaluaciones a medias en el
+    histórico.
+    """
     equipo = get_object_or_404(Equipo, pk=pk)
 
     # Los equipos importados por lotes llegan sin tipo: hay que preguntarlo
@@ -71,6 +106,16 @@ def evaluacion_nueva(request, pk):
         Respuesta,
         fields=['criterio', 'resultado', 'indicaciones'],
         extra=len(criterios),
+        widgets={
+            'resultado': forms.Select(
+                attrs={'class': 'form-select form-select-sm'},
+            ),
+            # Una línea basta dentro de la tabla; el área de texto que Django
+            # elige por defecto para un TextField ocuparía toda la fila.
+            'indicaciones': forms.TextInput(
+                attrs={'class': 'form-control form-control-sm'},
+            ),
+        },
     )
 
     if request.method == 'POST':
@@ -98,6 +143,12 @@ def evaluacion_nueva(request, pk):
 
 
 def evaluacion_detalle(request, pk):
+    """Resultado de una evaluación concreta del histórico (RF-03, RF-04).
+
+    Las respuestas se agrupan por grupo de criterios y se ordenan en la
+    consulta, porque la plantilla solo sabe agrupar elementos que ya vengan
+    consecutivos.
+    """
     evaluacion = get_object_or_404(Evaluacion, pk=pk)
     respuestas = (
         evaluacion.respuestas

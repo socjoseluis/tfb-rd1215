@@ -1,34 +1,55 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="utf-8">
-    <title>Evaluación de {{ evaluacion.equipo.codigo }}</title>
-</head>
-<body>
-    <h1>Evaluación de {{ evaluacion.equipo.nombre }}</h1>
-    <ul>
-        <li>Equipo: {{ evaluacion.equipo.codigo }}</li>
-        <li>Fecha: {{ evaluacion.fecha|date:"d/m/Y H:i" }}</li>
-        <li>Dictamen: <strong>{{ evaluacion.dictamen }}</strong></li>
-    </ul>
+{% extends "evaluaciones/base.html" %}
+
+{% block titulo %}Evaluación de {{ evaluacion.equipo.codigo }}{% endblock %}
+{% block encabezado %}Evaluación de {{ evaluacion.equipo.nombre }}{% endblock %}
+
+{% block contenido %}
+    <div class="card mb-4">
+        <div class="card-body">
+            <dl class="row mb-0">
+                <dt class="col-sm-3">Equipo</dt>
+                <dd class="col-sm-9">{{ evaluacion.equipo.codigo }}</dd>
+
+                <dt class="col-sm-3">Fecha</dt>
+                <dd class="col-sm-9">{{ evaluacion.fecha|date:"d/m/Y H:i" }}</dd>
+
+                <dt class="col-sm-3">Dictamen</dt>
+                <dd class="col-sm-9">
+                    {% if evaluacion.dictamen == "Conforme" %}
+                        <span class="badge text-bg-success">{{ evaluacion.dictamen }}</span>
+                    {% else %}
+                        <span class="badge text-bg-danger">{{ evaluacion.dictamen }}</span>
+                    {% endif %}
+                </dd>
+            </dl>
+        </div>
+    </div>
 
     {% regroup respuestas by criterio.grupo as grupos %}
     {% for grupo in grupos %}
-        <h2>{{ grupo.grouper }}</h2>
-        <p>{{ grupo.grouper.fuente_normativa }}</p>
-        <table>
-            <thead>
+        <h2 class="h6 mt-4">{{ grupo.grouper }}</h2>
+        <p class="text-secondary small">{{ grupo.grouper.fuente_normativa }}</p>
+        <table class="table table-sm table-bordered align-middle bg-white">
+            <thead class="table-light">
                 <tr>
-                    <th>Criterio</th>
-                    <th>Resultado</th>
-                    <th>Indicaciones</th>
+                    <th scope="col">Criterio</th>
+                    <th scope="col" style="width: 9rem;">Resultado</th>
+                    <th scope="col" style="width: 16rem;">Indicaciones</th>
                 </tr>
             </thead>
             <tbody>
             {% for respuesta in grupo.list %}
                 <tr>
                     <td>{{ respuesta.criterio.enunciado }}</td>
-                    <td>{{ respuesta.get_resultado_display }}</td>
+                    <td>
+                        {% if respuesta.resultado == "NC" %}
+                            <span class="badge text-bg-danger">{{ respuesta.get_resultado_display }}</span>
+                        {% elif respuesta.resultado == "NA" %}
+                            <span class="badge text-bg-secondary">{{ respuesta.get_resultado_display }}</span>
+                        {% else %}
+                            <span class="badge text-bg-success">{{ respuesta.get_resultado_display }}</span>
+                        {% endif %}
+                    </td>
                     <td>{{ respuesta.indicaciones|default:"—" }}</td>
                 </tr>
             {% endfor %}
@@ -36,6 +57,5 @@
         </table>
     {% endfor %}
 
-    <p><a href="{% url 'evaluaciones:equipo_detalle' pk=evaluacion.equipo.pk %}">Volver a la ficha del equipo</a></p>
-</body>
-</html>
+    <a class="btn btn-outline-secondary" href="{% url 'evaluaciones:equipo_detalle' pk=evaluacion.equipo.pk %}">Volver a la ficha del equipo</a>
+{% endblock %}

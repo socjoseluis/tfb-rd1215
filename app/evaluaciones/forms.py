@@ -14,6 +14,18 @@ class EquipoForm(forms.ModelForm):
             'tipos': forms.CheckboxSelectMultiple,
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Bootstrap exige sus clases en cada control. Las casillas de «tipos»
+        # quedan fuera: llevan su propio marcado.
+        for nombre, campo in self.fields.items():
+            if nombre == 'tipos':
+                continue
+            if isinstance(campo.widget, forms.Select):
+                campo.widget.attrs['class'] = 'form-select'
+            else:
+                campo.widget.attrs['class'] = 'form-control'
+
     def clean_codigo(self):
         codigo = self.cleaned_data['codigo'].strip()
         if not codigo:

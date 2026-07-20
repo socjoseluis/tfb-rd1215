@@ -3,6 +3,8 @@ from django.utils import timezone
 
 
 class Linea(models.Model):
+    """Línea de producción que agrupa equipos (RF-05)."""
+
     nombre = models.CharField(max_length=200)
     ubicacion = models.CharField('Ubicación', max_length=200, blank=True)
 
@@ -69,7 +71,17 @@ class Equipo(models.Model):
         return self.nombre
 
     def grupos_aplicables(self):
-        """Grupos de criterios que corresponden a este equipo."""
+        """Grupos de criterios que corresponden a este equipo (RF-04).
+
+        Devuelve los grupos sin ningún tipo asignado, que son los generales
+        del Anexo I.1 y aplican a todo equipo, más los propios de los tipos
+        de este equipo (Anexo I.2). Una carretilla elevadora, que es móvil y
+        de elevación de cargas, recoge los de ambos.
+
+        El distinct() es necesario: al cruzar una relación de muchos a
+        muchos con un OR, un mismo grupo puede aparecer repetido, una vez
+        por cada tipo que empareje.
+        """
         return GrupoCriterio.objects.filter(
             models.Q(tipos_aplicables__isnull=True)
             | models.Q(tipos_aplicables__in=self.tipos.all())
@@ -77,6 +89,14 @@ class Equipo(models.Model):
 
 
 class GrupoCriterio(models.Model):
+    """Bloque temático de criterios, con su origen en la norma.
+
+    Los criterios se guardan como datos y no codificados en la aplicación:
+    así, ampliar los tipos de equipo o revisar la norma se resuelve
+    editando registros y no tocando el programa. Un grupo sin ningún tipo
+    asignado aplica a todos los equipos.
+    """
+
     nombre = models.CharField(max_length=200)
     fuente_normativa = models.CharField(max_length=200, blank=True)
     orden = models.PositiveIntegerField(default=0)
@@ -116,6 +136,13 @@ class Criterio(models.Model):
 
 
 class Evaluacion(models.Model):
+    """Evaluación de un equipo en una fecha concreta (RF-03).
+
+    Cada evaluación es un registro independiente: evaluar de nuevo un
+    equipo añade una fila, nunca modifica las anteriores, de modo que el
+    histórico se conserva íntegro.
+    """
+
     equipo = models.ForeignKey(
         Equipo,
         on_delete=models.CASCADE,
@@ -131,6 +158,13 @@ class Evaluacion(models.Model):
 
     @property
     def dictamen(self):
+        """Resultado global de la evaluación (RF-04).
+
+        El dictamen es binario porque el RD 1215/1997 fija disposiciones
+        mínimas: se cumplen o no se cumplen. Basta una no conformidad para
+        que el conjunto lo sea. Los matices que el binario no captura se
+        recogen en las indicaciones de cada respuesta.
+        """
         if any(r.resultado == 'NC' for r in self.respuestas.all()):
             return 'No conforme'
         return 'Conforme'
@@ -140,6 +174,14 @@ class Evaluacion(models.Model):
 
 
 class Respuesta(models.Model):
+    """Resultado de un criterio dentro de una evaluación.
+
+    El «no aplica» no es un hueco de datos ni una comodidad: la propia
+    norma prevé que sus disposiciones solo rigen si el equipo da lugar al
+    riesgo para el que se especifica la medida (Anexo I, observación
+    preliminar).
+    """
+
     RESULTADO_CHOICES = [
         ('C', 'Conforme'),
         ('NC', 'No conforme'),

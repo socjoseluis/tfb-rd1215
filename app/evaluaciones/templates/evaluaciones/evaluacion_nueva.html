@@ -1,31 +1,32 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="utf-8">
-    <title>Evaluar {{ equipo.codigo }}</title>
-</head>
-<body>
-    <h1>Evaluación de {{ equipo.nombre }}</h1>
-    <p>Código: {{ equipo.codigo }} — Línea: {{ equipo.linea|default:"—" }}</p>
+{% extends "evaluaciones/base.html" %}
+
+{% block titulo %}Evaluar {{ equipo.codigo }}{% endblock %}
+{% block encabezado %}Evaluación de {{ equipo.nombre }}{% endblock %}
+
+{% block contenido %}
+    <p class="text-secondary">
+        Código: {{ equipo.codigo }} · Línea: {{ equipo.linea|default:"—" }} ·
+        Tipos: {{ equipo.tipos.all|join:", "|default:"ninguno del Anexo I.2" }}
+    </p>
 
     <form method="post">
         {% csrf_token %}
         {{ formset.management_form }}
         {{ formset.non_form_errors }}
 
-        <table>
-            <thead>
+        <table class="table table-sm table-bordered align-middle bg-white">
+            <thead class="table-light">
                 <tr>
-                    <th>Grupo</th>
-                    <th>Criterio</th>
-                    <th>Resultado</th>
-                    <th>Indicaciones</th>
+                    <th scope="col">Grupo</th>
+                    <th scope="col">Criterio</th>
+                    <th scope="col" style="width: 9rem;">Resultado</th>
+                    <th scope="col" style="width: 16rem;">Indicaciones</th>
                 </tr>
             </thead>
             <tbody>
             {% for form, criterio in filas %}
                 <tr>
-                    <td>{{ criterio.grupo }}</td>
+                    <td class="text-secondary small">{{ criterio.grupo }}</td>
                     <td>
                         {{ form.id }}
                         {{ form.criterio.as_hidden }}
@@ -41,9 +42,7 @@
             </tbody>
         </table>
 
-        <button type="submit">Guardar evaluación</button>
+        <button type="submit" class="btn btn-primary">Guardar evaluación</button>
+        <a class="btn btn-outline-secondary" href="{% url 'evaluaciones:equipo_detalle' pk=equipo.pk %}">Cancelar</a>
     </form>
-
-    <p><a href="{% url 'evaluaciones:equipo_detalle' pk=equipo.pk %}">Volver a la ficha del equipo</a></p>
-</body>
-</html>
+{% endblock %}
