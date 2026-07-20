@@ -4,7 +4,11 @@ from django.utils import timezone
 
 class Linea(models.Model):
     nombre = models.CharField(max_length=200)
-    ubicacion = models.CharField(max_length=200, blank=True)
+    ubicacion = models.CharField('Ubicación', max_length=200, blank=True)
+
+    class Meta:
+        verbose_name = 'Línea'
+        verbose_name_plural = 'Líneas'
 
     def __str__(self):
         return self.nombre
@@ -19,27 +23,33 @@ class TipoEquipo(models.Model):
 
     nombre = models.CharField(max_length=100, unique=True)
 
+    class Meta:
+        verbose_name = 'Tipo de equipo'
+        verbose_name_plural = 'Tipos de equipo'
+
     def __str__(self):
         return self.nombre
 
 
 class Equipo(models.Model):
-    codigo = models.CharField(max_length=50, unique=True)
+    codigo = models.CharField('Código', max_length=50, unique=True)
     linea = models.ForeignKey(
         Linea,
         on_delete=models.PROTECT,
         null=True,
         blank=True,
         related_name='equipos',
+        verbose_name='Línea',
     )
     nombre = models.CharField(max_length=200)
-    marca_modelo = models.CharField(max_length=200, blank=True)
-    num_serie = models.CharField(max_length=100, blank=True)
-    anio = models.PositiveIntegerField(null=True, blank=True)
+    marca_modelo = models.CharField('Marca / modelo', max_length=200, blank=True)
+    num_serie = models.CharField('Nº de serie', max_length=100, blank=True)
+    anio = models.PositiveIntegerField('Año', null=True, blank=True)
     tipos = models.ManyToManyField(
         TipoEquipo,
         blank=True,
         related_name='equipos',
+        verbose_name='Tipos de equipo',
     )
 
     def __str__(self):
@@ -69,6 +79,8 @@ class GrupoCriterio(models.Model):
 
     class Meta:
         ordering = ['orden']
+        verbose_name = 'Grupo de criterios'
+        verbose_name_plural = 'Grupos de criterios'
 
     def __str__(self):
         return self.nombre
@@ -97,10 +109,12 @@ class Evaluacion(models.Model):
         related_name='evaluaciones',
     )
     fecha = models.DateTimeField(default=timezone.now)
-    en_revision = models.BooleanField(default=False)
+    en_revision = models.BooleanField('En revisión', default=False)
 
     class Meta:
         ordering = ['-fecha']
+        verbose_name = 'Evaluación'
+        verbose_name_plural = 'Evaluaciones'
 
     @property
     def dictamen(self):

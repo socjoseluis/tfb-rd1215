@@ -6,7 +6,13 @@ from .models import Equipo
 class EquipoForm(forms.ModelForm):
     class Meta:
         model = Equipo
-        fields = ['codigo', 'nombre', 'marca_modelo', 'num_serie', 'anio', 'linea']
+        fields = [
+            'codigo', 'nombre', 'marca_modelo', 'num_serie', 'anio', 'linea',
+            'tipos',
+        ]
+        widgets = {
+            'tipos': forms.CheckboxSelectMultiple,
+        }
 
     def clean_codigo(self):
         codigo = self.cleaned_data['codigo'].strip()

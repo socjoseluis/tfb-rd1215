@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>Evaluación de {{ evaluacion.equipo.codigo }}</title>
+</head>
+<body>
+    <h1>Evaluación de {{ evaluacion.equipo.nombre }}</h1>
+    <ul>
+        <li>Equipo: {{ evaluacion.equipo.codigo }}</li>
+        <li>Fecha: {{ evaluacion.fecha|date:"d/m/Y H:i" }}</li>
+        <li>Dictamen: <strong>{{ evaluacion.dictamen }}</strong></li>
+    </ul>
+
+    {% regroup respuestas by criterio.grupo as grupos %}
+    {% for grupo in grupos %}
+        <h2>{{ grupo.grouper }}</h2>
+        <p>{{ grupo.grouper.fuente_normativa }}</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Criterio</th>
+                    <th>Resultado</th>
+                    <th>Indicaciones</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for respuesta in grupo.list %}
+                <tr>
+                    <td>{{ respuesta.criterio.enunciado }}</td>
+                    <td>{{ respuesta.get_resultado_display }}</td>
+                    <td>{{ respuesta.indicaciones|default:"—" }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endfor %}
+
+    <p><a href="{% url 'evaluaciones:equipo_detalle' pk=evaluacion.equipo.pk %}">Volver a la ficha del equipo</a></p>
+</body>
+</html>

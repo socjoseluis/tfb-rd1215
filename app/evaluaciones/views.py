@@ -3,7 +3,9 @@ from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import EquipoForm
 from .importador import importar_equipos
-from .models import Criterio, Equipo, Evaluacion, Respuesta
+from .models import (
+    Criterio, Equipo, Evaluacion, GrupoCriterio, Linea, Respuesta, TipoEquipo,
+)
 
 
 def equipo_alta(request):
@@ -64,4 +66,17 @@ def evaluacion_nueva(request, pk):
         'equipo': equipo,
         'formset': formset,
         'filas': zip(formset, criterios),
+    })
+
+
+def evaluacion_detalle(request, pk):
+    evaluacion = get_object_or_404(Evaluacion, pk=pk)
+    respuestas = (
+        evaluacion.respuestas
+        .select_related('criterio__grupo')
+        .order_by('criterio__grupo__orden', 'criterio__orden')
+    )
+    return render(request, 'evaluaciones/evaluacion_detalle.html', {
+        'evaluacion': evaluacion,
+        'respuestas': respuestas,
     })
