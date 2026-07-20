@@ -32,6 +32,15 @@ ALLOWED_HOSTS = config(
     cast=Csv(),
 )
 
+# Orígenes desde los que se aceptan peticiones POST. Solo hace falta cuando la
+# aplicación se sirve tras un proxy o un túnel HTTPS: sin declararlo, Django
+# rechaza el envío de cualquier formulario por comprobación de CSRF.
+CSRF_TRUSTED_ORIGINS = config(
+    'CSRF_TRUSTED_ORIGINS',
+    default='',
+    cast=Csv(),
+)
+
 
 # Application definition
 
