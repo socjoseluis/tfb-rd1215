@@ -9,6 +9,22 @@ from .importador import importar_equipos
 from .models import Criterio, Equipo, Evaluacion, Linea, Respuesta
 
 
+def _marcar_desfasadas(equipo, tipos_antes):
+    """Marca para revisión las evaluaciones que han quedado incompletas.
+
+    Añadir un tipo hace aplicables criterios del Anexo I.2 que las
+    evaluaciones anteriores nunca comprobaron, así que dejan de ser fiables.
+    Quitar un tipo no las invalida: solo deja respuestas que ya no aplican.
+
+    Se llama desde las dos vistas que pueden cambiar los tipos de un equipo.
+    El admin de Django los cambia sin pasar por aquí; es una limitación
+    conocida de la trastienda de administración.
+    """
+    tipos_despues = set(equipo.tipos.values_list('pk', flat=True))
+    if tipos_despues - tipos_antes:
+        equipo.evaluaciones.update(en_revision=True)
+
+
 def inicio(request):
     """Portada: los equipos organizados por línea de producción (RF-05).
 
@@ -36,6 +52,12 @@ def equipo_alta(request):
         form = EquipoForm(request.POST)
         if form.is_valid():
             equipo = form.save()
+            # Quien da de alta un equipo a mano responde también por su tipo,
+            # aunque no marque ninguno. La edición no: allí se corrigen datos
+            # del equipo, y confirmar el tipo es una decisión aparte que no
+            # debe darse por hecha sin que nadie la tome.
+            equipo.tipos_confirmados = True
+            equipo.save(update_fields=['tipos_confirmados'])
             return redirect('evaluaciones:equipo_detalle', pk=equipo.pk)
     else:
         form = EquipoForm()
@@ -73,6 +95,32 @@ def equipo_importar(request):
     return render(request, 'evaluaciones/equipo_importar.html', {'resultado': resultado})
 
 
+def equipo_editar(request, pk):
+    """Corregir o completar los datos de un equipo (necesario para RF-05).
+
+    La importación por lotes admite equipos con campos vacíos y sin línea, y
+    un equipo puede trasladarse de una línea a otra. Sin poder editarlos,
+    esos equipos no podrían organizarse nunca por línea de producción, de
+    modo que RF-05 quedaría fuera del alcance de la aplicación.
+    """
+    equipo = get_object_or_404(Equipo, pk=pk)
+
+    if request.method == 'POST':
+        tipos_antes = set(equipo.tipos.values_list('pk', flat=True))
+        form = EquipoForm(request.POST, instance=equipo)
+        if form.is_valid():
+            form.save()
+            _marcar_desfasadas(equipo, tipos_antes)
+            return redirect('evaluaciones:equipo_detalle', pk=equipo.pk)
+    else:
+        form = EquipoForm(instance=equipo)
+
+    return render(request, 'evaluaciones/equipo_editar.html', {
+        'equipo': equipo,
+        'form': form,
+    })
+
+
 def equipo_tipos(request, pk):
     """Indicar a qué tipos del Anexo I.2 pertenece un equipo (apoyo a RF-04).
 
@@ -90,14 +138,7 @@ def equipo_tipos(request, pk):
         form = EquipoTiposForm(request.POST, instance=equipo)
         if form.is_valid():
             form.save()
-            # Añadir un tipo hace aplicables criterios del Anexo I.2 que las
-            # evaluaciones anteriores nunca llegaron a comprobar: quedan
-            # incompletas y se marcan para revisión, el mismo mecanismo que
-            # RF-07 usa al registrar una incidencia. Quitar un tipo no las
-            # invalida, solo deja respuestas que ya no aplican.
-            tipos_despues = set(equipo.tipos.values_list('pk', flat=True))
-            if tipos_despues - tipos_antes:
-                equipo.evaluaciones.update(en_revision=True)
+            _marcar_desfasadas(equipo, tipos_antes)
             if evaluar:
                 return redirect('evaluaciones:evaluacion_nueva', pk=equipo.pk)
             return redirect('evaluaciones:equipo_detalle', pk=equipo.pk)

@@ -80,5 +80,6 @@
     {% endif %}
 
     <a class="btn btn-primary" href="{% url 'evaluaciones:evaluacion_nueva' pk=equipo.pk %}">Evaluar este equipo</a>
+    <a class="btn btn-outline-secondary" href="{% url 'evaluaciones:equipo_editar' pk=equipo.pk %}">Editar datos</a>
     <a class="btn btn-outline-secondary" href="{% url 'evaluaciones:equipo_alta' %}">Dar de alta otro equipo</a>
 {% endblock %}

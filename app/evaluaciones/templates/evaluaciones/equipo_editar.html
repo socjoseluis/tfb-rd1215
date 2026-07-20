@@ -1,0 +1,18 @@
+{% extends "evaluaciones/base.html" %}
+
+{% block titulo %}Editar {{ equipo.codigo }}{% endblock %}
+{% block encabezado %}Editar {{ equipo.nombre }}{% endblock %}
+
+{% block contenido %}
+    <div class="card">
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                <a class="btn btn-outline-secondary"
+                   href="{% url 'evaluaciones:equipo_detalle' pk=equipo.pk %}">Cancelar</a>
+            </form>
+        </div>
+    </div>
+{% endblock %}
