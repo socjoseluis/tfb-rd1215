@@ -1,3 +1,5 @@
+from itertools import groupby
+
 from django import forms
 from django.db.models import Prefetch
 from django.forms import modelformset_factory
@@ -209,10 +211,21 @@ def evaluacion_nueva(request, pk):
             initial=[{'criterio': c} for c in criterios],
         )
 
+    # Cada fila del formulario va emparejada con su criterio, y las filas se
+    # agrupan por grupo de criterios para que la tabla reproduzca la
+    # estructura del anexo en vez de repetir el nombre del grupo en cada
+    # fila. groupby exige que la entrada venga ordenada, y lo está por el
+    # Meta.ordering de Criterio.
+    filas = list(zip(formset, criterios))
+    grupos = [
+        (grupo, list(pares))
+        for grupo, pares in groupby(filas, key=lambda par: par[1].grupo)
+    ]
+
     return render(request, 'evaluaciones/evaluacion_nueva.html', {
         'equipo': equipo,
         'formset': formset,
-        'filas': zip(formset, criterios),
+        'grupos': grupos,
     })
 
 
