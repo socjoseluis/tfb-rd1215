@@ -1,8 +1,9 @@
+from django.forms import modelformset_factory
 from django.shortcuts import get_object_or_404, redirect, render
 
 from .forms import EquipoForm
 from .importador import importar_equipos
-from .models import Equipo
+from .models import Criterio, Equipo, Evaluacion, Respuesta
 
 
 def equipo_alta(request):
@@ -28,3 +29,39 @@ def equipo_importar(request):
         if fichero is not None:
             resultado = importar_equipos(fichero, fichero.name)
     return render(request, 'evaluaciones/equipo_importar.html', {'resultado': resultado})
+
+
+def evaluacion_nueva(request, pk):
+    equipo = get_object_or_404(Equipo, pk=pk)
+    criterios = list(
+        Criterio.objects.filter(grupo__in=equipo.grupos_aplicables())
+    )
+
+    RespuestaFormSet = modelformset_factory(
+        Respuesta,
+        fields=['criterio', 'resultado', 'indicaciones'],
+        extra=len(criterios),
+    )
+
+    if request.method == 'POST':
+        formset = RespuestaFormSet(
+            request.POST,
+            queryset=Respuesta.objects.none(),
+        )
+        if formset.is_valid():
+            evaluacion = Evaluacion.objects.create(equipo=equipo)
+            for respuesta in formset.save(commit=False):
+                respuesta.evaluacion = evaluacion
+                respuesta.save()
+            return redirect('evaluaciones:evaluacion_detalle', pk=evaluacion.pk)
+    else:
+        formset = RespuestaFormSet(
+            queryset=Respuesta.objects.none(),
+            initial=[{'criterio': c} for c in criterios],
+        )
+
+    return render(request, 'evaluaciones/evaluacion_nueva.html', {
+        'equipo': equipo,
+        'formset': formset,
+        'filas': zip(formset, criterios),
+    })

@@ -13,6 +13,7 @@
         <li>Año: {{ equipo.anio|default:"—" }}</li>
         <li>Línea: {{ equipo.linea|default:"—" }}</li>
     </ul>
+    <p><a href="{% url 'evaluaciones:evaluacion_nueva' pk=equipo.pk %}">Evaluar este equipo</a></p>
     <p><a href="{% url 'evaluaciones:equipo_alta' %}">Dar de alta otro equipo</a></p>
 </body>
 </html>

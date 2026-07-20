@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>Evaluar {{ equipo.codigo }}</title>
+</head>
+<body>
+    <h1>Evaluación de {{ equipo.nombre }}</h1>
+    <p>Código: {{ equipo.codigo }} — Línea: {{ equipo.linea|default:"—" }}</p>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ formset.management_form }}
+        {{ formset.non_form_errors }}
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Grupo</th>
+                    <th>Criterio</th>
+                    <th>Resultado</th>
+                    <th>Indicaciones</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for form, criterio in filas %}
+                <tr>
+                    <td>{{ criterio.grupo }}</td>
+                    <td>
+                        {{ form.id }}
+                        {{ form.criterio.as_hidden }}
+                        {{ criterio.enunciado }}
+                    </td>
+                    <td>
+                        {{ form.resultado }}
+                        {{ form.resultado.errors }}
+                    </td>
+                    <td>{{ form.indicaciones }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <button type="submit">Guardar evaluación</button>
+    </form>
+
+    <p><a href="{% url 'evaluaciones:equipo_detalle' pk=equipo.pk %}">Volver a la ficha del equipo</a></p>
+</body>
+</html>
