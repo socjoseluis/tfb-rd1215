@@ -1,0 +1,52 @@
+classDiagram
+    direction TB
+
+    class Linea {
+        +CharField nombre
+        +CharField ubicacion
+    }
+
+    class TipoEquipo {
+        +CharField nombre
+    }
+
+    class Equipo {
+        +CharField codigo
+        +CharField nombre
+        +CharField marca_modelo
+        +CharField num_serie
+        +PositiveIntegerField anio
+        +BooleanField tipos_confirmados
+        +ultima_evaluacion() Evaluacion
+        +grupos_aplicables() QuerySet
+    }
+
+    class GrupoCriterio {
+        +CharField nombre
+        +CharField fuente_normativa
+        +PositiveIntegerField orden
+    }
+
+    class Criterio {
+        +CharField enunciado
+        +PositiveIntegerField orden
+    }
+
+    class Evaluacion {
+        +DateTimeField fecha
+        +BooleanField en_revision
+        +dictamen() str
+    }
+
+    class Respuesta {
+        +CharField resultado
+        +TextField indicaciones
+    }
+
+    Linea "0..1" o-- "0..*" Equipo : linea
+    Equipo "0..*" -- "0..*" TipoEquipo : tipos
+    GrupoCriterio "0..*" -- "0..*" TipoEquipo : tipos_aplicables
+    GrupoCriterio "1" *-- "0..*" Criterio : grupo
+    Equipo "1" *-- "0..*" Evaluacion : equipo
+    Evaluacion "1" *-- "0..*" Respuesta : evaluacion
+    Criterio "1" o-- "0..*" Respuesta : criterio

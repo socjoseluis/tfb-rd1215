@@ -4,6 +4,10 @@ erDiagram
   EVALUACION ||--o{ RESPUESTA : contiene
   CRITERIO ||--o{ RESPUESTA : "se responde en"
   GRUPO_CRITERIO ||--o{ CRITERIO : agrupa
+  EQUIPO ||--o{ EQUIPO_TIPO : "es de"
+  GRUPO_CRITERIO ||--o{ GRUPO_TIPO : "aplica a"
+  TIPO_EQUIPO ||--o{ EQUIPO_TIPO : ""
+  TIPO_EQUIPO ||--o{ GRUPO_TIPO : ""
   LINEA {
     int id PK
     string nombre
@@ -17,12 +21,27 @@ erDiagram
     string marca_modelo
     string num_serie
     int anio
+    bool tipos_confirmados
+  }
+  TIPO_EQUIPO {
+    int id PK
+    string nombre UK
+  }
+  EQUIPO_TIPO {
+    int id PK
+    int equipo_id FK
+    int tipoequipo_id FK
   }
   GRUPO_CRITERIO {
     int id PK
     string nombre
     string fuente_normativa
     int orden
+  }
+  GRUPO_TIPO {
+    int id PK
+    int grupocriterio_id FK
+    int tipoequipo_id FK
   }
   CRITERIO {
     int id PK
