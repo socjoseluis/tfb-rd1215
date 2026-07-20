@@ -1,11 +1,29 @@
 from django import forms
+from django.db.models import Prefetch
 from django.forms import modelformset_factory
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 
 from .forms import EquipoForm, EquipoTiposForm
 from .importador import importar_equipos
-from .models import Criterio, Equipo, Evaluacion, Respuesta
+from .models import Criterio, Equipo, Evaluacion, Linea, Respuesta
+
+
+def inicio(request):
+    """Portada: los equipos organizados por línea de producción (RF-05).
+
+    Es también el punto de entrada de la aplicación: hasta ahora solo se
+    podía navegar escribiendo la dirección de cada ficha.
+    """
+    equipos = Equipo.objects.prefetch_related('tipos', 'evaluaciones__respuestas')
+    lineas = Linea.objects.prefetch_related(
+        Prefetch('equipos', queryset=equipos),
+    )
+    return render(request, 'evaluaciones/inicio.html', {
+        'lineas': lineas,
+        'sin_linea': equipos.filter(linea__isnull=True),
+        'total': equipos.count(),
+    })
 
 
 def equipo_alta(request):

@@ -1,0 +1,29 @@
+{% extends "evaluaciones/base.html" %}
+
+{% block titulo %}Equipos{% endblock %}
+{% block encabezado %}Equipos por línea de producción{% endblock %}
+
+{% block contenido %}
+    {% if total %}
+        {% for linea in lineas %}
+            <h2 class="h6 mt-4">
+                {{ linea.nombre }}
+                {% if linea.ubicacion %}
+                    <span class="fw-normal text-secondary">· {{ linea.ubicacion }}</span>
+                {% endif %}
+            </h2>
+            {% include "evaluaciones/_tabla_equipos.html" with equipos=linea.equipos.all %}
+        {% endfor %}
+
+        {% if sin_linea %}
+            <h2 class="h6 mt-4">Sin línea asignada</h2>
+            {% include "evaluaciones/_tabla_equipos.html" with equipos=sin_linea %}
+        {% endif %}
+    {% else %}
+        <div class="alert alert-info">
+            No hay ningún equipo todavía.
+            <a href="{% url 'evaluaciones:equipo_importar' %}">Importe un fichero</a>
+            o <a href="{% url 'evaluaciones:equipo_alta' %}">dé de alta uno</a>.
+        </div>
+    {% endif %}
+{% endblock %}

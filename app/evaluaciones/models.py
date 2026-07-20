@@ -70,6 +70,17 @@ class Equipo(models.Model):
     def __str__(self):
         return self.nombre
 
+    @property
+    def ultima_evaluacion(self):
+        """La evaluación más reciente, o None si nunca se ha evaluado.
+
+        Se recorre la lista completa en lugar de pedir first() para
+        aprovechar el prefetch de los listados: first() añadiría un LIMIT y
+        volvería a consultar la base de datos por cada equipo.
+        """
+        evaluaciones = list(self.evaluaciones.all())
+        return evaluaciones[0] if evaluaciones else None
+
     def grupos_aplicables(self):
         """Grupos de criterios que corresponden a este equipo (RF-04).
 
