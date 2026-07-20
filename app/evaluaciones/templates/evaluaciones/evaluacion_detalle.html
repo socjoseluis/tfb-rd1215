@@ -4,6 +4,15 @@
 {% block encabezado %}Evaluación de {{ evaluacion.equipo.nombre }}{% endblock %}
 
 {% block contenido %}
+    {% if evaluacion.en_revision %}
+        <div class="alert alert-warning">
+            <strong>Esta evaluación está pendiente de revisión.</strong>
+            Se han añadido tipos al equipo después de realizarla, de modo que
+            hay criterios del Anexo I.2 que no llegaron a comprobarse.
+            <a href="{% url 'evaluaciones:evaluacion_nueva' pk=evaluacion.equipo.pk %}">Evaluar de nuevo</a>
+        </div>
+    {% endif %}
+
     <div class="card mb-4">
         <div class="card-body">
             <dl class="row mb-0">

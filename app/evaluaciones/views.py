@@ -32,7 +32,13 @@ def equipo_detalle(request, pk):
     pública.
     """
     equipo = get_object_or_404(Equipo, pk=pk)
-    return render(request, 'evaluaciones/equipo_detalle.html', {'equipo': equipo})
+    # El dictamen recorre las respuestas de cada evaluación: sin prefetch
+    # sería una consulta por evaluación listada.
+    evaluaciones = equipo.evaluaciones.prefetch_related('respuestas')
+    return render(request, 'evaluaciones/equipo_detalle.html', {
+        'equipo': equipo,
+        'evaluaciones': evaluaciones,
+    })
 
 
 def equipo_importar(request):
@@ -62,9 +68,18 @@ def equipo_tipos(request, pk):
     evaluar = '1' in (request.GET.get('evaluar'), request.POST.get('evaluar'))
 
     if request.method == 'POST':
+        tipos_antes = set(equipo.tipos.values_list('pk', flat=True))
         form = EquipoTiposForm(request.POST, instance=equipo)
         if form.is_valid():
             form.save()
+            # Añadir un tipo hace aplicables criterios del Anexo I.2 que las
+            # evaluaciones anteriores nunca llegaron a comprobar: quedan
+            # incompletas y se marcan para revisión, el mismo mecanismo que
+            # RF-07 usa al registrar una incidencia. Quitar un tipo no las
+            # invalida, solo deja respuestas que ya no aplican.
+            tipos_despues = set(equipo.tipos.values_list('pk', flat=True))
+            if tipos_despues - tipos_antes:
+                equipo.evaluaciones.update(en_revision=True)
             if evaluar:
                 return redirect('evaluaciones:evaluacion_nueva', pk=equipo.pk)
             return redirect('evaluaciones:equipo_detalle', pk=equipo.pk)
