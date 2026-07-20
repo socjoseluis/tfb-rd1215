@@ -1,0 +1,50 @@
+flowchart TB
+    subgraph cliente["Cliente"]
+        navegador["Navegador<br/>escritorio o móvil"]
+    end
+
+    subgraph aplicacion["Capa de lógica de aplicación"]
+        enrutado["urls.py<br/>enrutado"]
+        vistas["views.py<br/>8 vistas"]
+        formularios["forms.py<br/>formularios y formset"]
+        importador["importador.py<br/>openpyxl · csv"]
+        admin["Admin de Django<br/>trastienda"]
+    end
+
+    subgraph presentacion["Capa de presentación"]
+        plantillas["Plantillas Django<br/>base.html + 8 páginas"]
+        bootstrap["Bootstrap 5.3.3<br/>servido en local"]
+    end
+
+    subgraph dominio["Capa de dominio"]
+        modelos["models.py<br/>7 modelos y reglas<br/>del Anexo I.2"]
+        criterios["criterios_rd1215.json<br/>11 grupos · 33 criterios"]
+    end
+
+    subgraph persistencia["Capa de persistencia"]
+        orm["ORM de Django"]
+        sqlite[("SQLite")]
+    end
+
+    subgraph configuracion["Configuración"]
+        config["config<br/>settings · python-decouple"]
+    end
+
+    navegador -- "HTTP" --> enrutado
+
+    enrutado --> vistas
+    vistas --> formularios
+    vistas --> importador
+    vistas --> plantillas
+    vistas --> modelos
+    formularios --> modelos
+    importador --> modelos
+    admin --> modelos
+    plantillas --> bootstrap
+
+    modelos --> orm
+    criterios -- "loaddata" --> orm
+    orm --> sqlite
+
+    config -.-> vistas
+    config -.-> orm

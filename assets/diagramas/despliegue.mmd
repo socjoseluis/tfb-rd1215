@@ -1,0 +1,17 @@
+flowchart TB
+    subgraph cliente["Dispositivo cliente"]
+        navegador["Navegador web<br/>escritorio o móvil"]
+    end
+
+    subgraph servidor["Servidor de aplicación"]
+        django["Django 5.2.16 LTS<br/>servidor de desarrollo<br/>Python 3.12"]
+        estaticos["Ficheros estáticos<br/>Bootstrap 5.3.3"]
+    end
+
+    subgraph almacenamiento["Almacenamiento"]
+        base[("SQLite<br/>fichero local")]
+    end
+
+    navegador -- "HTTP · red local" --> django
+    navegador -- "HTTP · red local" --> estaticos
+    django -- "acceso a fichero" --> base
