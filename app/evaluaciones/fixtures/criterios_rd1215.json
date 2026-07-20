@@ -1,0 +1,421 @@
+[
+  {
+    "model": "evaluaciones.tipoequipo",
+    "pk": 1,
+    "fields": {"nombre": "Equipo móvil"}
+  },
+  {
+    "model": "evaluaciones.tipoequipo",
+    "pk": 2,
+    "fields": {"nombre": "Elevación de cargas"}
+  },
+
+  {
+    "model": "evaluaciones.grupocriterio",
+    "pk": 1,
+    "fields": {
+      "nombre": "GC-00 Documentación y marcado",
+      "fuente_normativa": "RD 1215/1997, arts. 3.1.a, 3.5 y 5.2",
+      "orden": 0,
+      "tipos_aplicables": []
+    }
+  },
+  {
+    "model": "evaluaciones.grupocriterio",
+    "pk": 2,
+    "fields": {
+      "nombre": "GC-01 Órganos de accionamiento",
+      "fuente_normativa": "RD 1215/1997, Anexo I.1.1",
+      "orden": 1,
+      "tipos_aplicables": []
+    }
+  },
+  {
+    "model": "evaluaciones.grupocriterio",
+    "pk": 3,
+    "fields": {
+      "nombre": "GC-02 Puesta en marcha y parada",
+      "fuente_normativa": "RD 1215/1997, Anexo I.1.2 y I.1.3",
+      "orden": 2,
+      "tipos_aplicables": []
+    }
+  },
+  {
+    "model": "evaluaciones.grupocriterio",
+    "pk": 4,
+    "fields": {
+      "nombre": "GC-03 Elementos móviles y resguardos",
+      "fuente_normativa": "RD 1215/1997, Anexo I.1.8",
+      "orden": 3,
+      "tipos_aplicables": []
+    }
+  },
+  {
+    "model": "evaluaciones.grupocriterio",
+    "pk": 5,
+    "fields": {
+      "nombre": "GC-04 Estabilidad, accesos y caídas",
+      "fuente_normativa": "RD 1215/1997, Anexo I.1.6",
+      "orden": 4,
+      "tipos_aplicables": []
+    }
+  },
+  {
+    "model": "evaluaciones.grupocriterio",
+    "pk": 6,
+    "fields": {
+      "nombre": "GC-05 Riesgos específicos del equipo",
+      "fuente_normativa": "RD 1215/1997, Anexo I.1.4, 5, 7, 10, 14, 15, 17 y 18",
+      "orden": 5,
+      "tipos_aplicables": []
+    }
+  },
+  {
+    "model": "evaluaciones.grupocriterio",
+    "pk": 7,
+    "fields": {
+      "nombre": "GC-06 Energías y riesgo eléctrico",
+      "fuente_normativa": "RD 1215/1997, Anexo I.1.12 y I.1.16",
+      "orden": 6,
+      "tipos_aplicables": []
+    }
+  },
+  {
+    "model": "evaluaciones.grupocriterio",
+    "pk": 8,
+    "fields": {
+      "nombre": "GC-07 Señalización, alarmas e iluminación",
+      "fuente_normativa": "RD 1215/1997, Anexo I.1.9, 11 y 13",
+      "orden": 7,
+      "tipos_aplicables": []
+    }
+  },
+  {
+    "model": "evaluaciones.grupocriterio",
+    "pk": 9,
+    "fields": {
+      "nombre": "GC-08 Herramientas manuales",
+      "fuente_normativa": "RD 1215/1997, Anexo I.1.19",
+      "orden": 8,
+      "tipos_aplicables": []
+    }
+  },
+  {
+    "model": "evaluaciones.grupocriterio",
+    "pk": 10,
+    "fields": {
+      "nombre": "GC-09 Equipos de trabajo móviles",
+      "fuente_normativa": "RD 1215/1997, Anexo I.2.1",
+      "orden": 9,
+      "tipos_aplicables": [1]
+    }
+  },
+  {
+    "model": "evaluaciones.grupocriterio",
+    "pk": 11,
+    "fields": {
+      "nombre": "GC-10 Elevación de cargas",
+      "fuente_normativa": "RD 1215/1997, Anexo I.2.2",
+      "orden": 10,
+      "tipos_aplicables": [2]
+    }
+  },
+
+  {
+    "model": "evaluaciones.criterio",
+    "pk": 1,
+    "fields": {
+      "grupo": 1,
+      "enunciado": "¿El equipo satisface las disposiciones legales y reglamentarias que le son de aplicación (marcado CE conforme a la normativa de comercialización)?",
+      "orden": 1
+    }
+  },
+  {
+    "model": "evaluaciones.criterio",
+    "pk": 2,
+    "fields": {
+      "grupo": 1,
+      "enunciado": "¿El mantenimiento se realiza teniendo en cuenta las instrucciones del fabricante?",
+      "orden": 2
+    }
+  },
+  {
+    "model": "evaluaciones.criterio",
+    "pk": 3,
+    "fields": {
+      "grupo": 1,
+      "enunciado": "¿La documentación informativa facilitada por el fabricante está a disposición de los trabajadores?",
+      "orden": 3
+    }
+  },
+  {
+    "model": "evaluaciones.criterio",
+    "pk": 4,
+    "fields": {
+      "grupo": 2,
+      "enunciado": "¿Los órganos de accionamiento son visibles, identificables y están señalizados, situados fuera de las zonas peligrosas y sin riesgo por manipulación involuntaria?",
+      "orden": 1
+    }
+  },
+  {
+    "model": "evaluaciones.criterio",
+    "pk": 5,
+    "fields": {
+      "grupo": 3,
+      "enunciado": "¿La puesta en marcha se produce únicamente mediante una acción voluntaria sobre el órgano previsto al efecto?",
+      "orden": 1
+    }
+  },
+  {
+    "model": "evaluaciones.criterio",
+    "pk": 6,
+    "fields": {
+      "grupo": 3,
+      "enunciado": "¿Dispone de órgano de parada total, de parada por puesto de trabajo, de prioridad de la orden de parada y de parada de emergencia cuando procede?",
+      "orden": 2
+    }
+  },
+  {
+    "model": "evaluaciones.criterio",
+    "pk": 7,
+    "fields": {
+      "grupo": 4,
+      "enunciado": "¿Los elementos móviles cuentan con resguardos o dispositivos de protección adecuados?",
+      "orden": 1
+    }
+  },
+  {
+    "model": "evaluaciones.criterio",
+    "pk": 8,
+    "fields": {
+      "grupo": 5,
+      "enunciado": "¿El equipo es estable y el acceso o la permanencia sobre él están protegidos frente al riesgo de caída de altura?",
+      "orden": 1
+    }
+  },
+  {
+    "model": "evaluaciones.criterio",
+    "pk": 9,
+    "fields": {
+      "grupo": 6,
+      "enunciado": "¿Está protegido el riesgo de caída de objetos o de proyecciones?",
+      "orden": 1
+    }
+  },
+  {
+    "model": "evaluaciones.criterio",
+    "pk": 10,
+    "fields": {
+      "grupo": 6,
+      "enunciado": "¿Se controla la emanación de gases, vapores o líquidos y la emisión de polvo?",
+      "orden": 2
+    }
+  },
+  {
+    "model": "evaluaciones.criterio",
+    "pk": 11,
+    "fields": {
+      "grupo": 6,
+      "enunciado": "¿Está protegido el riesgo de estallido o de rotura de elementos del equipo?",
+      "orden": 3
+    }
+  },
+  {
+    "model": "evaluaciones.criterio",
+    "pk": 12,
+    "fields": {
+      "grupo": 6,
+      "enunciado": "¿Están protegidas las partes del equipo que se encuentran a temperaturas elevadas o muy bajas?",
+      "orden": 4
+    }
+  },
+  {
+    "model": "evaluaciones.criterio",
+    "pk": 13,
+    "fields": {
+      "grupo": 6,
+      "enunciado": "¿El equipo está protegido frente al riesgo de incendio o de calentamiento?",
+      "orden": 5
+    }
+  },
+  {
+    "model": "evaluaciones.criterio",
+    "pk": 14,
+    "fields": {
+      "grupo": 6,
+      "enunciado": "¿Se previene el riesgo de explosión del equipo o de las sustancias que utiliza?",
+      "orden": 6
+    }
+  },
+  {
+    "model": "evaluaciones.criterio",
+    "pk": 15,
+    "fields": {
+      "grupo": 6,
+      "enunciado": "¿Están controlados los riesgos por ruido, vibraciones o radiaciones?",
+      "orden": 7
+    }
+  },
+  {
+    "model": "evaluaciones.criterio",
+    "pk": 16,
+    "fields": {
+      "grupo": 6,
+      "enunciado": "¿Es seguro el almacenamiento, trasiego o tratamiento de líquidos corrosivos o a alta temperatura?",
+      "orden": 8
+    }
+  },
+  {
+    "model": "evaluaciones.criterio",
+    "pk": 17,
+    "fields": {
+      "grupo": 7,
+      "enunciado": "¿Dispone de dispositivos claramente identificables que permitan separarlo de cada una de sus fuentes de energía?",
+      "orden": 1
+    }
+  },
+  {
+    "model": "evaluaciones.criterio",
+    "pk": 18,
+    "fields": {
+      "grupo": 7,
+      "enunciado": "¿Está protegido frente a los contactos eléctricos directos e indirectos?",
+      "orden": 2
+    }
+  },
+  {
+    "model": "evaluaciones.criterio",
+    "pk": 19,
+    "fields": {
+      "grupo": 8,
+      "enunciado": "¿Las zonas y puntos de trabajo o de mantenimiento están adecuadamente iluminados?",
+      "orden": 1
+    }
+  },
+  {
+    "model": "evaluaciones.criterio",
+    "pk": 20,
+    "fields": {
+      "grupo": 8,
+      "enunciado": "¿Los dispositivos de alarma del equipo son perceptibles y comprensibles?",
+      "orden": 2
+    }
+  },
+  {
+    "model": "evaluaciones.criterio",
+    "pk": 21,
+    "fields": {
+      "grupo": 8,
+      "enunciado": "¿Lleva las advertencias y señalizaciones indispensables para garantizar la seguridad de los trabajadores?",
+      "orden": 3
+    }
+  },
+  {
+    "model": "evaluaciones.criterio",
+    "pk": 22,
+    "fields": {
+      "grupo": 9,
+      "enunciado": "¿Las herramientas manuales asociadas al equipo reúnen las condiciones de seguridad exigidas para su uso?",
+      "orden": 1
+    }
+  },
+  {
+    "model": "evaluaciones.criterio",
+    "pk": 23,
+    "fields": {
+      "grupo": 10,
+      "enunciado": "Si transporta trabajadores, ¿se limitan los riesgos por contacto o aprisionamiento con las ruedas u orugas durante el desplazamiento?",
+      "orden": 1
+    }
+  },
+  {
+    "model": "evaluaciones.criterio",
+    "pk": 24,
+    "fields": {
+      "grupo": 10,
+      "enunciado": "¿Se evita el bloqueo imprevisto de los elementos de transmisión de energía entre el equipo y sus accesorios o remolques?",
+      "orden": 2
+    }
+  },
+  {
+    "model": "evaluaciones.criterio",
+    "pk": 25,
+    "fields": {
+      "grupo": 10,
+      "enunciado": "¿Existen medios de fijación de los elementos de transmisión de energía que eviten su atasco o su deterioro por arrastre?",
+      "orden": 3
+    }
+  },
+  {
+    "model": "evaluaciones.criterio",
+    "pk": 26,
+    "fields": {
+      "grupo": 10,
+      "enunciado": "¿Cuenta con estructura de protección frente a inclinación o vuelco y con sistema de retención del trabajador transportado?",
+      "orden": 4
+    }
+  },
+  {
+    "model": "evaluaciones.criterio",
+    "pk": 27,
+    "fields": {
+      "grupo": 10,
+      "enunciado": "Si es una carretilla elevadora ocupada, ¿está acondicionada frente al riesgo de vuelco?",
+      "orden": 5
+    }
+  },
+  {
+    "model": "evaluaciones.criterio",
+    "pk": 28,
+    "fields": {
+      "grupo": 10,
+      "enunciado": "Si es automotor, ¿controla la puesta en marcha no autorizada, el frenado y la parada, la visibilidad, la iluminación, el riesgo de incendio y el manejo a distancia?",
+      "orden": 6
+    }
+  },
+  {
+    "model": "evaluaciones.criterio",
+    "pk": 29,
+    "fields": {
+      "grupo": 10,
+      "enunciado": "¿Dispone de señalización acústica de advertencia si su movilidad o su carga suponen un riesgo para el personal próximo?",
+      "orden": 7
+    }
+  },
+  {
+    "model": "evaluaciones.criterio",
+    "pk": 30,
+    "fields": {
+      "grupo": 11,
+      "enunciado": "¿Es sólido y estable durante el empleo, atendiendo a las cargas y a las tensiones en los puntos de suspensión o de fijación?",
+      "orden": 1
+    }
+  },
+  {
+    "model": "evaluaciones.criterio",
+    "pk": 31,
+    "fields": {
+      "grupo": 11,
+      "enunciado": "¿Lleva indicada de forma visible la carga nominal, la placa de carga por configuración y el marcado de los accesorios de elevación?",
+      "orden": 2
+    }
+  },
+  {
+    "model": "evaluaciones.criterio",
+    "pk": 32,
+    "fields": {
+      "grupo": 11,
+      "enunciado": "Si está instalado de forma permanente, ¿se evita que la carga caiga, se suelte o se desvíe y golpee a los trabajadores?",
+      "orden": 3
+    }
+  },
+  {
+    "model": "evaluaciones.criterio",
+    "pk": 33,
+    "fields": {
+      "grupo": 11,
+      "enunciado": "Si eleva o desplaza trabajadores, ¿se evita la caída del habitáculo, la caída fuera de él y el aplastamiento, y se garantiza la liberación en caso de bloqueo?",
+      "orden": 4
+    }
+  }
+]
