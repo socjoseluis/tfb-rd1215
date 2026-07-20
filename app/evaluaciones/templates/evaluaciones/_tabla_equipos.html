@@ -29,18 +29,24 @@ como para los que no tienen línea asignada. Espera una variable «equipos».
             </td>
             <td>
                 {% with ev=equipo.ultima_evaluacion %}
-                    {% if ev %}
-                        {% if ev.dictamen == "Conforme" %}
-                            <span class="badge text-bg-success">{{ ev.dictamen }}</span>
-                        {% else %}
-                            <span class="badge text-bg-danger">{{ ev.dictamen }}</span>
-                        {% endif %}
-                        <span class="text-secondary small">{{ ev.fecha|date:"d/m/Y" }}</span>
-                        {% if ev.en_revision %}
-                            <span class="badge text-bg-warning">revisar</span>
-                        {% endif %}
-                    {% else %}
+                    {% if not ev %}
                         <span class="text-secondary">sin evaluar</span>
+                    {% elif ev.en_revision %}
+                        {% comment %}
+                        El dictamen no se pinta en verde cuando la evaluación
+                        está desfasada: quedaron criterios sin comprobar y un
+                        «conforme» en verde daría una seguridad que no existe.
+                        {% endcomment %}
+                        <span class="badge text-bg-warning">Desfasada</span>
+                        <span class="text-secondary small">
+                            último dictamen: {{ ev.dictamen|lower }} · {{ ev.fecha|date:"d/m/Y" }}
+                        </span>
+                    {% elif ev.dictamen == "Conforme" %}
+                        <span class="badge text-bg-success">{{ ev.dictamen }}</span>
+                        <span class="text-secondary small">{{ ev.fecha|date:"d/m/Y" }}</span>
+                    {% else %}
+                        <span class="badge text-bg-danger">{{ ev.dictamen }}</span>
+                        <span class="text-secondary small">{{ ev.fecha|date:"d/m/Y" }}</span>
                     {% endif %}
                 {% endwith %}
             </td>

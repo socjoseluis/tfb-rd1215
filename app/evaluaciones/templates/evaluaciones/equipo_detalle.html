@@ -56,7 +56,9 @@
                         </a>
                     </td>
                     <td>
-                        {% if evaluacion.dictamen == "Conforme" %}
+                        {% if evaluacion.en_revision %}
+                            <span class="text-secondary">{{ evaluacion.dictamen }}</span>
+                        {% elif evaluacion.dictamen == "Conforme" %}
                             <span class="badge text-bg-success">{{ evaluacion.dictamen }}</span>
                         {% else %}
                             <span class="badge text-bg-danger">{{ evaluacion.dictamen }}</span>
@@ -64,9 +66,9 @@
                     </td>
                     <td>
                         {% if evaluacion.en_revision %}
-                            <span class="badge text-bg-warning">Pendiente de revisión</span>
+                            <span class="badge text-bg-warning">Desfasada</span>
                         {% else %}
-                            —
+                            <span class="text-secondary">vigente</span>
                         {% endif %}
                     </td>
                 </tr>
