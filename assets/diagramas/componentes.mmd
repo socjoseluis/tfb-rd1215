@@ -1,3 +1,14 @@
+%%{init: {'themeCSS': '#my-svg-dominio .cluster-label { translate: -290px 64px !important; }'}}%%
+%% El título del subgraph "dominio" se reubica en el margen izquierdo de la
+%% caja, centrado verticalmente, a la izquierda del nodo models.py (zona vacía).
+%% Así ninguna flecha lo cruza: las de views/forms entran a models por arriba y
+%% el título queda por debajo; en el borde superior (posición por defecto) lo
+%% cruzaban importador/admin -> models. Se usa la propiedad CSS "translate" (no
+%% "transform") porque se compone con la posición original: X=-290 lo lleva al
+%% margen izquierdo, Y=+64 lo baja al centro vertical de la caja.
+%% AVISO: el id "my-svg-dominio" y los desplazamientos dependen del layout
+%% actual. Si se cambia el diagrama y se regenera, comprobar que el título sigue
+%% encajado en el margen y reajustar los valores si hiciera falta.
 flowchart TB
     subgraph cliente["Cliente"]
         navegador["Navegador<br/>escritorio o móvil"]
