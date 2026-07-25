@@ -1,0 +1,33 @@
+@startuml despliegue
+' Diagrama de DESPLIEGUE en notación UML (PlantUML).
+' Transcripción de assets/diagramas/despliegue.mmd: mismos nodos y mismas
+' comunicaciones definidas por el autor; solo cambia la notación. Los grupos
+' pasan a ser nodos UML con su estereotipo.
+' Trazado con Graphviz (dot). Sin Graphviz, descomentar para el motor interno.
+' !pragma layout smetana
+
+skinparam backgroundColor transparent
+skinparam shadowing false
+skinparam defaultFontSize 13
+skinparam ArrowColor #333333
+skinparam NodeBackgroundColor #FDFDFD
+skinparam NodeBorderColor #555555
+
+node "Dispositivo cliente" <<device>> as cliente {
+  [Navegador web\nescritorio o móvil] as navegador
+}
+
+node "Servidor de aplicación" <<device>> as servidor {
+  node "Django 5.2.16 LTS\nservidor de desarrollo\nPython 3.12" <<execution environment>> as django
+  artifact "Ficheros estáticos\nBootstrap 5.3.3" as estaticos
+}
+
+node "Almacenamiento" as almacenamiento {
+  database "SQLite\nfichero local" as base
+}
+
+navegador --> django : HTTP · red local
+navegador --> estaticos : HTTP · red local
+django --> base : acceso a fichero
+
+@enduml
