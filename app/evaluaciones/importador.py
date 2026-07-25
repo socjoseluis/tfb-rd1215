@@ -1,7 +1,9 @@
 import csv
 import io
+import zipfile
 
 import openpyxl
+from openpyxl.utils.exceptions import InvalidFileException
 
 from .models import Equipo, Linea
 
@@ -9,13 +11,16 @@ COLUMNAS = ['codigo', 'nombre', 'marca_modelo', 'num_serie', 'anio', 'linea']
 
 
 def _leer_filas_xlsx(archivo):
+    """Devuelve una lista de (num_fila, dict). No es un generador a propósito:
+    así el fichero se abre y se valida en la llamada, antes de que
+    importar_equipos empiece a escribir en la base de datos."""
     wb = openpyxl.load_workbook(archivo, read_only=True, data_only=True)
     hoja = wb.active
-    filas = hoja.iter_rows(values_only=True)
+    filas_hoja = hoja.iter_rows(values_only=True)
     try:
-        cabecera = next(filas)
+        cabecera = next(filas_hoja)
     except StopIteration:
-        return
+        return []
     indices = {}
     for i, nombre_col in enumerate(cabecera):
         if nombre_col is None:
@@ -23,7 +28,8 @@ def _leer_filas_xlsx(archivo):
         clave = str(nombre_col).strip().lower()
         if clave in COLUMNAS:
             indices[clave] = i
-    for num_fila, valores in enumerate(filas, start=2):
+    filas = []
+    for num_fila, valores in enumerate(filas_hoja, start=2):
         fila = {}
         for clave, idx in indices.items():
             valor = valores[idx] if idx < len(valores) else None
@@ -31,10 +37,13 @@ def _leer_filas_xlsx(archivo):
                 valor = int(valor)
             fila[clave] = '' if valor is None else str(valor).strip()
         if any(fila.values()):
-            yield num_fila, fila
+            filas.append((num_fila, fila))
+    return filas
 
 
 def _leer_filas_csv(archivo):
+    """Devuelve una lista de (num_fila, dict), por el mismo motivo que
+    _leer_filas_xlsx: la decodificación debe fallar antes de escribir nada."""
     contenido = archivo.read()
     if isinstance(contenido, bytes):
         contenido = contenido.decode('utf-8-sig')
@@ -42,19 +51,31 @@ def _leer_filas_csv(archivo):
     try:
         cabecera = next(lector)
     except StopIteration:
-        return
+        return []
     indices = {}
     for i, nombre_col in enumerate(cabecera):
         clave = (nombre_col or '').strip().lower()
         if clave in COLUMNAS:
             indices[clave] = i
+    filas = []
     for num_fila, valores in enumerate(lector, start=2):
         fila = {}
         for clave, idx in indices.items():
             valor = valores[idx] if idx < len(valores) else ''
             fila[clave] = (valor or '').strip()
         if any(fila.values()):
-            yield num_fila, fila
+            filas.append((num_fila, fila))
+    return filas
+
+
+def _error_fichero(mensaje):
+    """Resultado de una importación que no ha podido ni empezar."""
+    return {
+        'importados': 0,
+        'lineas_nuevas': [],
+        'rechazadas': [],
+        'error_fichero': mensaje,
+    }
 
 
 def importar_equipos(archivo, nombre_archivo):
@@ -63,16 +84,29 @@ def importar_equipos(archivo, nombre_archivo):
     reportan, sin abortar la importación de las restantes."""
     nombre_archivo = (nombre_archivo or '').lower()
     if nombre_archivo.endswith('.xlsx'):
-        filas = _leer_filas_xlsx(archivo)
+        try:
+            filas = _leer_filas_xlsx(archivo)
+        except (zipfile.BadZipFile, InvalidFileException):
+            return _error_fichero(
+                'No se ha podido abrir el fichero .xlsx: está dañado o no es un '
+                'libro de Excel válido.'
+            )
     elif nombre_archivo.endswith('.csv'):
-        filas = _leer_filas_csv(archivo)
+        try:
+            filas = _leer_filas_csv(archivo)
+        except UnicodeDecodeError:
+            return _error_fichero(
+                'No se ha podido leer el fichero .csv: debe estar codificado en '
+                'UTF-8. Si lo has exportado desde Excel, vuelve a guardarlo como '
+                '«CSV UTF-8 (delimitado por comas)».'
+            )
+        except csv.Error:
+            return _error_fichero(
+                'No se ha podido interpretar el fichero .csv: revisa que las '
+                'columnas estén separadas por comas.'
+            )
     else:
-        return {
-            'importados': 0,
-            'lineas_nuevas': [],
-            'rechazadas': [],
-            'error_fichero': 'Formato de fichero no soportado. Usa .xlsx o .csv.',
-        }
+        return _error_fichero('Formato de fichero no soportado. Usa .xlsx o .csv.')
 
     importados = 0
     lineas_nuevas = []
