@@ -15,9 +15,24 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.contrib.auth import views as auth_views
 from django.urls import include, path
+
+from evaluaciones.forms import AutenticacionForm
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # Las dos vistas se declaran una a una en vez de incluir
+    # django.contrib.auth.urls entero: ese include trae además el flujo de
+    # recuperación de contraseña, y no hay servidor de correo que lo sirva.
+    path(
+        'cuentas/entrar/',
+        auth_views.LoginView.as_view(
+            template_name='evaluaciones/login.html',
+            authentication_form=AutenticacionForm,
+        ),
+        name='login',
+    ),
+    path('cuentas/salir/', auth_views.LogoutView.as_view(), name='logout'),
     path('', include('evaluaciones.urls')),
 ]

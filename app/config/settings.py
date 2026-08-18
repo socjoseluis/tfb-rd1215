@@ -60,6 +60,12 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    # Exige sesión en toda la aplicación en vez de decorar vista por vista:
+    # así una vista nueva nace protegida y las excepciones, como la consulta
+    # anónima del RF-09, se marcan con @login_not_required a la vista de
+    # quien lea el código. Va después de AuthenticationMiddleware, que es
+    # quien deja el request.user que este consulta.
+    'django.contrib.auth.middleware.LoginRequiredMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -112,6 +118,20 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
+
+# Entrada y salida de la aplicación
+
+# Destino al que el middleware desvía a quien no tiene sesión. Se indica por
+# nombre de ruta y no por dirección escrita a mano: por defecto valdría
+# /accounts/login/, que en este proyecto no existe.
+LOGIN_URL = 'login'
+
+# Dónde se aterriza al entrar cuando no se venía desviado de otra página.
+LOGIN_REDIRECT_URL = 'evaluaciones:inicio'
+
+# Al salir se vuelve a la entrada: llevar a la portada sería rebotar de nuevo
+# hasta aquí, porque también exige sesión.
+LOGOUT_REDIRECT_URL = 'login'
 
 
 # Internationalization

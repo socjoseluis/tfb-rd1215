@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth.forms import AuthenticationForm
 
 from .models import Equipo
 
@@ -54,3 +55,17 @@ class EquipoTiposForm(forms.ModelForm):
             equipo.save()
             self.save_m2m()
         return equipo
+
+
+class AutenticacionForm(AuthenticationForm):
+    """Formulario de entrada a la aplicación.
+
+    La comprobación de las credenciales se hereda entera de Django; lo único
+    que se añade son las clases que Bootstrap exige en cada control, igual
+    que en EquipoForm.
+    """
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for campo in self.fields.values():
+            campo.widget.attrs['class'] = 'form-control'

@@ -32,17 +32,31 @@
     <nav class="navbar navbar-expand navbar-dark bg-dark">
         <div class="container">
             <a class="navbar-brand" href="{% url 'evaluaciones:inicio' %}">Equipos · RD 1215/1997</a>
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'evaluaciones:inicio' %}">Equipos</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'evaluaciones:equipo_alta' %}">Alta</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'evaluaciones:equipo_importar' %}">Importar</a>
-                </li>
-            </ul>
+            {# Sin sesión el menú no se muestra: sus destinos exigen
+               autenticación y solo llevarían de vuelta a la entrada. #}
+            {% if user.is_authenticated %}
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'evaluaciones:inicio' %}">Equipos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'evaluaciones:equipo_alta' %}">Alta</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'evaluaciones:equipo_importar' %}">Importar</a>
+                    </li>
+                </ul>
+                <div class="d-flex align-items-center gap-2">
+                    <span class="navbar-text">{{ user.get_username }}</span>
+                    {# Salir va por POST: LogoutView no acepta GET, para que
+                       nadie cierre la sesión ajena colando un enlace o una
+                       imagen a esta dirección. #}
+                    <form method="post" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-outline-light">Salir</button>
+                    </form>
+                </div>
+            {% endif %}
         </div>
     </nav>
 

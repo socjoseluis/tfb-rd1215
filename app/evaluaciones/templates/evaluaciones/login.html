@@ -1,0 +1,22 @@
+{% extends "evaluaciones/base.html" %}
+
+{% block titulo %}Entrar{% endblock %}
+{% block encabezado %}Entrar{% endblock %}
+
+{% block contenido %}
+    <div class="card">
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                {# El aviso de credenciales incorrectas sale de aquí dentro:
+                   no es error de ningún campo, para no revelar cuál se
+                   acertó. #}
+                {{ form.as_p }}
+                {# Guarda la página a la que se iba, para volver a ella al
+                   abrir la sesión. #}
+                <input type="hidden" name="next" value="{{ next }}">
+                <button type="submit" class="btn btn-primary">Entrar</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}
