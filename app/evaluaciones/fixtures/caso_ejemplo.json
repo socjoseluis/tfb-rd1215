@@ -1,0 +1,1838 @@
+[
+{
+  "model": "evaluaciones.linea",
+  "pk": 4,
+  "fields": {
+    "nombre": "Línea 1",
+    "ubicacion": ""
+  }
+},
+{
+  "model": "evaluaciones.linea",
+  "pk": 5,
+  "fields": {
+    "nombre": "Línea 2",
+    "ubicacion": ""
+  }
+},
+{
+  "model": "evaluaciones.linea",
+  "pk": 6,
+  "fields": {
+    "nombre": "Línea 3",
+    "ubicacion": ""
+  }
+},
+{
+  "model": "evaluaciones.equipo",
+  "pk": 10,
+  "fields": {
+    "codigo": "EQ-001",
+    "linea": 4,
+    "nombre": "Prensa hidráulica",
+    "marca_modelo": "ACME P200",
+    "num_serie": "SN-1001",
+    "anio": 2015,
+    "tipos_confirmados": true,
+    "tipos": []
+  }
+},
+{
+  "model": "evaluaciones.equipo",
+  "pk": 11,
+  "fields": {
+    "codigo": "EQ-002",
+    "linea": 4,
+    "nombre": "Cizalla",
+    "marca_modelo": "ACME C50",
+    "num_serie": "SN-1002",
+    "anio": 2018,
+    "tipos_confirmados": true,
+    "tipos": []
+  }
+},
+{
+  "model": "evaluaciones.equipo",
+  "pk": 12,
+  "fields": {
+    "codigo": "EQ-003",
+    "linea": 5,
+    "nombre": "Taladro de columna",
+    "marca_modelo": "Bosch TC10",
+    "num_serie": "SN-1003",
+    "anio": 2020,
+    "tipos_confirmados": true,
+    "tipos": []
+  }
+},
+{
+  "model": "evaluaciones.equipo",
+  "pk": 13,
+  "fields": {
+    "codigo": "EQ-004",
+    "linea": null,
+    "nombre": "Compresor",
+    "marca_modelo": "",
+    "num_serie": "",
+    "anio": null,
+    "tipos_confirmados": true,
+    "tipos": []
+  }
+},
+{
+  "model": "evaluaciones.equipo",
+  "pk": 14,
+  "fields": {
+    "codigo": "EQ-005",
+    "linea": 5,
+    "nombre": "Sierra de cinta",
+    "marca_modelo": "Makita SC30",
+    "num_serie": "SN-1005",
+    "anio": 2019,
+    "tipos_confirmados": false,
+    "tipos": []
+  }
+},
+{
+  "model": "evaluaciones.equipo",
+  "pk": 15,
+  "fields": {
+    "codigo": "EQ-006",
+    "linea": 6,
+    "nombre": "Soldadora",
+    "marca_modelo": "Lincoln SW100",
+    "num_serie": "SN-1006",
+    "anio": 2021,
+    "tipos_confirmados": false,
+    "tipos": []
+  }
+},
+{
+  "model": "evaluaciones.equipo",
+  "pk": 16,
+  "fields": {
+    "codigo": "EQ-007",
+    "linea": null,
+    "nombre": "Puente grúa",
+    "marca_modelo": "ACME PG50",
+    "num_serie": "SN-1007",
+    "anio": 2016,
+    "tipos_confirmados": true,
+    "tipos": [
+      1,
+      2
+    ]
+  }
+},
+{
+  "model": "evaluaciones.equipo",
+  "pk": 17,
+  "fields": {
+    "codigo": "EQ-008",
+    "linea": null,
+    "nombre": "Carretilla elevadora",
+    "marca_modelo": "ACME CE25",
+    "num_serie": "SN-1008",
+    "anio": 2022,
+    "tipos_confirmados": true,
+    "tipos": [
+      1,
+      2
+    ]
+  }
+},
+{
+  "model": "evaluaciones.equipo",
+  "pk": 18,
+  "fields": {
+    "codigo": "EQ-009",
+    "linea": null,
+    "nombre": "Llave dinamométrica",
+    "marca_modelo": "Stahlwille 730",
+    "num_serie": "SN-1009",
+    "anio": 2023,
+    "tipos_confirmados": true,
+    "tipos": []
+  }
+},
+{
+  "model": "evaluaciones.evaluacion",
+  "pk": 5,
+  "fields": {
+    "equipo": 17,
+    "fecha": "2026-07-20T16:25:13.164Z",
+    "en_revision": false
+  }
+},
+{
+  "model": "evaluaciones.evaluacion",
+  "pk": 6,
+  "fields": {
+    "equipo": 10,
+    "fecha": "2026-07-20T16:27:25.781Z",
+    "en_revision": false
+  }
+},
+{
+  "model": "evaluaciones.evaluacion",
+  "pk": 7,
+  "fields": {
+    "equipo": 16,
+    "fecha": "2026-07-20T16:32:18.322Z",
+    "en_revision": true
+  }
+},
+{
+  "model": "evaluaciones.evaluacion",
+  "pk": 8,
+  "fields": {
+    "equipo": 16,
+    "fecha": "2026-07-20T16:35:19.738Z",
+    "en_revision": false
+  }
+},
+{
+  "model": "evaluaciones.evaluacion",
+  "pk": 10,
+  "fields": {
+    "equipo": 11,
+    "fecha": "2026-08-18T18:58:46.076Z",
+    "en_revision": false
+  }
+},
+{
+  "model": "evaluaciones.evaluacion",
+  "pk": 11,
+  "fields": {
+    "equipo": 12,
+    "fecha": "2026-08-18T19:00:21.682Z",
+    "en_revision": false
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 100,
+  "fields": {
+    "evaluacion": 5,
+    "criterio": 1,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 101,
+  "fields": {
+    "evaluacion": 5,
+    "criterio": 2,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 102,
+  "fields": {
+    "evaluacion": 5,
+    "criterio": 3,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 103,
+  "fields": {
+    "evaluacion": 5,
+    "criterio": 4,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 104,
+  "fields": {
+    "evaluacion": 5,
+    "criterio": 5,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 105,
+  "fields": {
+    "evaluacion": 5,
+    "criterio": 6,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 106,
+  "fields": {
+    "evaluacion": 5,
+    "criterio": 7,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 107,
+  "fields": {
+    "evaluacion": 5,
+    "criterio": 8,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 108,
+  "fields": {
+    "evaluacion": 5,
+    "criterio": 9,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 109,
+  "fields": {
+    "evaluacion": 5,
+    "criterio": 10,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 110,
+  "fields": {
+    "evaluacion": 5,
+    "criterio": 11,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 111,
+  "fields": {
+    "evaluacion": 5,
+    "criterio": 12,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 112,
+  "fields": {
+    "evaluacion": 5,
+    "criterio": 13,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 113,
+  "fields": {
+    "evaluacion": 5,
+    "criterio": 14,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 114,
+  "fields": {
+    "evaluacion": 5,
+    "criterio": 15,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 115,
+  "fields": {
+    "evaluacion": 5,
+    "criterio": 16,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 116,
+  "fields": {
+    "evaluacion": 5,
+    "criterio": 17,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 117,
+  "fields": {
+    "evaluacion": 5,
+    "criterio": 18,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 118,
+  "fields": {
+    "evaluacion": 5,
+    "criterio": 19,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 119,
+  "fields": {
+    "evaluacion": 5,
+    "criterio": 20,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 120,
+  "fields": {
+    "evaluacion": 5,
+    "criterio": 21,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 121,
+  "fields": {
+    "evaluacion": 5,
+    "criterio": 22,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 122,
+  "fields": {
+    "evaluacion": 5,
+    "criterio": 23,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 123,
+  "fields": {
+    "evaluacion": 5,
+    "criterio": 24,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 124,
+  "fields": {
+    "evaluacion": 5,
+    "criterio": 25,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 125,
+  "fields": {
+    "evaluacion": 5,
+    "criterio": 26,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 126,
+  "fields": {
+    "evaluacion": 5,
+    "criterio": 27,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 127,
+  "fields": {
+    "evaluacion": 5,
+    "criterio": 28,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 128,
+  "fields": {
+    "evaluacion": 5,
+    "criterio": 29,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 129,
+  "fields": {
+    "evaluacion": 5,
+    "criterio": 30,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 130,
+  "fields": {
+    "evaluacion": 5,
+    "criterio": 31,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 131,
+  "fields": {
+    "evaluacion": 5,
+    "criterio": 32,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 132,
+  "fields": {
+    "evaluacion": 5,
+    "criterio": 33,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 133,
+  "fields": {
+    "evaluacion": 6,
+    "criterio": 1,
+    "resultado": "NC",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 134,
+  "fields": {
+    "evaluacion": 6,
+    "criterio": 2,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 135,
+  "fields": {
+    "evaluacion": 6,
+    "criterio": 3,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 136,
+  "fields": {
+    "evaluacion": 6,
+    "criterio": 4,
+    "resultado": "NC",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 137,
+  "fields": {
+    "evaluacion": 6,
+    "criterio": 5,
+    "resultado": "NA",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 138,
+  "fields": {
+    "evaluacion": 6,
+    "criterio": 6,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 139,
+  "fields": {
+    "evaluacion": 6,
+    "criterio": 7,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 140,
+  "fields": {
+    "evaluacion": 6,
+    "criterio": 8,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 141,
+  "fields": {
+    "evaluacion": 6,
+    "criterio": 9,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 142,
+  "fields": {
+    "evaluacion": 6,
+    "criterio": 10,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 143,
+  "fields": {
+    "evaluacion": 6,
+    "criterio": 11,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 144,
+  "fields": {
+    "evaluacion": 6,
+    "criterio": 12,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 145,
+  "fields": {
+    "evaluacion": 6,
+    "criterio": 13,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 146,
+  "fields": {
+    "evaluacion": 6,
+    "criterio": 14,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 147,
+  "fields": {
+    "evaluacion": 6,
+    "criterio": 15,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 148,
+  "fields": {
+    "evaluacion": 6,
+    "criterio": 16,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 149,
+  "fields": {
+    "evaluacion": 6,
+    "criterio": 17,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 150,
+  "fields": {
+    "evaluacion": 6,
+    "criterio": 18,
+    "resultado": "NC",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 151,
+  "fields": {
+    "evaluacion": 6,
+    "criterio": 19,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 152,
+  "fields": {
+    "evaluacion": 6,
+    "criterio": 20,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 153,
+  "fields": {
+    "evaluacion": 6,
+    "criterio": 21,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 154,
+  "fields": {
+    "evaluacion": 6,
+    "criterio": 22,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 155,
+  "fields": {
+    "evaluacion": 7,
+    "criterio": 1,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 156,
+  "fields": {
+    "evaluacion": 7,
+    "criterio": 2,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 157,
+  "fields": {
+    "evaluacion": 7,
+    "criterio": 3,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 158,
+  "fields": {
+    "evaluacion": 7,
+    "criterio": 4,
+    "resultado": "NA",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 159,
+  "fields": {
+    "evaluacion": 7,
+    "criterio": 5,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 160,
+  "fields": {
+    "evaluacion": 7,
+    "criterio": 6,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 161,
+  "fields": {
+    "evaluacion": 7,
+    "criterio": 7,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 162,
+  "fields": {
+    "evaluacion": 7,
+    "criterio": 8,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 163,
+  "fields": {
+    "evaluacion": 7,
+    "criterio": 9,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 164,
+  "fields": {
+    "evaluacion": 7,
+    "criterio": 10,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 165,
+  "fields": {
+    "evaluacion": 7,
+    "criterio": 11,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 166,
+  "fields": {
+    "evaluacion": 7,
+    "criterio": 12,
+    "resultado": "NA",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 167,
+  "fields": {
+    "evaluacion": 7,
+    "criterio": 13,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 168,
+  "fields": {
+    "evaluacion": 7,
+    "criterio": 14,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 169,
+  "fields": {
+    "evaluacion": 7,
+    "criterio": 15,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 170,
+  "fields": {
+    "evaluacion": 7,
+    "criterio": 16,
+    "resultado": "NA",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 171,
+  "fields": {
+    "evaluacion": 7,
+    "criterio": 17,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 172,
+  "fields": {
+    "evaluacion": 7,
+    "criterio": 18,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 173,
+  "fields": {
+    "evaluacion": 7,
+    "criterio": 19,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 174,
+  "fields": {
+    "evaluacion": 7,
+    "criterio": 20,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 175,
+  "fields": {
+    "evaluacion": 7,
+    "criterio": 21,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 176,
+  "fields": {
+    "evaluacion": 7,
+    "criterio": 22,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 177,
+  "fields": {
+    "evaluacion": 7,
+    "criterio": 30,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 178,
+  "fields": {
+    "evaluacion": 7,
+    "criterio": 31,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 179,
+  "fields": {
+    "evaluacion": 7,
+    "criterio": 32,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 180,
+  "fields": {
+    "evaluacion": 7,
+    "criterio": 33,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 181,
+  "fields": {
+    "evaluacion": 8,
+    "criterio": 1,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 182,
+  "fields": {
+    "evaluacion": 8,
+    "criterio": 2,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 183,
+  "fields": {
+    "evaluacion": 8,
+    "criterio": 3,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 184,
+  "fields": {
+    "evaluacion": 8,
+    "criterio": 4,
+    "resultado": "NA",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 185,
+  "fields": {
+    "evaluacion": 8,
+    "criterio": 5,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 186,
+  "fields": {
+    "evaluacion": 8,
+    "criterio": 6,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 187,
+  "fields": {
+    "evaluacion": 8,
+    "criterio": 7,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 188,
+  "fields": {
+    "evaluacion": 8,
+    "criterio": 8,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 189,
+  "fields": {
+    "evaluacion": 8,
+    "criterio": 9,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 190,
+  "fields": {
+    "evaluacion": 8,
+    "criterio": 10,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 191,
+  "fields": {
+    "evaluacion": 8,
+    "criterio": 11,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 192,
+  "fields": {
+    "evaluacion": 8,
+    "criterio": 12,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 193,
+  "fields": {
+    "evaluacion": 8,
+    "criterio": 13,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 194,
+  "fields": {
+    "evaluacion": 8,
+    "criterio": 14,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 195,
+  "fields": {
+    "evaluacion": 8,
+    "criterio": 15,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 196,
+  "fields": {
+    "evaluacion": 8,
+    "criterio": 16,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 197,
+  "fields": {
+    "evaluacion": 8,
+    "criterio": 17,
+    "resultado": "NA",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 198,
+  "fields": {
+    "evaluacion": 8,
+    "criterio": 18,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 199,
+  "fields": {
+    "evaluacion": 8,
+    "criterio": 19,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 200,
+  "fields": {
+    "evaluacion": 8,
+    "criterio": 20,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 201,
+  "fields": {
+    "evaluacion": 8,
+    "criterio": 21,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 202,
+  "fields": {
+    "evaluacion": 8,
+    "criterio": 22,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 203,
+  "fields": {
+    "evaluacion": 8,
+    "criterio": 23,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 204,
+  "fields": {
+    "evaluacion": 8,
+    "criterio": 24,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 205,
+  "fields": {
+    "evaluacion": 8,
+    "criterio": 25,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 206,
+  "fields": {
+    "evaluacion": 8,
+    "criterio": 26,
+    "resultado": "NA",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 207,
+  "fields": {
+    "evaluacion": 8,
+    "criterio": 27,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 208,
+  "fields": {
+    "evaluacion": 8,
+    "criterio": 28,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 209,
+  "fields": {
+    "evaluacion": 8,
+    "criterio": 29,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 210,
+  "fields": {
+    "evaluacion": 8,
+    "criterio": 30,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 211,
+  "fields": {
+    "evaluacion": 8,
+    "criterio": 31,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 212,
+  "fields": {
+    "evaluacion": 8,
+    "criterio": 32,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 213,
+  "fields": {
+    "evaluacion": 8,
+    "criterio": 33,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 247,
+  "fields": {
+    "evaluacion": 10,
+    "criterio": 1,
+    "resultado": "NC",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 248,
+  "fields": {
+    "evaluacion": 10,
+    "criterio": 2,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 249,
+  "fields": {
+    "evaluacion": 10,
+    "criterio": 3,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 250,
+  "fields": {
+    "evaluacion": 10,
+    "criterio": 4,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 251,
+  "fields": {
+    "evaluacion": 10,
+    "criterio": 5,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 252,
+  "fields": {
+    "evaluacion": 10,
+    "criterio": 6,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 253,
+  "fields": {
+    "evaluacion": 10,
+    "criterio": 7,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 254,
+  "fields": {
+    "evaluacion": 10,
+    "criterio": 8,
+    "resultado": "NC",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 255,
+  "fields": {
+    "evaluacion": 10,
+    "criterio": 9,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 256,
+  "fields": {
+    "evaluacion": 10,
+    "criterio": 10,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 257,
+  "fields": {
+    "evaluacion": 10,
+    "criterio": 11,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 258,
+  "fields": {
+    "evaluacion": 10,
+    "criterio": 12,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 259,
+  "fields": {
+    "evaluacion": 10,
+    "criterio": 13,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 260,
+  "fields": {
+    "evaluacion": 10,
+    "criterio": 14,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 261,
+  "fields": {
+    "evaluacion": 10,
+    "criterio": 15,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 262,
+  "fields": {
+    "evaluacion": 10,
+    "criterio": 16,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 263,
+  "fields": {
+    "evaluacion": 10,
+    "criterio": 17,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 264,
+  "fields": {
+    "evaluacion": 10,
+    "criterio": 18,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 265,
+  "fields": {
+    "evaluacion": 10,
+    "criterio": 19,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 266,
+  "fields": {
+    "evaluacion": 10,
+    "criterio": 20,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 267,
+  "fields": {
+    "evaluacion": 10,
+    "criterio": 21,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 268,
+  "fields": {
+    "evaluacion": 10,
+    "criterio": 22,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 269,
+  "fields": {
+    "evaluacion": 11,
+    "criterio": 1,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 270,
+  "fields": {
+    "evaluacion": 11,
+    "criterio": 2,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 271,
+  "fields": {
+    "evaluacion": 11,
+    "criterio": 3,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 272,
+  "fields": {
+    "evaluacion": 11,
+    "criterio": 4,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 273,
+  "fields": {
+    "evaluacion": 11,
+    "criterio": 5,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 274,
+  "fields": {
+    "evaluacion": 11,
+    "criterio": 6,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 275,
+  "fields": {
+    "evaluacion": 11,
+    "criterio": 7,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 276,
+  "fields": {
+    "evaluacion": 11,
+    "criterio": 8,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 277,
+  "fields": {
+    "evaluacion": 11,
+    "criterio": 9,
+    "resultado": "NC",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 278,
+  "fields": {
+    "evaluacion": 11,
+    "criterio": 10,
+    "resultado": "NC",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 279,
+  "fields": {
+    "evaluacion": 11,
+    "criterio": 11,
+    "resultado": "NC",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 280,
+  "fields": {
+    "evaluacion": 11,
+    "criterio": 12,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 281,
+  "fields": {
+    "evaluacion": 11,
+    "criterio": 13,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 282,
+  "fields": {
+    "evaluacion": 11,
+    "criterio": 14,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 283,
+  "fields": {
+    "evaluacion": 11,
+    "criterio": 15,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 284,
+  "fields": {
+    "evaluacion": 11,
+    "criterio": 16,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 285,
+  "fields": {
+    "evaluacion": 11,
+    "criterio": 17,
+    "resultado": "NA",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 286,
+  "fields": {
+    "evaluacion": 11,
+    "criterio": 18,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 287,
+  "fields": {
+    "evaluacion": 11,
+    "criterio": 19,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 288,
+  "fields": {
+    "evaluacion": 11,
+    "criterio": 20,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 289,
+  "fields": {
+    "evaluacion": 11,
+    "criterio": 21,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 290,
+  "fields": {
+    "evaluacion": 11,
+    "criterio": 22,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.medida",
+  "pk": 1,
+  "fields": {
+    "evaluacion": 11,
+    "descripcion": "Colocar resguardos",
+    "fecha_alta": "2026-08-18T19:02:02.396Z",
+    "fecha_prevista": "2026-10-31",
+    "estado": "P",
+    "fecha_cierre": null,
+    "no_conformidades": [
+      277,
+      279
+    ]
+  }
+},
+{
+  "model": "evaluaciones.medida",
+  "pk": 2,
+  "fields": {
+    "evaluacion": 11,
+    "descripcion": "Colocar extracción",
+    "fecha_alta": "2026-08-18T19:02:36.421Z",
+    "fecha_prevista": "2026-12-30",
+    "estado": "P",
+    "fecha_cierre": null,
+    "no_conformidades": [
+      278
+    ]
+  }
+},
+{
+  "model": "evaluaciones.medida",
+  "pk": 3,
+  "fields": {
+    "evaluacion": 10,
+    "descripcion": "solicitar marcado CE al fabricante",
+    "fecha_alta": "2026-08-18T19:11:27.021Z",
+    "fecha_prevista": "2026-09-30",
+    "estado": "EC",
+    "fecha_cierre": null,
+    "no_conformidades": [
+      247
+    ]
+  }
+}
+]
