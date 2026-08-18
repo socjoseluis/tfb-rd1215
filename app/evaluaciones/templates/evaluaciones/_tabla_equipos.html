@@ -51,6 +51,24 @@ base.html, sobre la clase tabla-equipos.
                     {% else %}
                         <span class="badge text-bg-danger">{{ ev.dictamen }}</span>
                         <span class="text-secondary small">{{ ev.fecha|date:"d/m/Y" }}</span>
+                        {% comment %}
+                        Un dictamen no conforme sin más dice que algo está mal,
+                        pero no si alguien se está ocupando. Eso es lo que
+                        convierte la portada en seguimiento (RF-06).
+                        {% endcomment %}
+                        {% with sin_medida=ev.no_conformidades_sin_medida %}
+                            {% if sin_medida %}
+                                <div class="small">
+                                    <span class="text-danger">{{ sin_medida|length }} sin medida</span>
+                                    · <a href="{% url 'evaluaciones:medida_nueva' pk=ev.pk %}">añadir medida</a>
+                                </div>
+                            {% else %}
+                                <div class="small text-secondary">
+                                    todas con medida{% if ev.fecha_prevista_limite %},
+                                    prevista hasta el {{ ev.fecha_prevista_limite|date:"d/m/Y" }}{% endif %}
+                                </div>
+                            {% endif %}
+                        {% endwith %}
                     {% endif %}
                 {% endwith %}
             </td>

@@ -5,10 +5,13 @@ from django.db.models import Prefetch
 from django.forms import modelformset_factory
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
+from django.utils import timezone
+from django.utils.http import url_has_allowed_host_and_scheme
+from django.views.decorators.http import require_POST
 
-from .forms import EquipoForm, EquipoTiposForm
+from .forms import EquipoForm, EquipoTiposForm, MedidaForm
 from .importador import importar_equipos
-from .models import Criterio, Equipo, Evaluacion, Linea, Respuesta
+from .models import Criterio, Equipo, Evaluacion, Linea, Medida, Respuesta
 
 
 def _marcar_desfasadas(equipo, tipos_antes):
@@ -33,7 +36,16 @@ def inicio(request):
     Es también el punto de entrada de la aplicación: hasta ahora solo se
     podía navegar escribiendo la dirección de cada ficha.
     """
-    equipos = Equipo.objects.prefetch_related('tipos', 'evaluaciones__respuestas')
+    # Las medidas se traen por dos caminos porque la columna de estado
+    # pregunta dos cosas distintas: qué no conformidades siguen sin medida
+    # (por respuesta) y hasta cuándo llegan las fechas previstas (por
+    # evaluación). Sin los dos, cada fila de la tabla consultaría por su
+    # cuenta.
+    equipos = Equipo.objects.prefetch_related(
+        'tipos',
+        'evaluaciones__respuestas__medidas',
+        'evaluaciones__medidas',
+    )
     lineas = Linea.objects.prefetch_related(
         Prefetch('equipos', queryset=equipos),
     )
@@ -242,7 +254,116 @@ def evaluacion_detalle(request, pk):
         .select_related('criterio__grupo')
         .order_by('criterio__grupo__orden', 'criterio__orden')
     )
+    # Cada medida lista las no conformidades que ataca y el enunciado de su
+    # criterio: sin prefetch serían dos consultas más por cada medida.
+    medidas = evaluacion.medidas.prefetch_related('no_conformidades__criterio')
     return render(request, 'evaluaciones/evaluacion_detalle.html', {
         'evaluacion': evaluacion,
         'respuestas': respuestas,
+        'medidas': medidas,
+        'hay_no_conformidades': any(r.resultado == 'NC' for r in respuestas),
+    })
+
+
+def medidas(request):
+    """Seguimiento de las medidas correctivas de todos los equipos (RF-06).
+
+    Es lo que da sentido a la palabra «seguimiento» del requisito: el alta y
+    la consulta por evaluación no bastan si no hay dónde ver, de una vez, qué
+    queda abierto en toda la instalación.
+
+    El filtro viaja en la dirección y no en un envío de formulario para que
+    cada vista filtrada sea enlazable. Por defecto se muestran solo las
+    abiertas, que es lo que se quiere ver al entrar.
+    """
+    estado = request.GET.get('estado', 'abiertas')
+    # Un valor manipulado no debe alterar la consulta: solo se aceptan los
+    # estados del modelo, más los dos agregados de la propia pantalla.
+    if estado not in dict(Medida.ESTADO_CHOICES) and estado != 'todas':
+        estado = 'abiertas'
+
+    medidas = (
+        Medida.objects
+        # El equipo se alcanza subiendo dos claves ajenas: cabe en el JOIN.
+        .select_related('evaluacion__equipo')
+        # Las no conformidades son varias por medida: consulta aparte.
+        .prefetch_related('no_conformidades__criterio')
+    )
+    if estado == 'abiertas':
+        medidas = medidas.filter(estado__in=['P', 'EC'])
+    elif estado != 'todas':
+        medidas = medidas.filter(estado=estado)
+
+    return render(request, 'evaluaciones/medidas.html', {
+        'medidas': medidas,
+        'estado': estado,
+        'estados': Medida.ESTADO_CHOICES,
+    })
+
+
+@require_POST
+def medida_estado(request, pk):
+    """Cambiar el estado de una medida correctiva (RF-06).
+
+    Es lo que convierte el listado en seguimiento y no en un inventario: sin
+    esto una medida nace con su estado y no puede cerrarse nunca.
+
+    Solo acepta POST porque modifica datos: no debe poder alcanzarse
+    escribiendo la dirección ni desde un enlace.
+    """
+    medida = get_object_or_404(Medida, pk=pk)
+    estado = request.POST.get('estado')
+
+    if estado in dict(Medida.ESTADO_CHOICES):
+        medida.estado = estado
+        # La fecha de cierre la lleva la vista y no el formulario: tecleada a
+        # mano acabaría habiendo medidas realizadas sin fecha y medidas
+        # pendientes con ella. Se pone al cerrar y se retira al reabrir.
+        if estado == 'R':
+            medida.fecha_cierre = medida.fecha_cierre or timezone.localdate()
+        else:
+            medida.fecha_cierre = None
+        medida.save(update_fields=['estado', 'fecha_cierre'])
+
+    # Volver al listado tal como estaba, con su filtro. Un destino que llegue
+    # de fuera no se sigue: aceptarlo a ciegas convertiría la aplicación en
+    # trampolín hacia otro sitio.
+    destino = request.POST.get('next', '')
+    if not url_has_allowed_host_and_scheme(destino, allowed_hosts={request.get_host()}):
+        destino = reverse('evaluaciones:medidas')
+    return redirect(destino)
+
+
+def medida_nueva(request, pk):
+    """Alta de una medida correctiva derivada de no conformidades (RF-06).
+
+    La dirección cuelga de la evaluación porque la medida nace de ella: por
+    eso el formulario no ofrece elegirla, y las no conformidades que presenta
+    son las de esa evaluación y ninguna otra.
+    """
+    evaluacion = get_object_or_404(Evaluacion, pk=pk)
+
+    # Una evaluación conforme no tiene no conformidades que atacar, así que el
+    # formulario no tendría ninguna casilla que ofrecer y, siendo el campo
+    # obligatorio, no habría forma de enviarlo. La dirección se puede escribir
+    # a mano, de modo que el corte va aquí y no solo en la plantilla.
+    if not evaluacion.respuestas.filter(resultado='NC').exists():
+        return redirect('evaluaciones:evaluacion_detalle', pk=evaluacion.pk)
+
+    if request.method == 'POST':
+        form = MedidaForm(request.POST, evaluacion=evaluacion)
+        if form.is_valid():
+            medida = form.save(commit=False)
+            medida.evaluacion = evaluacion
+            medida.save()
+            # Una relación múltiple solo puede colgarse de una fila que ya
+            # existe, así que las no conformidades se guardan después.
+            form.save_m2m()
+            return redirect('evaluaciones:evaluacion_detalle', pk=evaluacion.pk)
+    else:
+        form = MedidaForm(evaluacion=evaluacion)
+
+    return render(request, 'evaluaciones/medida_nueva.html', {
+        'evaluacion': evaluacion,
+        'form': form,
     })

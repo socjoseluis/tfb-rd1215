@@ -8,12 +8,12 @@
         <div class="card-body">
             <form method="post">
                 {% csrf_token %}
-                {# El aviso de credenciales incorrectas sale de aquí dentro:
-                   no es error de ningún campo, para no revelar cuál se
-                   acertó. #}
+                {% comment %}
+                El aviso de credenciales incorrectas sale de aquí dentro: no
+                es error de ningún campo, para no revelar cuál se acertó.
+                {% endcomment %}
                 {{ form.as_p }}
-                {# Guarda la página a la que se iba, para volver a ella al
-                   abrir la sesión. #}
+                {# Guarda la página a la que se iba, para volver al entrar. #}
                 <input type="hidden" name="next" value="{{ next }}">
                 <button type="submit" class="btn btn-primary">Entrar</button>
             </form>

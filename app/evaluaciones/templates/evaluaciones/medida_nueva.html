@@ -1,0 +1,23 @@
+{% extends "evaluaciones/base.html" %}
+
+{% block titulo %}Nueva medida correctiva{% endblock %}
+{% block encabezado %}Nueva medida correctiva{% endblock %}
+
+{% block contenido %}
+    <p class="text-secondary">
+        Para la evaluación de <strong>{{ evaluacion.equipo }}</strong>
+        del {{ evaluacion.fecha|date:"d/m/Y" }}.
+    </p>
+
+    <div class="card">
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary">Guardar</button>
+                <a class="btn btn-outline-secondary"
+                   href="{% url 'evaluaciones:evaluacion_detalle' pk=evaluacion.pk %}">Cancelar</a>
+            </form>
+        </div>
+    </div>
+{% endblock %}

@@ -180,6 +180,38 @@ class Evaluacion(models.Model):
             return 'No conforme'
         return 'Conforme'
 
+    @property
+    def no_conformidades_sin_medida(self):
+        """No conformidades que todavía no ataca ninguna medida (RF-06).
+
+        Una medida descartada no cubre nada: se propuso y se desestimó, de
+        modo que la no conformidad vuelve a quedar desatendida. Las
+        realizadas sí cuentan, porque el arreglo se hizo.
+
+        Se recorren las listas ya traídas en lugar de filtrar, para no
+        lanzar consultas por evaluación en los listados; es el mismo motivo
+        que en Equipo.ultima_evaluacion.
+        """
+        return [
+            respuesta for respuesta in self.respuestas.all()
+            if respuesta.resultado == 'NC'
+            and not any(m.estado != 'D' for m in respuesta.medidas.all())
+        ]
+
+    @property
+    def fecha_prevista_limite(self):
+        """La más lejana de las fechas previstas de sus medidas abiertas.
+
+        Es la fecha en la que, si todo se cumple, el equipo dejaría de tener
+        no conformidades sin atender. Devuelve None si ninguna medida
+        abierta tiene fecha, porque la fecha prevista es opcional.
+        """
+        fechas = [
+            medida.fecha_prevista for medida in self.medidas.all()
+            if medida.fecha_prevista and medida.estado in ('P', 'EC')
+        ]
+        return max(fechas) if fechas else None
+
     def __str__(self):
         return f"{self.equipo} — {self.fecha:%Y-%m-%d}"
 
@@ -222,3 +254,55 @@ class Respuesta(models.Model):
 
     def __str__(self):
         return f"{self.criterio} → {self.get_resultado_display()}"
+
+
+class Medida(models.Model):
+    """Medida correctiva derivada de no conformidades (RF-06).
+
+    Nace de una evaluación concreta y ataca una o varias no conformidades de
+    esa misma evaluación. Cerrarla no cambia el dictamen: el RF-03 exige que
+    el histórico no se sobrescriba, así que la conformidad se recupera
+    evaluando de nuevo y la medida cerrada queda como rastro de por qué
+    cambió.
+    """
+
+    ESTADO_CHOICES = [
+        ('P', 'Pendiente'),
+        ('EC', 'En curso'),
+        ('R', 'Realizada'),
+        ('D', 'Descartada'),
+    ]
+
+    # La clave ajena marca la frontera del problema y la relación múltiple
+    # permite que un mismo arreglo cierre varias no conformidades. Sin la
+    # primera, una medida podría enganchar no conformidades de equipos
+    # distintos y quedar a la vez realizada para uno y pendiente para otro;
+    # además, una relación múltiple admite quedarse vacía, mientras que la
+    # clave ajena garantiza que ninguna medida cuelgue de nada.
+    evaluacion = models.ForeignKey(
+        Evaluacion,
+        on_delete=models.CASCADE,
+        related_name='medidas',
+    )
+    # Que sean no conformidades de esta misma evaluación no lo impone el
+    # modelo: Django no puede restringir una relación múltiple en función de
+    # otro campo de la fila. Lo impone el formulario, limitando las opciones.
+    no_conformidades = models.ManyToManyField(
+        Respuesta,
+        related_name='medidas',
+        verbose_name='No conformidades',
+    )
+    descripcion = models.TextField('Descripción')
+    fecha_alta = models.DateTimeField('Fecha de alta', default=timezone.now)
+    fecha_prevista = models.DateField('Fecha prevista', null=True, blank=True)
+    estado = models.CharField(max_length=2, choices=ESTADO_CHOICES, default='P')
+    # «Descartada» existe para la medida que se propone y luego se desestima,
+    # por ejemplo porque se sustituye el equipo: borrarla perdería el rastro
+    # de lo que se decidió.
+    fecha_cierre = models.DateField('Fecha de cierre', null=True, blank=True)
+
+    class Meta:
+        ordering = ['-fecha_alta']
+
+    def __str__(self):
+        return f"{self.get_estado_display()} — {self.descripcion[:60]}"

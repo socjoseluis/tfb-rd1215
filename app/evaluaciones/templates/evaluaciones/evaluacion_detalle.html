@@ -37,6 +37,61 @@
         </div>
     </div>
 
+    {% comment %}
+    Las medidas van antes de los criterios: detrás vienen hasta once tablas, y
+    en un móvil el seguimiento quedaría a varias pantallas de la entrada.
+    {% endcomment %}
+    <h2 class="h6 mt-4">Medidas correctivas</h2>
+    {% if medidas %}
+        <table class="table table-sm table-bordered align-middle bg-white">
+            <thead class="table-light">
+                <tr>
+                    <th scope="col">Medida</th>
+                    <th scope="col">Ataca a</th>
+                    <th scope="col" style="width: 8rem;">Prevista</th>
+                    <th scope="col" style="width: 8rem;">Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for medida in medidas %}
+                <tr>
+                    <td>{{ medida.descripcion }}</td>
+                    <td>
+                        <ul class="small mb-0 ps-3">
+                        {% for nc in medida.no_conformidades.all %}
+                            <li>{{ nc.criterio.enunciado|truncatechars:70 }}</li>
+                        {% endfor %}
+                        </ul>
+                    </td>
+                    <td>{{ medida.fecha_prevista|date:"d/m/Y"|default:"—" }}</td>
+                    <td>
+                        {% if medida.estado == "R" %}
+                            <span class="badge text-bg-success">{{ medida.get_estado_display }}</span>
+                        {% elif medida.estado == "EC" %}
+                            <span class="badge text-bg-info">{{ medida.get_estado_display }}</span>
+                        {% elif medida.estado == "D" %}
+                            <span class="badge text-bg-secondary">{{ medida.get_estado_display }}</span>
+                        {% else %}
+                            <span class="badge text-bg-warning">{{ medida.get_estado_display }}</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="text-secondary">No hay ninguna medida registrada para esta evaluación.</p>
+    {% endif %}
+
+    {% comment %}
+    Sin no conformidades no hay nada que atacar, y el formulario no podría
+    enviarse: el enlace no se ofrece. La vista corta igualmente.
+    {% endcomment %}
+    {% if hay_no_conformidades %}
+        <a class="btn btn-primary btn-sm mb-2"
+           href="{% url 'evaluaciones:medida_nueva' pk=evaluacion.pk %}">Añadir medida correctiva</a>
+    {% endif %}
+
     {% regroup respuestas by criterio.grupo as grupos %}
     {% for grupo in grupos %}
         <h2 class="h6 mt-4">{{ grupo.grouper }}</h2>

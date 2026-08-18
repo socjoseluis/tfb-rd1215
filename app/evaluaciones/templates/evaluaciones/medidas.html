@@ -1,0 +1,93 @@
+{% extends "evaluaciones/base.html" %}
+
+{% block titulo %}Medidas correctivas{% endblock %}
+{% block encabezado %}Seguimiento de medidas correctivas{% endblock %}
+
+{% block contenido %}
+    {# Cada filtro es una dirección propia: se puede enlazar y compartir. #}
+    <div class="btn-group btn-group-sm mb-3" role="group" aria-label="Filtrar por estado">
+        <a class="btn {% if estado == 'abiertas' %}btn-primary{% else %}btn-outline-primary{% endif %}"
+           href="{% url 'evaluaciones:medidas' %}?estado=abiertas">Abiertas</a>
+        {% for clave, nombre in estados %}
+            <a class="btn {% if estado == clave %}btn-primary{% else %}btn-outline-primary{% endif %}"
+               href="{% url 'evaluaciones:medidas' %}?estado={{ clave }}">{{ nombre }}</a>
+        {% endfor %}
+        <a class="btn {% if estado == 'todas' %}btn-primary{% else %}btn-outline-primary{% endif %}"
+           href="{% url 'evaluaciones:medidas' %}?estado=todas">Todas</a>
+    </div>
+
+    {% if medidas %}
+        <table class="table table-sm table-bordered align-middle bg-white">
+            <thead class="table-light">
+                <tr>
+                    <th scope="col" style="width: 12%;">Equipo</th>
+                    <th scope="col" style="width: 28%;">Medida</th>
+                    <th scope="col">Ataca a</th>
+                    <th scope="col" style="width: 8rem;">Prevista</th>
+                    <th scope="col" style="width: 8rem;">Estado</th>
+                    <th scope="col" style="width: 11rem;">Cambiar</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for medida in medidas %}
+                <tr>
+                    <td>
+                        <a href="{% url 'evaluaciones:equipo_detalle' pk=medida.evaluacion.equipo.pk %}">{{ medida.evaluacion.equipo.codigo }}</a>
+                    </td>
+                    <td>
+                        {{ medida.descripcion }}
+                        <div class="small text-secondary">
+                            <a href="{% url 'evaluaciones:evaluacion_detalle' pk=medida.evaluacion.pk %}">Evaluación del {{ medida.evaluacion.fecha|date:"d/m/Y" }}</a>
+                        </div>
+                    </td>
+                    <td>
+                        <ul class="small mb-0 ps-3">
+                        {% for nc in medida.no_conformidades.all %}
+                            <li>{{ nc.criterio.enunciado|truncatechars:70 }}</li>
+                        {% endfor %}
+                        </ul>
+                    </td>
+                    <td>{{ medida.fecha_prevista|date:"d/m/Y"|default:"—" }}</td>
+                    <td>
+                        {% if medida.estado == "R" %}
+                            <span class="badge text-bg-success">{{ medida.get_estado_display }}</span>
+                        {% elif medida.estado == "EC" %}
+                            <span class="badge text-bg-info">{{ medida.get_estado_display }}</span>
+                        {% elif medida.estado == "D" %}
+                            <span class="badge text-bg-secondary">{{ medida.get_estado_display }}</span>
+                        {% else %}
+                            <span class="badge text-bg-warning">{{ medida.get_estado_display }}</span>
+                        {% endif %}
+                        {% if medida.fecha_cierre %}
+                            <div class="small text-secondary">Cerrada el {{ medida.fecha_cierre|date:"d/m/Y" }}</div>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% comment %}
+                        Cambiar el estado va por POST: modifica datos. El
+                        «next» devuelve al listado con el filtro puesto.
+                        {% endcomment %}
+                        <form method="post" class="d-flex gap-1"
+                              action="{% url 'evaluaciones:medida_estado' pk=medida.pk %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                            <select class="form-select form-select-sm" name="estado"
+                                    aria-label="Estado de la medida">
+                                {% for clave, nombre in estados %}
+                                    <option value="{{ clave }}" {% if medida.estado == clave %}selected{% endif %}>{{ nombre }}</option>
+                                {% endfor %}
+                            </select>
+                            <button type="submit" class="btn btn-sm btn-outline-secondary">Guardar</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <div class="alert alert-info">
+            No hay ninguna medida que mostrar con este filtro.
+            Las medidas se dan de alta desde la evaluación que las origina.
+        </div>
+    {% endif %}
+{% endblock %}

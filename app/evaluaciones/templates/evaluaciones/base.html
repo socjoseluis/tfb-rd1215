@@ -32,12 +32,17 @@
     <nav class="navbar navbar-expand navbar-dark bg-dark">
         <div class="container">
             <a class="navbar-brand" href="{% url 'evaluaciones:inicio' %}">Equipos · RD 1215/1997</a>
-            {# Sin sesión el menú no se muestra: sus destinos exigen
-               autenticación y solo llevarían de vuelta a la entrada. #}
+            {% comment %}
+            Sin sesión el menú no se muestra: sus destinos exigen
+            autenticación y solo llevarían de vuelta a la entrada.
+            {% endcomment %}
             {% if user.is_authenticated %}
                 <ul class="navbar-nav me-auto">
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'evaluaciones:inicio' %}">Equipos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'evaluaciones:medidas' %}">Medidas</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'evaluaciones:equipo_alta' %}">Alta</a>
@@ -48,9 +53,11 @@
                 </ul>
                 <div class="d-flex align-items-center gap-2">
                     <span class="navbar-text">{{ user.get_username }}</span>
-                    {# Salir va por POST: LogoutView no acepta GET, para que
-                       nadie cierre la sesión ajena colando un enlace o una
-                       imagen a esta dirección. #}
+                    {% comment %}
+                    Salir va por POST: LogoutView no acepta GET, para que
+                    nadie cierre la sesión ajena colando un enlace o una
+                    imagen a esta dirección.
+                    {% endcomment %}
                     <form method="post" action="{% url 'logout' %}">
                         {% csrf_token %}
                         <button type="submit" class="btn btn-sm btn-outline-light">Salir</button>

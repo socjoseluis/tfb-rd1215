@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 
-from .models import Equipo
+from .models import Equipo, Medida
 
 
 class EquipoForm(forms.ModelForm):
@@ -55,6 +55,51 @@ class EquipoTiposForm(forms.ModelForm):
             equipo.save()
             self.save_m2m()
         return equipo
+
+
+class MedidaForm(forms.ModelForm):
+    """Alta de una medida correctiva desde su evaluación (RF-06).
+
+    La evaluación no es un campo: viene de la dirección, porque la medida se
+    da de alta desde ella. Si se ofreciera, el desplegable listaría todas las
+    evaluaciones de la base de datos.
+    """
+
+    class Meta:
+        model = Medida
+        fields = ['descripcion', 'no_conformidades', 'fecha_prevista', 'estado']
+        widgets = {
+            'no_conformidades': forms.CheckboxSelectMultiple,
+            'descripcion': forms.Textarea(attrs={'rows': 3}),
+            # Con type="date" el móvil abre el selector de fecha del sistema
+            # en vez de un campo de texto (RNF-01).
+            'fecha_prevista': forms.DateInput(attrs={'type': 'date'}),
+        }
+
+    def __init__(self, *args, evaluacion, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        # Limitar las opciones no es solo decidir qué casillas se dibujan: es
+        # también contra lo que Django valida el envío. Una respuesta de otra
+        # evaluación, o conforme, se rechaza aunque se manipule el formulario.
+        # Es la regla que el modelo no puede imponer.
+        no_conformidades = self.fields['no_conformidades']
+        no_conformidades.queryset = (
+            evaluacion.respuestas
+            .filter(resultado='NC')
+            .select_related('criterio')
+        )
+        # Todas las opciones son no conformidades, así que arrastrar el
+        # «→ No conforme» de Respuesta.__str__ a cada casilla no aporta nada.
+        no_conformidades.label_from_instance = lambda r: r.criterio.enunciado
+
+        for nombre, campo in self.fields.items():
+            if nombre == 'no_conformidades':
+                continue
+            if isinstance(campo.widget, forms.Select):
+                campo.widget.attrs['class'] = 'form-select'
+            else:
+                campo.widget.attrs['class'] = 'form-control'
 
 
 class AutenticacionForm(AuthenticationForm):
