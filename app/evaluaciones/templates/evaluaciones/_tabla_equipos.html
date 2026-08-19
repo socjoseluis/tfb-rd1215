@@ -35,13 +35,31 @@ base.html, sobre la clase tabla-equipos.
                 {% with ev=equipo.ultima_evaluacion %}
                     {% if not ev %}
                         <span class="text-secondary">sin evaluar</span>
+                        {% comment %}
+                        Una incidencia en un equipo sin evaluar no tiene
+                        evaluación que marcar, así que sin esto no aparecería
+                        en ninguna parte salvo entrando en su ficha. Y es el
+                        caso más urgente de todos: hay una avería contada y
+                        nadie ha comprobado nunca ese equipo.
+                        {% endcomment %}
+                        {% if equipo.incidencias.all %}
+                            <a class="badge text-bg-warning text-decoration-none"
+                               href="{% url 'evaluaciones:equipo_detalle' pk=equipo.pk %}#incidencias"
+                               title="Tiene incidencias registradas y ninguna evaluación">Con incidencia</a>
+                        {% endif %}
                     {% elif ev.en_revision %}
                         {% comment %}
                         El dictamen no se pinta en verde cuando la evaluación
                         está desfasada: quedaron criterios sin comprobar y un
                         «conforme» en verde daría una seguridad que no existe.
                         {% endcomment %}
-                        <span class="badge text-bg-warning">{{ ev.get_motivo_revision_display|default:"En revisión" }}</span>
+                        {% if ev.motivo_revision == 'I' %}
+                            <a class="badge text-bg-warning text-decoration-none"
+                               href="{% url 'evaluaciones:equipo_detalle' pk=equipo.pk %}#incidencias"
+                               title="Ver la incidencia que puso en duda esta evaluación">{{ ev.get_motivo_revision_display }}</a>
+                        {% else %}
+                            <span class="badge text-bg-warning">{{ ev.get_motivo_revision_display|default:"En revisión" }}</span>
+                        {% endif %}
                         <span class="text-secondary small">
                             último dictamen: {{ ev.dictamen|lower }} · {{ ev.fecha|date:"d/m/Y" }}
                         </span>

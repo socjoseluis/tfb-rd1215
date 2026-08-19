@@ -1985,5 +1985,16 @@
     "descripcion": "El pulsador de parada de emergencia se queda enclavado y hay que forzarlo para rearmarlo.",
     "fecha": "2026-08-16T17:52:16.314Z"
   }
+},
+{
+  "model": "evaluaciones.incidencia",
+  "pk": 3,
+  "fields": {
+    "equipo": 13,
+    "autor": null,
+    "autor_username": "tecnico",
+    "descripcion": "Salta el térmico al arrancar en carga. El equipo no se ha evaluado todavía.",
+    "fecha": "2026-08-14T18:09:14.779Z"
+  }
 }
 ]

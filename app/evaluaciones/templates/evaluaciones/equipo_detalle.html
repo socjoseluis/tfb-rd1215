@@ -118,7 +118,7 @@
         <p class="text-secondary">Este equipo no tiene documentación subida.</p>
     {% endif %}
 
-    <h2 class="h6">Incidencias</h2>
+    <h2 class="h6" id="incidencias">Incidencias</h2>
     {% if incidencias %}
         <ul class="list-group mb-3">
             {% for incidencia in incidencias %}
@@ -170,7 +170,10 @@
                         la máquina ha cambiado de estado. Mismo color, porque
                         el aviso es el mismo: ya no es de fiar.
                         {% endcomment %}
-                        {% if evaluacion.en_revision %}
+                        {% if evaluacion.motivo_revision == 'I' %}
+                            <a class="badge text-bg-warning text-decoration-none"
+                               href="#incidencias">{{ evaluacion.get_motivo_revision_display }}</a>
+                        {% elif evaluacion.en_revision %}
                             <span class="badge text-bg-warning">{{ evaluacion.get_motivo_revision_display|default:"En revisión" }}</span>
                         {% else %}
                             <span class="text-secondary">vigente</span>

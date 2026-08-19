@@ -57,6 +57,7 @@ def inicio(request):
         'tipos',
         'documentos',
         'exenciones',
+        'incidencias',
         'evaluaciones__respuestas__medidas',
         'evaluaciones__respuestas__criterio__evidencias_esperadas',
         'evaluaciones__medidas',

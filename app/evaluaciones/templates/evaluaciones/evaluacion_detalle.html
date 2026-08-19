@@ -11,6 +11,7 @@
                 Se ha registrado una incidencia en el equipo después de
                 realizarla, así que el dictamen describe un estado que ya no
                 se puede dar por bueno.
+                <a href="{% url 'evaluaciones:equipo_detalle' pk=evaluacion.equipo.pk %}#incidencias">Ver la incidencia</a>.
             {% else %}
                 Se han añadido tipos al equipo después de realizarla, de modo
                 que hay criterios del Anexo I.2 que no llegaron a comprobarse.
@@ -54,7 +55,10 @@
 
                 <dt class="col-sm-3">Dictamen</dt>
                 <dd class="col-sm-9">
-                    {% if evaluacion.en_revision %}
+                    {% if evaluacion.motivo_revision == 'I' %}
+                        <a class="badge text-bg-warning text-decoration-none"
+                           href="{% url 'evaluaciones:equipo_detalle' pk=evaluacion.equipo.pk %}#incidencias">{{ evaluacion.get_motivo_revision_display }}</a>
+                    {% elif evaluacion.en_revision %}
                         <span class="badge text-bg-warning">{{ evaluacion.get_motivo_revision_display|default:"En revisión" }}</span>
                         <span class="text-secondary">— el dictamen fue «{{ evaluacion.dictamen|lower }}»</span>
                     {% elif evaluacion.dictamen == "Conforme" %}
