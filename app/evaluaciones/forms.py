@@ -1,7 +1,9 @@
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm
 
-from .models import Documento, Equipo, ExencionDocumental, Medida
+from .models import (
+    Documento, Equipo, ExencionDocumental, Incidencia, Medida,
+)
 
 
 class EquipoForm(forms.ModelForm):
@@ -173,6 +175,42 @@ class DocumentoForm(forms.ModelForm):
                 'Indique de qué documento se trata al elegir «Otro».',
             )
         return datos
+
+
+class IncidenciaForm(forms.ModelForm):
+    """Registro de una incidencia sobre un equipo (RF-07).
+
+    El equipo viene de la dirección, como en las demás altas que cuelgan de
+    una ficha. La fecha se ofrece porque una incidencia se registra a menudo
+    después de ocurrir: quien vuelve del taller la anota al día siguiente.
+    """
+
+    class Meta:
+        model = Incidencia
+        fields = ['descripcion', 'fecha']
+        widgets = {
+            'descripcion': forms.Textarea(attrs={'rows': 3}),
+            # Con type="datetime-local" el móvil abre el selector del
+            # sistema en vez de un campo de texto (RNF-01).
+            'fecha': forms.DateTimeInput(
+                attrs={'type': 'datetime-local'},
+                format='%Y-%m-%dT%H:%M',
+            ),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for campo in self.fields.values():
+            campo.widget.attrs['class'] = 'form-control'
+
+    def clean_descripcion(self):
+        descripcion = self.cleaned_data['descripcion'].strip()
+        if not descripcion:
+            raise forms.ValidationError(
+                'Describa qué ha ocurrido: una incidencia sin descripción '
+                'marca la evaluación para revisión sin decir por qué.'
+            )
+        return descripcion
 
 
 class ExencionForm(forms.ModelForm):

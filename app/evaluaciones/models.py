@@ -290,8 +290,25 @@ class Evaluacion(models.Model):
         on_delete=models.CASCADE,
         related_name='evaluaciones',
     )
+    MOTIVO_REVISION_CHOICES = [
+        ('T', 'Desfasada'),
+        ('I', 'Con incidencia'),
+    ]
+
     fecha = models.DateTimeField(default=timezone.now)
     en_revision = models.BooleanField('En revisión', default=False)
+    # Dos causas distintas llevan a revisar una evaluación y no significan lo
+    # mismo: que se añadan tipos al equipo la deja incompleta, porque hay
+    # criterios que nunca se comprobaron; que se registre una incidencia la
+    # deja en duda, porque la máquina ha cambiado de estado. Sin este campo
+    # ambas se mostrarían como «Desfasada», que en el segundo caso sería
+    # falso: no hay nada desfasado, se ha roto el equipo.
+    motivo_revision = models.CharField(
+        'Motivo de la revisión',
+        max_length=1,
+        choices=MOTIVO_REVISION_CHOICES,
+        blank=True,
+    )
 
     class Meta:
         ordering = ['-fecha']
@@ -416,6 +433,46 @@ class Respuesta(models.Model):
 
     def __str__(self):
         return f"{self.criterio} → {self.get_resultado_display()}"
+
+
+class Incidencia(models.Model):
+    """Suceso que pone en duda el estado de un equipo (RF-07).
+
+    Cuelga del equipo y no de una evaluación porque le ocurre a la máquina:
+    un atrapamiento, un resguardo que deja de enclavar, una fuga. Registrarla
+    marca para revisión la evaluación vigente, que es lo que el requisito
+    pide, porque el dictamen se emitió sobre un equipo que ya no está en ese
+    estado.
+
+    Solo marca la vigente, no el histórico: una evaluación de marzo describía
+    correctamente el equipo en marzo. Es la diferencia con el cambio de tipos,
+    que sí invalida todas las anteriores, porque ninguna llegó a comprobar los
+    criterios nuevos.
+
+    No guarda estado —abierta, cerrada— a propósito. El seguimiento de lo que
+    haya que arreglar ya existe: se reevalúa el equipo y las no conformidades
+    que salgan generan medidas correctivas con su propio ciclo (RF-06). Darle
+    aquí un ciclo de vida propio duplicaría ese seguimiento.
+
+    Tampoco guarda quién la registra. Es un dato personal, no lo pide el
+    requisito y el prototipo no atribuye ningún registro a su autor; la
+    trazabilidad por usuario queda como trabajo futuro.
+    """
+
+    equipo = models.ForeignKey(
+        Equipo,
+        on_delete=models.CASCADE,
+        related_name='incidencias',
+    )
+    descripcion = models.TextField('Descripción')
+    fecha = models.DateTimeField('Fecha', default=timezone.now)
+
+    class Meta:
+        ordering = ['-fecha']
+        verbose_name_plural = 'Incidencias'
+
+    def __str__(self):
+        return f"{self.equipo} — {self.fecha:%Y-%m-%d}"
 
 
 class Medida(models.Model):

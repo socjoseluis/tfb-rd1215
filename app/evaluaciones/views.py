@@ -3,6 +3,7 @@ from itertools import groupby
 import segno
 from django import forms
 from django.contrib.auth.decorators import login_not_required
+from django.db import transaction
 from django.db.models import Prefetch
 from django.forms import modelformset_factory
 from django.http import FileResponse, Http404
@@ -13,12 +14,13 @@ from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.http import require_POST
 
 from .forms import (
-    DocumentoForm, EquipoForm, EquipoTiposForm, ExencionForm, MedidaForm,
+    DocumentoForm, EquipoForm, EquipoTiposForm, ExencionForm, IncidenciaForm,
+    MedidaForm,
 )
 from .importador import importar_equipos
 from .models import (
-    Criterio, Documento, Equipo, Evaluacion, ExencionDocumental, Linea,
-    Medida, Respuesta,
+    Criterio, Documento, Equipo, Evaluacion, ExencionDocumental, Incidencia,
+    Linea, Medida, Respuesta,
 )
 
 
@@ -35,7 +37,7 @@ def _marcar_desfasadas(equipo, tipos_antes):
     """
     tipos_despues = set(equipo.tipos.values_list('pk', flat=True))
     if tipos_despues - tipos_antes:
-        equipo.evaluaciones.update(en_revision=True)
+        equipo.evaluaciones.update(en_revision=True, motivo_revision='T')
 
 
 def inicio(request):
@@ -114,6 +116,7 @@ def equipo_detalle(request, pk):
         'evaluaciones': evaluaciones,
         'documentos': equipo.documentos.all(),
         'exenciones': equipo.exenciones.all(),
+        'incidencias': equipo.incidencias.all(),
         'evidencias_pendientes': equipo.evidencias_pendientes,
     })
 
@@ -453,6 +456,53 @@ def documento_descargar(request, pk):
     # as_attachment=False para que el móvil abra el PDF en el navegador en
     # vez de descargarlo: en planta interesa verlo, no guardarlo.
     return FileResponse(fichero, as_attachment=False)
+
+
+def incidencia_nueva(request, pk):
+    """Registro de una incidencia sobre un equipo (RF-07).
+
+    Registrarla marca para revisión la evaluación vigente: el dictamen se
+    emitió sobre un equipo que ya no está en ese estado.
+
+    Solo la vigente, y no todo el histórico. Una evaluación de marzo describía
+    correctamente el equipo en marzo, y el RF-03 exige conservar ese registro
+    tal cual. Es la diferencia con el cambio de tipos, donde
+    _marcar_desfasadas() sí marca todas: allí ninguna evaluación llegó a
+    comprobar los criterios nuevos, de modo que todas quedaron incompletas.
+
+    Registrar la incidencia y marcar la evaluación son una sola cosa: si lo
+    segundo fallara, quedaría una incidencia registrada sobre una evaluación
+    que sigue diciendo que el equipo está conforme. Por eso van en la misma
+    transacción.
+    """
+    equipo = get_object_or_404(Equipo, pk=pk)
+
+    if request.method == 'POST':
+        form = IncidenciaForm(request.POST)
+        if form.is_valid():
+            with transaction.atomic():
+                incidencia = form.save(commit=False)
+                incidencia.equipo = equipo
+                incidencia.save()
+
+                evaluacion = equipo.ultima_evaluacion
+                if evaluacion is not None:
+                    evaluacion.en_revision = True
+                    evaluacion.motivo_revision = 'I'
+                    evaluacion.save(
+                        update_fields=['en_revision', 'motivo_revision']
+                    )
+            return redirect('evaluaciones:equipo_detalle', pk=equipo.pk)
+    else:
+        form = IncidenciaForm()
+
+    return render(request, 'evaluaciones/incidencia_nueva.html', {
+        'equipo': equipo,
+        'form': form,
+        # Un equipo sin evaluar admite incidencias: lo que no hay es
+        # evaluación que marcar, y conviene decirlo antes de registrarla.
+        'sin_evaluacion': equipo.ultima_evaluacion is None,
+    })
 
 
 def documento_borrar(request, pk):

@@ -59,7 +59,7 @@
                         <td>
                             {% if evaluacion.en_revision %}
                                 <span class="text-secondary">{{ evaluacion.dictamen }}</span>
-                                <span class="badge text-bg-warning">Desfasada</span>
+                                <span class="badge text-bg-warning">{{ evaluacion.get_motivo_revision_display|default:"En revisión" }}</span>
                             {% elif evaluacion.dictamen == "Conforme" %}
                                 <span class="badge text-bg-success">{{ evaluacion.dictamen }}</span>
                             {% else %}

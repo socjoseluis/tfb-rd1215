@@ -1,10 +1,12 @@
 import os
 import tempfile
+from datetime import timedelta
 
 from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase, override_settings
 from django.urls import reverse
+from django.utils import timezone
 
 from .forms import ExencionForm
 from .models import (
@@ -220,6 +222,74 @@ class EvidenciaDocumental(TestCase):
         self.responder(self.criterio, 'C')
         self.assertEqual(self.evaluacion.dictamen, 'Conforme')
         self.assertTrue(self.evaluacion.evidencias_pendientes)
+
+
+class RegistroDeIncidencias(TestCase):
+    """RF-07: registrar una incidencia marca su evaluación para revisión."""
+
+    def setUp(self):
+        self.equipo = Equipo.objects.create(codigo='EQ-300', nombre='Prensa')
+        self.antigua = Evaluacion.objects.create(
+            equipo=self.equipo, fecha=timezone.now() - timedelta(days=90),
+        )
+        self.vigente = Evaluacion.objects.create(equipo=self.equipo)
+        User.objects.create_user('tecnico', password='x')
+        self.client.login(username='tecnico', password='x')
+        self.url = reverse('evaluaciones:incidencia_nueva', args=[self.equipo.pk])
+
+    def registrar(self, descripcion='El resguardo ha dejado de enclavar.'):
+        return self.client.post(self.url, {
+            'descripcion': descripcion,
+            'fecha': timezone.localtime().strftime('%Y-%m-%dT%H:%M'),
+        })
+
+    def test_registrar_marca_la_evaluacion_vigente(self):
+        self.registrar()
+        self.vigente.refresh_from_db()
+        self.assertTrue(self.vigente.en_revision)
+        self.assertEqual(self.vigente.motivo_revision, 'I')
+
+    def test_no_toca_las_evaluaciones_anteriores(self):
+        """Una evaluación de hace tres meses describía el equipo de entonces.
+
+        Es la diferencia con el cambio de tipos, que sí las invalida todas.
+        """
+        self.registrar()
+        self.antigua.refresh_from_db()
+        self.assertFalse(self.antigua.en_revision)
+
+    def test_la_incidencia_queda_registrada(self):
+        self.registrar('Fuga de aceite en el circuito hidráulico.')
+        incidencia = self.equipo.incidencias.get()
+        self.assertEqual(
+            incidencia.descripcion, 'Fuga de aceite en el circuito hidráulico.',
+        )
+
+    def test_una_incidencia_sin_descripcion_se_rechaza(self):
+        respuesta = self.client.post(self.url, {
+            'descripcion': '   ',
+            'fecha': timezone.localtime().strftime('%Y-%m-%dT%H:%M'),
+        })
+        self.assertEqual(respuesta.status_code, 200)
+        self.assertFalse(self.equipo.incidencias.exists())
+        self.vigente.refresh_from_db()
+        self.assertFalse(self.vigente.en_revision)
+
+    def test_un_equipo_sin_evaluar_admite_incidencias(self):
+        otro = Equipo.objects.create(codigo='EQ-301', nombre='Cizalla')
+        respuesta = self.client.post(
+            reverse('evaluaciones:incidencia_nueva', args=[otro.pk]),
+            {'descripcion': 'Ruido anómalo.',
+             'fecha': timezone.localtime().strftime('%Y-%m-%dT%H:%M')},
+        )
+        self.assertEqual(respuesta.status_code, 302)
+        self.assertEqual(otro.incidencias.count(), 1)
+
+    def test_registrar_incidencias_exige_sesion(self):
+        self.client.logout()
+        respuesta = self.client.get(self.url)
+        self.assertEqual(respuesta.status_code, 302)
+        self.assertIn('/cuentas/entrar/', respuesta['Location'])
 
 
 @override_settings(MEDIA_ROOT=TMP)

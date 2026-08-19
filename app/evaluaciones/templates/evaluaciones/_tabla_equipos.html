@@ -41,7 +41,7 @@ base.html, sobre la clase tabla-equipos.
                         está desfasada: quedaron criterios sin comprobar y un
                         «conforme» en verde daría una seguridad que no existe.
                         {% endcomment %}
-                        <span class="badge text-bg-warning">Desfasada</span>
+                        <span class="badge text-bg-warning">{{ ev.get_motivo_revision_display|default:"En revisión" }}</span>
                         <span class="text-secondary small">
                             último dictamen: {{ ev.dictamen|lower }} · {{ ev.fecha|date:"d/m/Y" }}
                         </span>

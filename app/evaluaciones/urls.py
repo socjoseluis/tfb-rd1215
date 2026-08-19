@@ -18,6 +18,7 @@ urlpatterns = [
     # se lee con un móvil en planta.
     path('q/<uuid:token>/', views.equipo_publico, name='equipo_publico'),
     path('equipos/<int:pk>/qr/', views.equipo_qr, name='equipo_qr'),
+    path('equipos/<int:pk>/incidencias/nueva/', views.incidencia_nueva, name='incidencia_nueva'),
     path('equipos/<int:pk>/documentos/subir/', views.documento_subir, name='documento_subir'),
     path('equipos/<int:pk>/documentos/no-procede/', views.exencion_nueva, name='exencion_nueva'),
     path('exenciones/<int:pk>/retirar/', views.exencion_retirar, name='exencion_retirar'),

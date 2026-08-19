@@ -28,6 +28,7 @@
   "pk": 10,
   "fields": {
     "codigo": "EQ-001",
+    "token": "d2b0e70c-2381-4e4b-bda5-ab27a3df39ab",
     "linea": 4,
     "nombre": "Prensa hidráulica",
     "marca_modelo": "ACME P200",
@@ -42,6 +43,7 @@
   "pk": 11,
   "fields": {
     "codigo": "EQ-002",
+    "token": "bc75196e-c8a4-4b47-857e-df690b35ddbb",
     "linea": 4,
     "nombre": "Cizalla",
     "marca_modelo": "ACME C50",
@@ -56,6 +58,7 @@
   "pk": 12,
   "fields": {
     "codigo": "EQ-003",
+    "token": "92509caa-5c65-4948-9aea-45556a167321",
     "linea": 5,
     "nombre": "Taladro de columna",
     "marca_modelo": "Bosch TC10",
@@ -70,6 +73,7 @@
   "pk": 13,
   "fields": {
     "codigo": "EQ-004",
+    "token": "435948a2-6060-42ed-9550-c0c659763cf2",
     "linea": null,
     "nombre": "Compresor",
     "marca_modelo": "",
@@ -84,6 +88,7 @@
   "pk": 14,
   "fields": {
     "codigo": "EQ-005",
+    "token": "58c29389-a7f9-431a-915c-1003bf7d0a2c",
     "linea": 5,
     "nombre": "Sierra de cinta",
     "marca_modelo": "Makita SC30",
@@ -98,12 +103,13 @@
   "pk": 15,
   "fields": {
     "codigo": "EQ-006",
+    "token": "4c1c16e7-b57f-4f4a-bc09-166f4ce86a25",
     "linea": 6,
     "nombre": "Soldadora",
     "marca_modelo": "Lincoln SW100",
     "num_serie": "SN-1006",
     "anio": 2021,
-    "tipos_confirmados": false,
+    "tipos_confirmados": true,
     "tipos": []
   }
 },
@@ -112,6 +118,7 @@
   "pk": 16,
   "fields": {
     "codigo": "EQ-007",
+    "token": "d5503956-71f4-4cfe-a7b9-2ed2bc9257a7",
     "linea": null,
     "nombre": "Puente grúa",
     "marca_modelo": "ACME PG50",
@@ -129,6 +136,7 @@
   "pk": 17,
   "fields": {
     "codigo": "EQ-008",
+    "token": "1a6b6fa0-7a23-455f-b1da-945a17e4d5a7",
     "linea": null,
     "nombre": "Carretilla elevadora",
     "marca_modelo": "ACME CE25",
@@ -146,6 +154,7 @@
   "pk": 18,
   "fields": {
     "codigo": "EQ-009",
+    "token": "b7b032ac-87bb-4858-907e-619f7c97550d",
     "linea": null,
     "nombre": "Llave dinamométrica",
     "marca_modelo": "Stahlwille 730",
@@ -161,7 +170,8 @@
   "fields": {
     "equipo": 17,
     "fecha": "2026-07-20T16:25:13.164Z",
-    "en_revision": false
+    "en_revision": false,
+    "motivo_revision": ""
   }
 },
 {
@@ -170,7 +180,8 @@
   "fields": {
     "equipo": 10,
     "fecha": "2026-07-20T16:27:25.781Z",
-    "en_revision": false
+    "en_revision": false,
+    "motivo_revision": ""
   }
 },
 {
@@ -179,7 +190,8 @@
   "fields": {
     "equipo": 16,
     "fecha": "2026-07-20T16:32:18.322Z",
-    "en_revision": true
+    "en_revision": true,
+    "motivo_revision": "T"
   }
 },
 {
@@ -188,7 +200,8 @@
   "fields": {
     "equipo": 16,
     "fecha": "2026-07-20T16:35:19.738Z",
-    "en_revision": false
+    "en_revision": false,
+    "motivo_revision": ""
   }
 },
 {
@@ -197,7 +210,8 @@
   "fields": {
     "equipo": 11,
     "fecha": "2026-08-18T18:58:46.076Z",
-    "en_revision": false
+    "en_revision": false,
+    "motivo_revision": ""
   }
 },
 {
@@ -206,7 +220,8 @@
   "fields": {
     "equipo": 12,
     "fecha": "2026-08-18T19:00:21.682Z",
-    "en_revision": false
+    "en_revision": false,
+    "motivo_revision": ""
   }
 },
 {
@@ -1833,6 +1848,133 @@
     "no_conformidades": [
       247
     ]
+  }
+},
+{
+  "model": "evaluaciones.documento",
+  "pk": 1,
+  "fields": {
+    "equipo": 17,
+    "tipo": "MF",
+    "tipo_otro": "",
+    "titulo": "Manual de instrucciones del fabricante",
+    "fichero": "documentos/17/manual_de_instrucciones_del_fabricante.pdf",
+    "publico": true,
+    "fecha_subida": "2026-08-19T15:38:23.496Z"
+  }
+},
+{
+  "model": "evaluaciones.documento",
+  "pk": 2,
+  "fields": {
+    "equipo": 17,
+    "tipo": "IU",
+    "tipo_otro": "",
+    "titulo": "Instrucciones de uso seguro (art. 5.2)",
+    "fichero": "documentos/17/instrucciones_de_uso_seguro_art._5.2.pdf",
+    "publico": true,
+    "fecha_subida": "2026-08-19T15:38:23.506Z"
+  }
+},
+{
+  "model": "evaluaciones.documento",
+  "pk": 3,
+  "fields": {
+    "equipo": 17,
+    "tipo": "CE",
+    "tipo_otro": "",
+    "titulo": "Declaracion CE de conformidad",
+    "fichero": "documentos/17/declaracion_ce_de_conformidad.pdf",
+    "publico": true,
+    "fecha_subida": "2026-08-19T15:38:23.514Z"
+  }
+},
+{
+  "model": "evaluaciones.documento",
+  "pk": 4,
+  "fields": {
+    "equipo": 17,
+    "tipo": "RC",
+    "tipo_otro": "",
+    "titulo": "Acta de comprobacion periodica 2026",
+    "fichero": "documentos/17/acta_de_comprobacion_periodica_2026.pdf",
+    "publico": false,
+    "fecha_subida": "2026-08-19T15:38:23.521Z"
+  }
+},
+{
+  "model": "evaluaciones.documento",
+  "pk": 5,
+  "fields": {
+    "equipo": 17,
+    "tipo": "OT",
+    "tipo_otro": "Procedimiento de bloqueo y etiquetado",
+    "titulo": "Procedimiento LOTO de la carretilla",
+    "fichero": "documentos/17/procedimiento_loto_de_la_carretilla.pdf",
+    "publico": true,
+    "fecha_subida": "2026-08-19T15:38:32.963Z"
+  }
+},
+{
+  "model": "evaluaciones.documento",
+  "pk": 6,
+  "fields": {
+    "equipo": 10,
+    "tipo": "MF",
+    "tipo_otro": "",
+    "titulo": "Manual de instrucciones del fabricante",
+    "fichero": "documentos/10/manual_de_instrucciones_del_fabricante.pdf",
+    "publico": true,
+    "fecha_subida": "2026-08-19T15:38:32.970Z"
+  }
+},
+{
+  "model": "evaluaciones.documento",
+  "pk": 7,
+  "fields": {
+    "equipo": 10,
+    "tipo": "RC",
+    "tipo_otro": "",
+    "titulo": "Acta de comprobacion inicial",
+    "fichero": "documentos/10/acta_de_comprobacion_inicial.pdf",
+    "publico": false,
+    "fecha_subida": "2026-08-19T15:38:32.978Z"
+  }
+},
+{
+  "model": "evaluaciones.documento",
+  "pk": 8,
+  "fields": {
+    "equipo": 17,
+    "tipo": "MC",
+    "tipo_otro": "",
+    "titulo": "Placa de características con marcado CE",
+    "fichero": "documentos/17/placa.png",
+    "publico": true,
+    "fecha_subida": "2026-08-19T17:14:26.315Z"
+  }
+},
+{
+  "model": "evaluaciones.documento",
+  "pk": 9,
+  "fields": {
+    "equipo": 17,
+    "tipo": "RM",
+    "tipo_otro": "",
+    "titulo": "Parte de mantenimiento preventivo",
+    "fichero": "documentos/17/parte.pdf",
+    "publico": false,
+    "fecha_subida": "2026-08-19T17:14:26.319Z"
+  }
+},
+{
+  "model": "evaluaciones.exenciondocumental",
+  "pk": 1,
+  "fields": {
+    "equipo": 17,
+    "tipo": "RM",
+    "motivo": "No se hace registro de este mantenimiento, aunque si se hace mantenimiento",
+    "fecha": "2026-08-19T16:48:39.977Z"
   }
 }
 ]

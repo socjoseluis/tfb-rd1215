@@ -7,8 +7,14 @@
     {% if evaluacion.en_revision %}
         <div class="alert alert-warning">
             <strong>Esta evaluación está pendiente de revisión.</strong>
-            Se han añadido tipos al equipo después de realizarla, de modo que
-            hay criterios del Anexo I.2 que no llegaron a comprobarse.
+            {% if evaluacion.motivo_revision == 'I' %}
+                Se ha registrado una incidencia en el equipo después de
+                realizarla, así que el dictamen describe un estado que ya no
+                se puede dar por bueno.
+            {% else %}
+                Se han añadido tipos al equipo después de realizarla, de modo
+                que hay criterios del Anexo I.2 que no llegaron a comprobarse.
+            {% endif %}
             <a href="{% url 'evaluaciones:evaluacion_nueva' pk=evaluacion.equipo.pk %}">Evaluar de nuevo</a>
         </div>
     {% endif %}
@@ -49,7 +55,7 @@
                 <dt class="col-sm-3">Dictamen</dt>
                 <dd class="col-sm-9">
                     {% if evaluacion.en_revision %}
-                        <span class="badge text-bg-warning">Desfasada</span>
+                        <span class="badge text-bg-warning">{{ evaluacion.get_motivo_revision_display|default:"En revisión" }}</span>
                         <span class="text-secondary">— el dictamen fue «{{ evaluacion.dictamen|lower }}»</span>
                     {% elif evaluacion.dictamen == "Conforme" %}
                         <span class="badge text-bg-success">{{ evaluacion.dictamen }}</span>

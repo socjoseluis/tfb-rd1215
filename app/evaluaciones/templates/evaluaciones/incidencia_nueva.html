@@ -1,0 +1,36 @@
+{% extends "evaluaciones/base.html" %}
+
+{% block titulo %}Registrar incidencia{% endblock %}
+{% block encabezado %}Registrar incidencia{% endblock %}
+
+{% block contenido %}
+    <p class="text-secondary">
+        En el equipo <strong>{{ equipo }}</strong> ({{ equipo.codigo }}).
+    </p>
+
+    {% if sin_evaluacion %}
+        <div class="alert alert-secondary">
+            Este equipo no se ha evaluado todavía, así que la incidencia queda
+            registrada pero no hay ninguna evaluación que marcar para revisión.
+        </div>
+    {% else %}
+        <div class="alert alert-warning">
+            Al registrarla, <strong>la evaluación vigente quedará marcada para
+            revisión</strong>: su dictamen se emitió sobre un equipo que ya no
+            está en ese estado. Las evaluaciones anteriores no se tocan, porque
+            describían correctamente el equipo en su momento.
+        </div>
+    {% endif %}
+
+    <div class="card">
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary">Registrar</button>
+                <a class="btn btn-outline-secondary"
+                   href="{% url 'evaluaciones:equipo_detalle' pk=equipo.pk %}">Cancelar</a>
+            </form>
+        </div>
+    </div>
+{% endblock %}
