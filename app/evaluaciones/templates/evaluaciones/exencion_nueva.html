@@ -1,0 +1,31 @@
+{% extends "evaluaciones/base.html" %}
+
+{% block titulo %}Documento que no procede{% endblock %}
+{% block encabezado %}Declarar un documento que no procede{% endblock %}
+
+{% block contenido %}
+    <p class="text-secondary">
+        Para el equipo <strong>{{ equipo }}</strong> ({{ equipo.codigo }}).
+    </p>
+
+    <div class="alert alert-secondary">
+        Solo aparecen aquí los documentos que el Real Decreto 1215/1997 no
+        exige siempre. El <strong>manual del fabricante</strong> y la
+        <strong>declaración CE</strong> no se pueden declarar así: si el manual
+        no está a disposición de los trabajadores, eso es una no conformidad
+        del criterio, y si la máquina es anterior al marcado CE, lo que
+        corresponde es responder «No aplica» a ese criterio al evaluar.
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary">Declarar</button>
+                <a class="btn btn-outline-secondary"
+                   href="{% url 'evaluaciones:equipo_detalle' pk=equipo.pk %}">Cancelar</a>
+            </form>
+        </div>
+    </div>
+{% endblock %}

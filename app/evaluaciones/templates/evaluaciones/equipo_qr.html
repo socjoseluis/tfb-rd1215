@@ -1,0 +1,42 @@
+{% extends "evaluaciones/base.html" %}
+
+{% block titulo %}QR de {{ equipo.codigo }}{% endblock %}
+{% block encabezado %}Etiqueta del equipo{% endblock %}
+
+{% block estilos %}
+<style>
+    /* Al imprimir solo debe salir la etiqueta: el menú, los botones y el
+       texto de ayuda son de la pantalla, no del papel que se pega a la
+       máquina. */
+    @media print {
+        .navbar, .no-imprimir, h1 { display: none !important; }
+        body { background: #fff !important; }
+        .etiqueta { border: 1px solid #000; }
+    }
+</style>
+{% endblock %}
+
+{% block contenido %}
+    <div class="etiqueta card mb-3" style="max-width: 22rem;">
+        <div class="card-body text-center">
+            {{ qr_svg|safe }}
+            <div class="fw-bold mt-2">{{ equipo.codigo }}</div>
+            <div>{{ equipo.nombre }}</div>
+            {% if equipo.linea %}
+                <div class="small text-secondary">{{ equipo.linea }}</div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="no-imprimir">
+        <p class="small text-secondary">
+            Al escanearlo se abre
+            <a href="{{ destino }}">{{ destino }}</a>.
+            Sin identificarse se ven los datos básicos y la documentación
+            marcada como pública; con la sesión abierta, la ficha completa.
+        </p>
+        <button type="button" class="btn btn-primary" onclick="window.print()">Imprimir</button>
+        <a class="btn btn-outline-secondary"
+           href="{% url 'evaluaciones:equipo_detalle' pk=equipo.pk %}">Volver a la ficha</a>
+    </div>
+{% endblock %}

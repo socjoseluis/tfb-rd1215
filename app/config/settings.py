@@ -151,6 +151,19 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+
+# Ficheros subidos por el usuario: la documentación de los equipos (RF-09).
+# Se separan de los estáticos a propósito. Los estáticos son parte del
+# programa y viajan con él; estos los sube quien usa la aplicación, cambian
+# sin que nadie despliegue nada y por eso no se versionan: media/ está en el
+# .gitignore. En desarrollo los sirve Django (ver config/urls.py); en
+# producción tendría que servirlos el servidor web.
+
+MEDIA_URL = 'media/'
+
+MEDIA_ROOT = BASE_DIR / 'media'
+
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 

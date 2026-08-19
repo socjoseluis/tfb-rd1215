@@ -37,6 +37,82 @@
         </div>
     </div>
 
+    <h2 class="h6">Documentación</h2>
+    {% comment %}
+    El aviso va aquí y no en cada fila del histórico: describe el estado de
+    hoy, y eso lo fija la evaluación vigente. Marcar evaluaciones antiguas
+    sería avisar de algo que la más reciente puede haber resuelto.
+    {% endcomment %}
+    {% if evidencias_pendientes %}
+        <div class="alert alert-info py-2">
+            <strong>Faltan documentos.</strong>
+            La evaluación vigente da por conformes criterios que se acreditan
+            con estos documentos, y no están subidos:
+            <ul class="mb-0 mt-1">
+                {% for criterio, documento in evidencias_pendientes %}
+                    <li>{{ documento }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+    {% comment %}
+    Las exenciones se ven, no desaparecen: son una declaración del técnico
+    sobre cómo se gestiona el equipo, y tiene que poder auditarse.
+    {% endcomment %}
+    {% if exenciones %}
+        <ul class="list-group mb-3">
+            {% for exencion in exenciones %}
+                <li class="list-group-item d-flex justify-content-between align-items-start gap-2">
+                    <div>
+                        <strong>{{ exencion.get_tipo_display }}</strong>
+                        <span class="badge text-bg-secondary">no procede</span>
+                        <div class="small text-secondary">{{ exencion.motivo }}</div>
+                    </div>
+                    <form method="post"
+                          action="{% url 'evaluaciones:exencion_retirar' pk=exencion.pk %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm btn-outline-secondary">Retirar</button>
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {% if documentos %}
+        <table class="table table-sm table-bordered align-middle bg-white">
+            <thead class="table-light">
+                <tr>
+                    <th scope="col">Tipo</th>
+                    <th scope="col">Título</th>
+                    <th scope="col">Subido</th>
+                    <th scope="col">Visibilidad</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for documento in documentos %}
+                <tr>
+                    <td>{{ documento.tipo_mostrado }}</td>
+                    <td>
+                        <a href="{% url 'evaluaciones:documento_descargar' pk=documento.pk %}">
+                            {{ documento.titulo }}
+                        </a>
+                    </td>
+                    <td>{{ documento.fecha_subida|date:"d/m/Y" }}</td>
+                    <td>
+                        {% if documento.publico %}
+                            <span class="badge text-bg-success">Público</span>
+                        {% else %}
+                            <span class="text-secondary">Solo con sesión</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="text-secondary">Este equipo no tiene documentación subida.</p>
+    {% endif %}
+
     <h2 class="h6">Histórico de evaluaciones</h2>
     {% if evaluaciones %}
         <table class="table table-sm table-bordered align-middle bg-white">
@@ -81,5 +157,8 @@
 
     <a class="btn btn-primary" href="{% url 'evaluaciones:evaluacion_nueva' pk=equipo.pk %}">Evaluar este equipo</a>
     <a class="btn btn-outline-secondary" href="{% url 'evaluaciones:equipo_editar' pk=equipo.pk %}">Editar datos</a>
+    <a class="btn btn-outline-secondary" href="{% url 'evaluaciones:documento_subir' pk=equipo.pk %}">Subir documento</a>
+    <a class="btn btn-outline-secondary" href="{% url 'evaluaciones:exencion_nueva' pk=equipo.pk %}">Documento que no procede</a>
+    <a class="btn btn-outline-secondary" href="{% url 'evaluaciones:equipo_qr' pk=equipo.pk %}">Código QR</a>
     <a class="btn btn-outline-secondary" href="{% url 'evaluaciones:equipo_alta' %}">Dar de alta otro equipo</a>
 {% endblock %}

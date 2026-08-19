@@ -1,0 +1,101 @@
+{% extends "evaluaciones/base.html" %}
+
+{% block titulo %}{{ equipo.codigo }} · {{ equipo.nombre }}{% endblock %}
+{% block encabezado %}{{ equipo.nombre }}{% endblock %}
+
+{% block contenido %}
+    <div class="card mb-3">
+        <div class="card-body">
+            <dl class="row mb-0">
+                <dt class="col-5 col-sm-3">Código</dt>
+                <dd class="col-7 col-sm-9">{{ equipo.codigo }}</dd>
+
+                <dt class="col-5 col-sm-3">Marca / modelo</dt>
+                <dd class="col-7 col-sm-9">{{ equipo.marca_modelo|default:"—" }}</dd>
+
+                <dt class="col-5 col-sm-3">Línea</dt>
+                <dd class="col-7 col-sm-9">{{ equipo.linea|default:"—" }}</dd>
+
+                <dt class="col-5 col-sm-3">Ubicación</dt>
+                <dd class="col-7 col-sm-9">{{ equipo.linea.ubicacion|default:"—" }}</dd>
+            </dl>
+        </div>
+    </div>
+
+    <h2 class="h6">Documentación</h2>
+    {% if documentos %}
+        <div class="list-group mb-3">
+            {% for documento in documentos %}
+                <a class="list-group-item list-group-item-action"
+                   href="{% url 'evaluaciones:documento_descargar' pk=documento.pk %}">
+                    {{ documento.titulo }}
+                    <span class="d-block small text-secondary">{{ documento.tipo_mostrado }}</span>
+                </a>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-secondary">Este equipo no tiene documentación disponible.</p>
+    {% endif %}
+
+    {% comment %}
+    Segunda capa (RF-10). El histórico solo llega al contexto si hay sesión,
+    así que aquí no se esconde nada: sin sesión no existe.
+    {% endcomment %}
+    {% if user.is_authenticated %}
+        <h2 class="h6">Histórico de evaluaciones</h2>
+        {% if evaluaciones %}
+            <table class="table table-sm table-bordered align-middle bg-white">
+                <thead class="table-light">
+                    <tr>
+                        <th scope="col">Fecha</th>
+                        <th scope="col">Dictamen</th>
+                        <th scope="col">Medidas abiertas</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for evaluacion in evaluaciones %}
+                    <tr>
+                        <td>{{ evaluacion.fecha|date:"d/m/Y" }}</td>
+                        <td>
+                            {% if evaluacion.en_revision %}
+                                <span class="text-secondary">{{ evaluacion.dictamen }}</span>
+                                <span class="badge text-bg-warning">Desfasada</span>
+                            {% elif evaluacion.dictamen == "Conforme" %}
+                                <span class="badge text-bg-success">{{ evaluacion.dictamen }}</span>
+                            {% else %}
+                                <span class="badge text-bg-danger">{{ evaluacion.dictamen }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% for medida in evaluacion.medidas.all %}
+                                {% if medida.estado == 'P' or medida.estado == 'EC' %}
+                                    <div>{{ medida.descripcion|truncatewords:10 }}
+                                        <span class="text-secondary">({{ medida.get_estado_display }})</span>
+                                    </div>
+                                {% endif %}
+                            {% empty %}
+                                <span class="text-secondary">—</span>
+                            {% endfor %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="text-secondary">Este equipo no se ha evaluado todavía.</p>
+        {% endif %}
+
+        {% comment %}
+        Esta pantalla es de consulta: el RF-10 pide solo lectura. Para actuar
+        sobre el equipo hay que ir a su ficha de gestión.
+        {% endcomment %}
+        <a class="btn btn-outline-secondary"
+           href="{% url 'evaluaciones:equipo_detalle' pk=equipo.pk %}">Ir a la ficha de gestión</a>
+    {% else %}
+        <p class="small text-secondary">
+            Información y documentación a disposición de los trabajadores
+            conforme al artículo 5.2 del Real Decreto 1215/1997.
+            <a href="{% url 'login' %}">Entrar</a> para consultar la ficha completa.
+        </p>
+    {% endif %}
+{% endblock %}

@@ -13,6 +13,30 @@
         </div>
     {% endif %}
 
+    {% comment %}
+    Aviso de evidencia documental, no de no conformidad: el dictamen no
+    cambia. Sirve para que nadie lea «Conforme» y cierre la pantalla sin
+    advertir que el documento que lo acredita no está en el sistema.
+    {% endcomment %}
+    {% if evidencias_pendientes %}
+        <div class="alert alert-info">
+            <strong>Faltan documentos que acreditan esta evaluación.</strong>
+            Se respondió «Conforme» a estos criterios y el equipo no tiene
+            subido el documento correspondiente:
+            <ul class="mb-2 mt-2">
+                {% for criterio, documento in evidencias_pendientes %}
+                    <li>{{ criterio.enunciado }} → <strong>{{ documento }}</strong></li>
+                {% endfor %}
+            </ul>
+            <a class="btn btn-sm btn-outline-primary"
+               href="{% url 'evaluaciones:documento_subir' pk=evaluacion.equipo.pk %}">Subir documento</a>
+            <span class="small">
+                Si la evidencia existe fuera de la aplicación, súbala escaneada
+                o déjelo constar en las indicaciones del criterio.
+            </span>
+        </div>
+    {% endif %}
+
     <div class="card mb-4">
         <div class="card-body">
             <dl class="row mb-0">

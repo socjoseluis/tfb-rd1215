@@ -1,0 +1,55 @@
+{% extends "evaluaciones/base.html" %}
+
+{% block titulo %}Subir documento{% endblock %}
+{% block encabezado %}Subir documento{% endblock %}
+
+{% block contenido %}
+    <p class="text-secondary">
+        Para el equipo <strong>{{ equipo }}</strong> ({{ equipo.codigo }}).
+    </p>
+
+    <div class="card">
+        <div class="card-body">
+            {% comment %}
+                enctype es imprescindible: sin él el navegador envía solo el
+                nombre del fichero y el formulario responde que falta.
+            {% endcomment %}
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-primary">Subir</button>
+                <a class="btn btn-outline-secondary"
+                   href="{% url 'evaluaciones:equipo_detalle' pk=equipo.pk %}">Cancelar</a>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // El título es opcional: si se deja vacío, el documento se guarda con
+        // el nombre de su tipo. Esto lo adelanta en el hueco del campo para
+        // que no haya sorpresa al guardar. Es solo ayuda visual: quien tenga
+        // el JavaScript desactivado ve un campo vacío y el resultado es el
+        // mismo, porque quien rellena el título es el modelo.
+        (function () {
+            const tipo = document.getElementById('id_tipo');
+            const tipoOtro = document.getElementById('id_tipo_otro');
+            const titulo = document.getElementById('id_titulo');
+            if (!tipo || !titulo) { return; }
+
+            function actualizar() {
+                const otro = tipoOtro ? tipoOtro.value.trim() : '';
+                if (!tipo.value) {
+                    titulo.placeholder = '';
+                } else if (tipo.value === 'OT') {
+                    titulo.placeholder = otro;
+                } else {
+                    titulo.placeholder = tipo.options[tipo.selectedIndex].text;
+                }
+            }
+
+            tipo.addEventListener('change', actualizar);
+            if (tipoOtro) { tipoOtro.addEventListener('input', actualizar); }
+            actualizar();
+        })();
+    </script>
+{% endblock %}

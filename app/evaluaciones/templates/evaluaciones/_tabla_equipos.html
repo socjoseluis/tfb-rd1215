@@ -46,7 +46,19 @@ base.html, sobre la clase tabla-equipos.
                             último dictamen: {{ ev.dictamen|lower }} · {{ ev.fecha|date:"d/m/Y" }}
                         </span>
                     {% elif ev.dictamen == "Conforme" %}
-                        <span class="badge text-bg-success">{{ ev.dictamen }}</span>
+                        {% comment %}
+                        Mismo criterio que con las desfasadas: un «conforme»
+                        en verde da por bueno el equipo de un vistazo, y si la
+                        evidencia documental no está, esa seguridad todavía no
+                        se ha ganado. No se pinta en rojo —no es un
+                        incumplimiento— sino en gris, con la marca al lado.
+                        {% endcomment %}
+                        {% if equipo.evidencias_pendientes %}
+                            <span class="badge text-bg-secondary">{{ ev.dictamen }}</span>
+                            <span class="badge text-bg-info">Sin documentación</span>
+                        {% else %}
+                            <span class="badge text-bg-success">{{ ev.dictamen }}</span>
+                        {% endif %}
                         <span class="text-secondary small">{{ ev.fecha|date:"d/m/Y" }}</span>
                     {% else %}
                         <span class="badge text-bg-danger">{{ ev.dictamen }}</span>
@@ -69,6 +81,27 @@ base.html, sobre la clase tabla-equipos.
                                 </div>
                             {% endif %}
                         {% endwith %}
+                    {% endif %}
+                {% endwith %}
+                {% comment %}
+                Va dentro de la columna de la última evaluación y no en una
+                columna propia: a 768 px ya se esconde la de tipos porque no
+                caben cuatro, y una quinta nacería oculta justo en el móvil,
+                que es donde se mira. Aquí abajo se lee sin robar ancho.
+
+                Se cuenta y no se listan los nombres para no romper la
+                alineación de las tablas; los nombres están en la ficha, a un
+                clic, y en el title para quien use ratón.
+                {% endcomment %}
+                {% with faltan=equipo.evidencias_pendientes %}
+                    {% if faltan %}
+                        <div class="small">
+                            <a href="{% url 'evaluaciones:equipo_detalle' pk=equipo.pk %}"
+                               title="{% for criterio, documento in faltan %}{{ documento }}{% if not forloop.last %}, {% endif %}{% endfor %}">
+                                falta{{ faltan|pluralize:"n" }} {{ faltan|length }}
+                                documento{{ faltan|pluralize }}
+                            </a>
+                        </div>
                     {% endif %}
                 {% endwith %}
             </td>

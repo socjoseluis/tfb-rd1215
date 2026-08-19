@@ -1,17 +1,25 @@
 from itertools import groupby
 
+import segno
 from django import forms
+from django.contrib.auth.decorators import login_not_required
 from django.db.models import Prefetch
 from django.forms import modelformset_factory
+from django.http import FileResponse, Http404
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.http import require_POST
 
-from .forms import EquipoForm, EquipoTiposForm, MedidaForm
+from .forms import (
+    DocumentoForm, EquipoForm, EquipoTiposForm, ExencionForm, MedidaForm,
+)
 from .importador import importar_equipos
-from .models import Criterio, Equipo, Evaluacion, Linea, Medida, Respuesta
+from .models import (
+    Criterio, Documento, Equipo, Evaluacion, ExencionDocumental, Linea,
+    Medida, Respuesta,
+)
 
 
 def _marcar_desfasadas(equipo, tipos_antes):
@@ -41,9 +49,14 @@ def inicio(request):
     # (por respuesta) y hasta cuándo llegan las fechas previstas (por
     # evaluación). Sin los dos, cada fila de la tabla consultaría por su
     # cuenta.
+    # «documentos» y el criterio de cada respuesta los pide además el aviso
+    # de evidencia documental de la última evaluación.
     equipos = Equipo.objects.prefetch_related(
         'tipos',
+        'documentos',
+        'exenciones',
         'evaluaciones__respuestas__medidas',
+        'evaluaciones__respuestas__criterio',
         'evaluaciones__medidas',
     )
     lineas = Linea.objects.prefetch_related(
@@ -79,19 +92,27 @@ def equipo_alta(request):
 
 
 def equipo_detalle(request, pk):
-    """Ficha de un equipo.
+    """Ficha de gestión de un equipo.
 
-    Es la base de la consulta en modo solo lectura (RF-10), pendiente
-    todavía del control de acceso por autenticación: hoy la ficha es
-    pública.
+    Exige sesión, como el resto de la aplicación. La consulta en modo solo
+    lectura del RF-10 no es esta pantalla, sino la que cuelga del código QR.
     """
-    equipo = get_object_or_404(Equipo, pk=pk)
-    # El dictamen recorre las respuestas de cada evaluación: sin prefetch
-    # sería una consulta por evaluación listada.
-    evaluaciones = equipo.evaluaciones.prefetch_related('respuestas')
+    # Los documentos se traen con el equipo porque cada evaluación los
+    # consulta para saber si le falta alguna evidencia: sin esto sería una
+    # consulta por evaluación.
+    equipo = get_object_or_404(
+        Equipo.objects.prefetch_related('documentos', 'exenciones'), pk=pk
+    )
+    # El dictamen recorre las respuestas de cada evaluación, y el aviso de
+    # evidencias necesita además su criterio: sin prefetch sería una consulta
+    # por evaluación listada.
+    evaluaciones = equipo.evaluaciones.prefetch_related('respuestas__criterio')
     return render(request, 'evaluaciones/equipo_detalle.html', {
         'equipo': equipo,
         'evaluaciones': evaluaciones,
+        'documentos': equipo.documentos.all(),
+        'exenciones': equipo.exenciones.all(),
+        'evidencias_pendientes': equipo.evidencias_pendientes,
     })
 
 
@@ -262,6 +283,7 @@ def evaluacion_detalle(request, pk):
         'respuestas': respuestas,
         'medidas': medidas,
         'hay_no_conformidades': any(r.resultado == 'NC' for r in respuestas),
+        'evidencias_pendientes': evaluacion.evidencias_pendientes,
     })
 
 
@@ -366,4 +388,172 @@ def medida_nueva(request, pk):
     return render(request, 'evaluaciones/medida_nueva.html', {
         'evaluacion': evaluacion,
         'form': form,
+    })
+
+
+def documento_subir(request, pk):
+    """Subida de un documento a la ficha de un equipo (RF-09).
+
+    La dirección cuelga del equipo, igual que el alta de una medida cuelga
+    de su evaluación: por eso el formulario no ofrece elegir el equipo.
+    """
+    equipo = get_object_or_404(Equipo, pk=pk)
+
+    if request.method == 'POST':
+        # Los ficheros no viajan en request.POST, sino en request.FILES. Sin
+        # ese segundo argumento el formulario daría «este campo es
+        # obligatorio» en el fichero por mucho que se hubiera elegido uno.
+        form = DocumentoForm(request.POST, request.FILES)
+        if form.is_valid():
+            documento = form.save(commit=False)
+            documento.equipo = equipo
+            # El equipo tiene que estar puesto antes de guardar: la carpeta
+            # de destino se calcula con su identificador.
+            documento.save()
+            return redirect('evaluaciones:equipo_detalle', pk=equipo.pk)
+    else:
+        form = DocumentoForm()
+
+    return render(request, 'evaluaciones/documento_subir.html', {
+        'equipo': equipo,
+        'form': form,
+    })
+
+
+@login_not_required
+def documento_descargar(request, pk):
+    """Entrega el fichero de un documento, si quien lo pide puede verlo.
+
+    Es la única puerta a los ficheros subidos: la carpeta media/ no se sirve
+    como ficheros sueltos. Hacerlo tendría dos efectos contrarios y ambos
+    malos: cualquiera que diera con la ruta abriría también los documentos
+    no públicos, y a la vez LoginRequiredMiddleware exigiría sesión para
+    todos, impidiendo al trabajador leer el manual, que es justo lo que el
+    artículo 5.2 del RD 1215/1997 obliga a permitir. Con una vista propia,
+    la regla vive en un solo sitio.
+
+    Se responde 404 y no 403 a propósito: un 403 confirmaría que el
+    documento existe a quien no puede verlo.
+    """
+    documento = get_object_or_404(Documento, pk=pk)
+
+    if not documento.publico and not request.user.is_authenticated:
+        raise Http404
+
+    try:
+        fichero = documento.fichero.open('rb')
+    except FileNotFoundError:
+        # La fila puede sobrevivir al fichero: borrar un equipo se lleva sus
+        # documentos de la base de datos pero no del disco, y una copia de
+        # seguridad restaurada a medias deja el caso contrario.
+        raise Http404
+
+    # as_attachment=False para que el móvil abra el PDF en el navegador en
+    # vez de descargarlo: en planta interesa verlo, no guardarlo.
+    return FileResponse(fichero, as_attachment=False)
+
+
+def exencion_nueva(request, pk):
+    """Declarar que un tipo de documento no procede en un equipo.
+
+    Cuelga del equipo y no de la evaluación a propósito: el motivo describe
+    cómo se gestiona ese equipo —el mantenimiento lo lleva un taller externo
+    sin registro, la información se imparte en la formación— y no una
+    inspección concreta. Declararlo en cada evaluación obligaría a repetir lo
+    mismo en cada visita.
+    """
+    equipo = get_object_or_404(Equipo, pk=pk)
+
+    if request.method == 'POST':
+        form = ExencionForm(request.POST, equipo=equipo)
+        if form.is_valid():
+            exencion = form.save(commit=False)
+            exencion.equipo = equipo
+            exencion.save()
+            return redirect('evaluaciones:equipo_detalle', pk=equipo.pk)
+    else:
+        form = ExencionForm(equipo=equipo)
+
+    return render(request, 'evaluaciones/exencion_nueva.html', {
+        'equipo': equipo,
+        'form': form,
+    })
+
+
+@require_POST
+def exencion_retirar(request, pk):
+    """Retirar una exención: el documento vuelve a pedirse.
+
+    Solo acepta POST porque modifica datos. Se borra en vez de marcarse como
+    retirada: la exención no es un hecho evaluado que haya que conservar,
+    como sí lo son las respuestas, sino una declaración vigente sobre cómo se
+    gestiona el equipo hoy.
+    """
+    exencion = get_object_or_404(ExencionDocumental, pk=pk)
+    equipo_pk = exencion.equipo_id
+    exencion.delete()
+    return redirect('evaluaciones:equipo_detalle', pk=equipo_pk)
+
+
+@login_not_required
+def equipo_publico(request, token):
+    """Consulta en campo de un equipo por su código QR (RF-08, 09 y 10).
+
+    Una sola pantalla con dos capas, que es como la describe la tarea T15 de
+    la planificación:
+
+    - Sin sesión (RF-09): datos básicos del equipo y los documentos marcados
+      como públicos. El artículo 5.2 del RD 1215/1997 obliga a poner esa
+      documentación a disposición de los trabajadores, y un trabajador no es
+      un usuario del sistema: la gestión de operarios está fuera de alcance
+      por el RGPD, así que no hay ninguna cuenta que pudiera pedirle.
+    - Con sesión (RF-10): además, la ficha completa en modo solo lectura.
+
+    Quien escanea no sabe en qué capa está ni le cambia el gesto, y no se
+    registra quién consulta.
+    """
+    equipo = get_object_or_404(Equipo, token=token)
+
+    documentos = equipo.documentos.all()
+    if not request.user.is_authenticated:
+        documentos = documentos.filter(publico=True)
+
+    contexto = {'equipo': equipo, 'documentos': documentos}
+
+    # El histórico solo se arma para quien puede verlo: construirlo y luego
+    # esconderlo en la plantilla dejaría los datos en el contexto de una
+    # página pública.
+    if request.user.is_authenticated:
+        contexto['evaluaciones'] = (
+            equipo.evaluaciones
+            .prefetch_related('respuestas', 'medidas')
+        )
+
+    return render(request, 'evaluaciones/equipo_publico.html', contexto)
+
+
+def equipo_qr(request, pk):
+    """Etiqueta imprimible con el código QR de un equipo (RF-08).
+
+    El QR se dibuja como SVG dentro de la propia página: es vectorial, así
+    que se imprime nítido al tamaño que haga falta, y no deja ficheros de
+    imagen que guardar, servir ni limpiar.
+
+    La dirección se construye con build_absolute_uri y no se escribe a mano
+    porque tiene que funcionar escaneada desde un móvil: una dirección
+    relativa no lleva a ninguna parte fuera del navegador, y localhost
+    apuntaría al propio teléfono.
+    """
+    equipo = get_object_or_404(Equipo, pk=pk)
+    destino = request.build_absolute_uri(
+        reverse('evaluaciones:equipo_publico', args=[equipo.token])
+    )
+    # Corrección de errores media: recupera hasta el 15 % del código. En una
+    # etiqueta pegada a una máquina, que acaba con polvo, grasa o un roce, el
+    # mínimo se queda corto.
+    qr = segno.make(destino, error='m')
+    return render(request, 'evaluaciones/equipo_qr.html', {
+        'equipo': equipo,
+        'destino': destino,
+        'qr_svg': qr.svg_inline(scale=6, border=2),
     })
