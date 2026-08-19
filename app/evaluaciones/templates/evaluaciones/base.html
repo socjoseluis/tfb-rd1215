@@ -26,22 +26,44 @@
             .tabla-equipos th:nth-child(2), .tabla-equipos td:nth-child(2) { width: 44%; }
             .tabla-equipos th:nth-child(4), .tabla-equipos td:nth-child(4) { width: 34%; }
         }
+        /* La barra de navegación no colapsa en un botón desplegable: eso
+           exigiría el componente JavaScript de Bootstrap, que este proyecto
+           no incorpora. En su lugar se le permite envolver en varias líneas,
+           que es lo que .navbar-expand desactiva por defecto, y se recorta
+           lo prescindible. Así el menú entra en un móvil sin dejar de ser
+           navegable (RNF-01). */
+        @media (max-width: 575.98px) {
+            .navbar-expand,
+            .navbar-expand > .container { flex-wrap: wrap; }
+            .navbar-nav { flex-wrap: wrap; }
+            .navbar-brand { font-size: 1rem; }
+            .navbar-nav .nav-link { padding-left: .4rem; padding-right: .4rem; }
+        }
     </style>
     {% block estilos %}{% endblock %}
 </head>
 <body class="bg-body-tertiary">
     <nav class="navbar navbar-expand navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="{% url 'evaluaciones:inicio' %}">Equipos · RD 1215/1997</a>
+            {% comment %}
+            La referencia a la norma se esconde en pantallas estrechas: en un
+            móvil ocupa media barra y quien está en planta ya sabe qué
+            aplicación tiene delante.
+            {% endcomment %}
+            <a class="navbar-brand" href="{% url 'evaluaciones:inicio' %}">Equipos<span
+                class="d-none d-sm-inline"> · RD 1215/1997</span></a>
             {% comment %}
             Sin sesión el menú no se muestra: sus destinos exigen
             autenticación y solo llevarían de vuelta a la entrada.
             {% endcomment %}
             {% if user.is_authenticated %}
+                {% comment %}
+                No hay entrada «Equipos» en el menú: el nombre de la
+                aplicación ya lleva a la portada, que es la lista de equipos.
+                Dos enlaces al mismo sitio hacen dudar de si van a sitios
+                distintos, y en un móvil ocupan sitio que no sobra.
+                {% endcomment %}
                 <ul class="navbar-nav me-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'evaluaciones:inicio' %}">Equipos</a>
-                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'evaluaciones:medidas' %}">Medidas</a>
                     </li>

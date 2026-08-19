@@ -22,6 +22,7 @@ urlpatterns = [
     path('equipos/<int:pk>/documentos/no-procede/', views.exencion_nueva, name='exencion_nueva'),
     path('exenciones/<int:pk>/retirar/', views.exencion_retirar, name='exencion_retirar'),
     path('documentos/<int:pk>/', views.documento_descargar, name='documento_descargar'),
+    path('documentos/<int:pk>/retirar/', views.documento_borrar, name='documento_borrar'),
     path('medidas/', views.medidas, name='medidas'),
     path('medidas/<int:pk>/estado/', views.medida_estado, name='medida_estado'),
     path('equipos/importar/', views.equipo_importar, name='equipo_importar'),

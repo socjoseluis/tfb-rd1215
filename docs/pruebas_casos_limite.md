@@ -1,11 +1,9 @@
-# Bordes detectados para el tramo de pruebas (E3)
+# Casos límite pendientes de cubrir con pruebas
 
 Notas técnicas en crudo. Cada punto es un caso que hoy no está cubierto y que
-debe traducirse en un test cuando se escriba la suite del E3 (hoy
-`python manage.py test` ejecuta 0 tests).
+debe traducirse en un test al ampliar la suite de pruebas.
 
-Origen: revisión crítica previa a la entrega del E2 (24/07/2026). Los tres
-primeros no son alcanzables desde la interfaz con uso normal; el cuarto sí.
+Origen: una revisión crítica del código. Los tres primeros no son alcanzables desde la interfaz con uso normal; el cuarto sí.
 
 ## 1. Criterio de año distinto entre alta y importación
 
@@ -49,14 +47,12 @@ en la llamada, sino en la primera iteración dentro de `importar_equipos`. Un
 `try/except` alrededor de la llamada no capturaría nada.
 
 *(Resuelto el 25/07/2026: los lectores devuelven listas y las excepciones se
-capturan por formato. Se mantiene aquí el caso para que la suite del E3 lo
-cubra.)*
+capturan por formato. Se mantiene aquí el caso para que la suite lo cubra.)*
 
 ## 5. Confirmación de tipos en el alta manual (decisión a revisar)
 
 No es un fallo: es una decisión de diseño razonada en el docstring de
-`equipo_alta`, pero tiene un flanco que conviene revisar en el E3. Planteada y
-aplazada conscientemente el 25/07/2026, el día antes de la entrega del E2.
+`equipo_alta`, pero tiene un flanco que conviene revisar.
 
 Comportamiento actual (`app/evaluaciones/views.py:57-60`): el alta manual pone
 `tipos_confirmados = True` **siempre**, incluso si no se marca ningún tipo. El
@@ -74,7 +70,7 @@ de apariencia válida al que le faltan los criterios del Anexo I.2.1 y I.2.2.
 
 Lo que hoy sostiene la decisión: el campo `tipos` lleva el `help_text` «Marque
 todos los que apliquen; […] Si no es de ninguno, déjelo sin marcar», visible en
-el formulario de alta (Figura 9 de la memoria). El valor por defecto está
+el formulario de alta. El valor por defecto está
 instruido, no es una suposición silenciosa. Lo que queda sin cubrir es el usuario
 que no lee el texto de ayuda.
 
@@ -82,8 +78,7 @@ Las dos salidas si se retoma:
 
 1. **Elección explícita en el alta**: exigir o al menos un tipo marcado, o una
    casilla «no es de ninguno». Solo entonces se confirma. Es lo correcto, pero
-   toca formulario, plantilla y validación, y obliga a rehacer la captura del
-   alta.
+   toca formulario, plantilla y validación.
 2. **Que el alta no confirme**: el equipo queda sin confirmar igual que los
    importados y la confirmación se hace siempre en la pantalla de tipos. Una sola
    puerta, a cambio de un paso más para el usuario.

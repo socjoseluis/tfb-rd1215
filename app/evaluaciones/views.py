@@ -56,7 +56,7 @@ def inicio(request):
         'documentos',
         'exenciones',
         'evaluaciones__respuestas__medidas',
-        'evaluaciones__respuestas__criterio',
+        'evaluaciones__respuestas__criterio__evidencias_esperadas',
         'evaluaciones__medidas',
     )
     lineas = Linea.objects.prefetch_related(
@@ -106,7 +106,9 @@ def equipo_detalle(request, pk):
     # El dictamen recorre las respuestas de cada evaluación, y el aviso de
     # evidencias necesita además su criterio: sin prefetch sería una consulta
     # por evaluación listada.
-    evaluaciones = equipo.evaluaciones.prefetch_related('respuestas__criterio')
+    evaluaciones = equipo.evaluaciones.prefetch_related(
+        'respuestas__criterio__evidencias_esperadas'
+    )
     return render(request, 'evaluaciones/equipo_detalle.html', {
         'equipo': equipo,
         'evaluaciones': evaluaciones,
@@ -451,6 +453,28 @@ def documento_descargar(request, pk):
     # as_attachment=False para que el móvil abra el PDF en el navegador en
     # vez de descargarlo: en planta interesa verlo, no guardarlo.
     return FileResponse(fichero, as_attachment=False)
+
+
+def documento_borrar(request, pk):
+    """Retira un documento de un equipo.
+
+    La confirmación es una página y no un aviso del navegador: el borrado es
+    irreversible y un confirm() de JavaScript deja de existir si el
+    JavaScript no se ejecuta. Además, así se puede decir qué se va a borrar.
+
+    El fichero del disco se lo lleva la señal post_delete del modelo.
+    """
+    documento = get_object_or_404(Documento.objects.select_related('equipo'), pk=pk)
+    equipo = documento.equipo
+
+    if request.method == 'POST':
+        documento.delete()
+        return redirect('evaluaciones:equipo_detalle', pk=equipo.pk)
+
+    return render(request, 'evaluaciones/documento_borrar.html', {
+        'documento': documento,
+        'equipo': equipo,
+    })
 
 
 def exencion_nueva(request, pk):

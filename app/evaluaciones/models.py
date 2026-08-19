@@ -1,12 +1,14 @@
 import uuid
 
 from django.db import models
+from django.dispatch import receiver
 from django.utils import timezone
 
-# Tipos de documento que puede tener un equipo. Los cuatro primeros los nombra
-# el RD 1215/1997; «Registro de mantenimiento» no —el art. 3.5 obliga a hacer
-# el mantenimiento, no a documentarlo— y se incluye por criterio del técnico,
-# porque es lo único que acreditaría ese cumplimiento.
+# Tipos de documento que puede tener un equipo. Salen del RD 1215/1997 el
+# manual y la información de utilización (art. 5.2) y el registro de
+# comprobación (art. 4.4). El registro de mantenimiento NO lo exige la norma
+# —el art. 3.5 obliga a hacer el mantenimiento, no a documentarlo— y se
+# incluye porque es lo único que acreditaría ese cumplimiento.
 #
 # Vive suelto y no dentro de Documento porque Criterio también lo usa para
 # decir qué documento lo acredita, y Criterio se declara antes en el fichero.
@@ -14,6 +16,13 @@ TIPOS_DOCUMENTO = [
     ('MF', 'Manual o instrucciones del fabricante'),
     ('IU', 'Información de utilización segura'),
     ('CE', 'Declaración CE de conformidad'),
+    # El marcado y la declaración no son lo mismo: el marcado es la placa
+    # atornillada a la máquina, que se comprueba mirando en planta, y la
+    # declaración es el papel que emite el fabricante. Van separados para no
+    # confundirlos. Este tipo no lo reclama ningún criterio: exigir una
+    # fotografía a cada equipo no sale de ninguna norma, es evidencia de
+    # apoyo que el técnico adjunta si le conviene.
+    ('MC', 'Fotografía del marcado CE o placa de características'),
     ('RC', 'Registro de comprobación'),
     ('RM', 'Registro de mantenimiento'),
     ('OT', 'Otro'),
@@ -207,24 +216,65 @@ class Criterio(models.Model):
     )
     enunciado = models.CharField(max_length=500)
     orden = models.PositiveIntegerField(default=0)
-    # Qué documento acredita este criterio, si alguno. Responder «Conforme»
-    # sin tenerlo subido no invalida la evaluación —el técnico puede haberlo
-    # comprobado en papel—, pero sí se avisa: leer «Conforme» y cerrar la
-    # pantalla sin ver que la evidencia no está es una falsa sensación de
-    # conformidad. Vacío significa que el criterio no espera documento.
-    tipo_documento = models.CharField(
-        'Documento que lo acredita',
-        max_length=2,
-        choices=TIPOS_DOCUMENTO,
-        blank=True,
-        help_text='Vacío si este criterio no se acredita con un documento.',
-    )
 
     class Meta:
         ordering = ['grupo', 'orden']
 
+    @property
+    def tipos_esperados(self):
+        """Tipos de documento que acreditan este criterio, si alguno.
+
+        Son varios y no uno porque un mismo criterio puede pedir más de una
+        cosa: el del marcado CE se acredita con la declaración del fabricante
+        y con la fotografía de la placa atornillada a la máquina, que son
+        documentos distintos de hechos distintos.
+        """
+        return [
+            evidencia.tipo for evidencia in self.evidencias_esperadas.all()
+        ]
+
     def __str__(self):
         return self.enunciado[:75]
+
+
+class EvidenciaEsperada(models.Model):
+    """Documento que acredita un criterio.
+
+    Es una tabla y no un campo del criterio porque la relación es de varios a
+    varios: un criterio puede pedir más de un documento —el del marcado CE
+    pide la declaración del fabricante y la fotografía de la placa— y un
+    mismo tipo de documento puede acreditar varios criterios.
+
+    Responder «Conforme» sin tener el documento no invalida la evaluación: el
+    técnico ha podido comprobarlo en planta. Solo se avisa, para que nadie
+    lea «Conforme» y cierre la pantalla sin advertir que la evidencia no está
+    en el sistema.
+    """
+
+    criterio = models.ForeignKey(
+        Criterio,
+        on_delete=models.CASCADE,
+        related_name='evidencias_esperadas',
+    )
+    tipo = models.CharField(
+        'Tipo de documento',
+        max_length=2,
+        choices=TIPOS_DOCUMENTO,
+    )
+
+    class Meta:
+        verbose_name = 'Evidencia esperada'
+        verbose_name_plural = 'Evidencias esperadas'
+        ordering = ['criterio', 'tipo']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['criterio', 'tipo'],
+                name='unique_evidencia_por_tipo_en_criterio',
+            ),
+        ]
+
+    def __str__(self):
+        return f"{self.criterio} ← {self.get_tipo_display()}"
 
 
 class Evaluacion(models.Model):
@@ -303,11 +353,11 @@ class Evaluacion(models.Model):
         } | self.equipo.tipos_eximidos
         nombres = dict(TIPOS_DOCUMENTO)
         return [
-            (respuesta.criterio, nombres[respuesta.criterio.tipo_documento])
+            (respuesta.criterio, nombres[tipo])
             for respuesta in self.respuestas.all()
             if respuesta.resultado == 'C'
-            and respuesta.criterio.tipo_documento
-            and respuesta.criterio.tipo_documento not in cubiertos
+            for tipo in respuesta.criterio.tipos_esperados
+            if tipo not in cubiertos
         ]
 
     @property
@@ -513,6 +563,24 @@ class Documento(models.Model):
 
     def __str__(self):
         return f"{self.tipo_mostrado()} — {self.titulo}"
+
+
+@receiver(models.signals.post_delete, sender=Documento)
+def borrar_fichero_del_documento(sender, instance, **kwargs):
+    """Al borrar un documento, borra también su fichero del disco.
+
+    Django dejó de hacerlo en la versión 1.3 para no destruir ficheros por
+    accidente, y con razón cuando varias filas pueden apuntar al mismo. Aquí
+    no ocurre: cada subida guarda su propio fichero, y el almacenamiento
+    añade un sufijo si el nombre ya existe. Sin esto, cada borrado —y cada
+    equipo borrado, que arrastra sus documentos— dejaría basura invisible en
+    media/.
+
+    save=False evita que el borrado del fichero intente guardar una fila que
+    ya no existe.
+    """
+    if instance.fichero:
+        instance.fichero.delete(save=False)
 
 
 class ExencionDocumental(models.Model):

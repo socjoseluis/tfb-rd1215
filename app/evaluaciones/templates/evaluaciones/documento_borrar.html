@@ -1,0 +1,45 @@
+{% extends "evaluaciones/base.html" %}
+
+{% block titulo %}Retirar documento{% endblock %}
+{% block encabezado %}Retirar documento{% endblock %}
+
+{% block contenido %}
+    <div class="alert alert-warning">
+        <strong>Esta acción no se puede deshacer.</strong>
+        Se retira el documento de la ficha y se borra su fichero.
+    </div>
+
+    <div class="card mb-3">
+        <div class="card-body">
+            <dl class="row mb-0">
+                <dt class="col-sm-3">Equipo</dt>
+                <dd class="col-sm-9">{{ equipo.codigo }} — {{ equipo }}</dd>
+
+                <dt class="col-sm-3">Tipo</dt>
+                <dd class="col-sm-9">{{ documento.tipo_mostrado }}</dd>
+
+                <dt class="col-sm-3">Título</dt>
+                <dd class="col-sm-9">{{ documento.titulo }}</dd>
+
+                <dt class="col-sm-3">Subido</dt>
+                <dd class="col-sm-9">{{ documento.fecha_subida|date:"d/m/Y" }}</dd>
+
+                <dt class="col-sm-3">Visibilidad</dt>
+                <dd class="col-sm-9">
+                    {% if documento.publico %}
+                        Visible sin autenticar
+                    {% else %}
+                        Solo con sesión
+                    {% endif %}
+                </dd>
+            </dl>
+        </div>
+    </div>
+
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Retirar el documento</button>
+        <a class="btn btn-outline-secondary"
+           href="{% url 'evaluaciones:equipo_detalle' pk=equipo.pk %}">Cancelar</a>
+    </form>
+{% endblock %}

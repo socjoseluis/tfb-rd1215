@@ -1,3 +1,4 @@
+import os
 import tempfile
 
 from django.contrib.auth.models import User
@@ -7,8 +8,8 @@ from django.urls import reverse
 
 from .forms import ExencionForm
 from .models import (
-    Criterio, Documento, Equipo, Evaluacion, ExencionDocumental,
-    GrupoCriterio, Respuesta,
+    Criterio, Documento, Equipo, Evaluacion, EvidenciaEsperada,
+    ExencionDocumental, GrupoCriterio, Respuesta,
 )
 
 TMP = tempfile.mkdtemp()
@@ -76,6 +77,29 @@ class HumoDocumentos(TestCase):
             self.publico.fichero.name.startswith(f'documentos/{self.equipo.pk}/')
         )
 
+    def test_borrar_el_documento_borra_su_fichero(self):
+        ruta = self.publico.fichero.path
+        self.assertTrue(os.path.exists(ruta))
+        self.publico.delete()
+        self.assertFalse(os.path.exists(ruta))
+
+    def test_borrar_el_equipo_se_lleva_los_ficheros(self):
+        rutas = [self.publico.fichero.path, self.privado.fichero.path]
+        self.equipo.delete()
+        self.assertEqual([r for r in rutas if os.path.exists(r)], [])
+
+    def test_retirar_un_documento_exige_confirmar(self):
+        User.objects.create_user('tecnico', password='x')
+        self.client.login(username='tecnico', password='x')
+        url = reverse('evaluaciones:documento_borrar', args=[self.publico.pk])
+
+        # Un GET solo enseña la confirmación: no borra nada.
+        self.assertEqual(self.client.get(url).status_code, 200)
+        self.assertTrue(Documento.objects.filter(pk=self.publico.pk).exists())
+
+        self.client.post(url)
+        self.assertFalse(Documento.objects.filter(pk=self.publico.pk).exists())
+
 
 @override_settings(MEDIA_ROOT=TMP)
 class EvidenciaDocumental(TestCase):
@@ -89,8 +113,9 @@ class EvidenciaDocumental(TestCase):
         self.equipo = Equipo.objects.create(codigo='EQ-200', nombre='Prensa')
         grupo = GrupoCriterio.objects.create(nombre='GC-00')
         self.criterio = Criterio.objects.create(
-            grupo=grupo, enunciado='¿Tiene marcado CE?', tipo_documento='CE',
+            grupo=grupo, enunciado='¿Tiene marcado CE?',
         )
+        EvidenciaEsperada.objects.create(criterio=self.criterio, tipo='CE')
         self.sin_documento = Criterio.objects.create(
             grupo=grupo, enunciado='¿Los mandos son visibles?',
         )
@@ -150,8 +175,8 @@ class EvidenciaDocumental(TestCase):
     def test_una_exencion_apaga_el_aviso(self):
         criterio_rm = Criterio.objects.create(
             grupo=self.criterio.grupo, enunciado='¿Mantenimiento?',
-            tipo_documento='RM',
         )
+        EvidenciaEsperada.objects.create(criterio=criterio_rm, tipo='RM')
         self.responder(criterio_rm, 'C')
         self.assertTrue(self.evaluacion.evidencias_pendientes)
 

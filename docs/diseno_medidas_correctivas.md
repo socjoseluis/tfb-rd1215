@@ -1,7 +1,7 @@
 # Diseño del RF-06: medidas correctivas
 
-Decisiones tomadas el 17/08/2026, antes de escribir nada de código. Notas
-técnicas en crudo: la redacción de la memoria se hace aparte.
+Notas técnicas del requisito RF-06, seguimiento de las medidas correctivas
+derivadas de las no conformidades. Decidido antes de escribir el código.
 
 ## De qué cuelga una medida
 
@@ -38,8 +38,8 @@ se decidió.
 
 ## Lo que NO lleva
 
-- **Responsable de la medida.** Sería un dato personal, y el Capítulo 3 declara
-  la gestión de personas fuera de alcance por el RGPD.
+- **Responsable de la medida.** Sería un dato personal, y la gestión de
+  personas queda fuera del alcance del proyecto por el RGPD.
 - **Efecto sobre el dictamen.** Cerrar una medida no cambia el dictamen de la
   evaluación: el RF-03 exige que el histórico no se sobrescriba. La conformidad
   se recupera evaluando de nuevo, y la medida cerrada queda como el rastro de
@@ -51,8 +51,7 @@ se decidió.
    conformidades de esa evaluación en casillas.
 2. **Las medidas visibles dentro de la evaluación** que las originó.
 3. **Listado propio de seguimiento**, transversal a todos los equipos, con
-   filtro por estado. Es lo que da sentido a la palabra «seguimiento» del RF-06
-   y lo que se llevará una captura a la memoria.
+   filtro por estado. Es lo que da sentido a la palabra «seguimiento» del RF-06.
 
 Todo ello para usuario autenticado: el alta y el cierre de medidas no son
 acciones anónimas.

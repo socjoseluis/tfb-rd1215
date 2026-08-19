@@ -127,8 +127,7 @@
     "fields": {
       "grupo": 1,
       "enunciado": "¿El equipo satisface las disposiciones legales y reglamentarias que le son de aplicación (marcado CE conforme a la normativa de comercialización)?",
-      "orden": 1,
-      "tipo_documento": "CE"
+      "orden": 1
     }
   },
   {
@@ -137,8 +136,7 @@
     "fields": {
       "grupo": 1,
       "enunciado": "¿El mantenimiento se realiza teniendo en cuenta las instrucciones del fabricante?",
-      "orden": 2,
-      "tipo_documento": "RM"
+      "orden": 2
     }
   },
   {
@@ -147,8 +145,7 @@
     "fields": {
       "grupo": 1,
       "enunciado": "¿La documentación informativa facilitada por el fabricante está a disposición de los trabajadores?",
-      "orden": 3,
-      "tipo_documento": "MF"
+      "orden": 3
     }
   },
   {
@@ -419,6 +416,39 @@
       "grupo": 11,
       "enunciado": "Si eleva o desplaza trabajadores, ¿se evita la caída del habitáculo, la caída fuera de él y el aplastamiento, y se garantiza la liberación en caso de bloqueo?",
       "orden": 4
+    }
+  },
+
+  {
+    "model": "evaluaciones.evidenciaesperada",
+    "pk": 1,
+    "fields": {
+      "criterio": 1,
+      "tipo": "CE"
+    }
+  },
+  {
+    "model": "evaluaciones.evidenciaesperada",
+    "pk": 2,
+    "fields": {
+      "criterio": 1,
+      "tipo": "MC"
+    }
+  },
+  {
+    "model": "evaluaciones.evidenciaesperada",
+    "pk": 3,
+    "fields": {
+      "criterio": 2,
+      "tipo": "RM"
+    }
+  },
+  {
+    "model": "evaluaciones.evidenciaesperada",
+    "pk": 4,
+    "fields": {
+      "criterio": 3,
+      "tipo": "MF"
     }
   }
 ]
