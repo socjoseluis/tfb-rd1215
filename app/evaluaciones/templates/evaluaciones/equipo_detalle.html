@@ -123,7 +123,10 @@
         <ul class="list-group mb-3">
             {% for incidencia in incidencias %}
                 <li class="list-group-item">
-                    <div class="small text-secondary">{{ incidencia.fecha|date:"d/m/Y H:i" }}</div>
+                    <div class="small text-secondary">
+                        {{ incidencia.fecha|date:"d/m/Y H:i" }}
+                        · registrada por {{ incidencia.autor|default:"usuario dado de baja" }}
+                    </div>
                     {{ incidencia.descripcion }}
                 </li>
             {% endfor %}

@@ -285,6 +285,37 @@ class RegistroDeIncidencias(TestCase):
         self.assertEqual(respuesta.status_code, 302)
         self.assertEqual(otro.incidencias.count(), 1)
 
+    def test_la_incidencia_queda_firmada_por_quien_la_registra(self):
+        """Lo que tumba un dictamen lleva firma.
+
+        Sin autor, cualquiera con cuenta podría marcar para revisión la
+        evaluación de cualquier equipo sin que se pudiera saber quién fue.
+        """
+        self.registrar()
+        self.assertEqual(
+            self.equipo.incidencias.get().autor.get_username(), 'tecnico',
+        )
+
+    def test_no_se_puede_firmar_en_nombre_de_otro(self):
+        otro = User.objects.create_user('intruso', password='x')
+        self.client.post(self.url, {
+            'descripcion': 'Intento de firmar como otro.',
+            'fecha': timezone.localtime().strftime('%Y-%m-%dT%H:%M'),
+            'autor': otro.pk,
+        })
+        # El autor lo pone la sesión, no el formulario.
+        self.assertEqual(
+            self.equipo.incidencias.get().autor.get_username(), 'tecnico',
+        )
+
+    def test_la_incidencia_sobrevive_a_la_baja_de_su_autor(self):
+        self.registrar()
+        User.objects.get(username='tecnico').delete()
+        incidencia = self.equipo.incidencias.get()
+        self.assertIsNone(incidencia.autor)
+        self.vigente.refresh_from_db()
+        self.assertTrue(self.vigente.en_revision)
+
     def test_registrar_incidencias_exige_sesion(self):
         self.client.logout()
         respuesta = self.client.get(self.url)

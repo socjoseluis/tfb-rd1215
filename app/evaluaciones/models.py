@@ -1,5 +1,6 @@
 import uuid
 
+from django.conf import settings
 from django.db import models
 from django.dispatch import receiver
 from django.utils import timezone
@@ -454,15 +455,35 @@ class Incidencia(models.Model):
     que salgan generan medidas correctivas con su propio ciclo (RF-06). Darle
     aquí un ciclo de vida propio duplicaría ese seguimiento.
 
-    Tampoco guarda quién la registra. Es un dato personal, no lo pide el
-    requisito y el prototipo no atribuye ningún registro a su autor; la
-    trazabilidad por usuario queda como trabajo futuro.
+    Sí guarda quién la registra, a diferencia del resto del prototipo, y la
+    línea que lo justifica es esta: una incidencia **invalida un registro de
+    conformidad**, y lo que tumba un dictamen lleva firma. Subir un documento
+    o proponer una medida no invalidan nada. Sin autor, cualquiera con cuenta
+    podría marcar para revisión la evaluación de cualquier equipo sin que
+    nadie pudiera saber quién fue.
+
+    No choca con la exclusión de la gestión de personas: el autor es un
+    usuario de la aplicación, dado de alta con su cuenta, no un operario. Es
+    dato de auditoría, no de dominio.
     """
 
     equipo = models.ForeignKey(
         Equipo,
         on_delete=models.CASCADE,
         related_name='incidencias',
+    )
+    # SET_NULL y no CASCADE: si se da de baja a un técnico, sus incidencias
+    # tienen que sobrevivir. Borrarlas dejaría evaluaciones marcadas para
+    # revisión sin nada que explique por qué. Que la autoría se pierda al
+    # borrar la cuenta es además coherente con la minimización de datos.
+    autor = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='incidencias',
+        verbose_name='Registrada por',
+        editable=False,
     )
     descripcion = models.TextField('Descripción')
     fecha = models.DateTimeField('Fecha', default=timezone.now)

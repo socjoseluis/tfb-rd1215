@@ -483,6 +483,10 @@ def incidencia_nueva(request, pk):
             with transaction.atomic():
                 incidencia = form.save(commit=False)
                 incidencia.equipo = equipo
+                # Quién la registra no lo elige el formulario: lo pone la
+                # sesión. Un campo editable permitiría firmar en nombre de
+                # otro, que es justo lo que la firma tiene que impedir.
+                incidencia.autor = request.user
                 incidencia.save()
 
                 evaluacion = equipo.ultima_evaluacion

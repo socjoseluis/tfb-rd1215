@@ -24,6 +24,11 @@
 
     <div class="card">
         <div class="card-body">
+            <p class="small text-secondary">
+                La incidencia quedará registrada a nombre de
+                <strong>{{ user.get_username }}</strong>: marcar una evaluación
+                para revisión no es una acción anónima.
+            </p>
             <form method="post">
                 {% csrf_token %}
                 {{ form.as_p }}
