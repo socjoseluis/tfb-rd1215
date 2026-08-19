@@ -408,7 +408,7 @@ def documento_subir(request, pk):
         # Los ficheros no viajan en request.POST, sino en request.FILES. Sin
         # ese segundo argumento el formulario daría «este campo es
         # obligatorio» en el fichero por mucho que se hubiera elegido uno.
-        form = DocumentoForm(request.POST, request.FILES)
+        form = DocumentoForm(request.POST, request.FILES, equipo=equipo)
         if form.is_valid():
             documento = form.save(commit=False)
             documento.equipo = equipo
@@ -417,7 +417,7 @@ def documento_subir(request, pk):
             documento.save()
             return redirect('evaluaciones:equipo_detalle', pk=equipo.pk)
     else:
-        form = DocumentoForm()
+        form = DocumentoForm(equipo=equipo)
 
     return render(request, 'evaluaciones/documento_subir.html', {
         'equipo': equipo,

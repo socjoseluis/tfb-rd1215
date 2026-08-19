@@ -485,12 +485,44 @@ class Incidencia(models.Model):
         verbose_name='Registrada por',
         editable=False,
     )
+    # Copia del nombre de usuario en el momento de registrar. La clave ajena
+    # se pierde si alguien borra la cuenta de verdad, y entonces quedaría una
+    # evaluación tumbada sin saber por quién. Lo normal es desactivar al
+    # técnico (is_active = False) en vez de borrarlo, que conserva el enlace y
+    # además reserva el nombre para que nadie lo reutilice; esto es la red por
+    # si aun así se borra.
+    #
+    # Conservarlo no depende de la voluntad de quien firma: el derecho de
+    # supresión no alcanza a lo que el empresario está obligado a documentar
+    # y a mantener a disposición de la autoridad laboral, que es el caso de
+    # la actividad preventiva. El límite de conservación es funcional —la
+    # vida útil del equipo, los plazos de prescripción—, no una petición del
+    # interesado, a quien sí le quedan el acceso y la rectificación.
+    autor_username = models.CharField(
+        'Registrada por (nombre guardado)',
+        max_length=150,
+        blank=True,
+        editable=False,
+    )
     descripcion = models.TextField('Descripción')
     fecha = models.DateTimeField('Fecha', default=timezone.now)
 
     class Meta:
         ordering = ['-fecha']
         verbose_name_plural = 'Incidencias'
+
+    def save(self, *args, **kwargs):
+        """Copia el nombre de quien firma, la primera vez."""
+        if self.autor and not self.autor_username:
+            self.autor_username = self.autor.get_username()
+        return super().save(*args, **kwargs)
+
+    @property
+    def firma(self):
+        """Quién registró la incidencia, exista todavía su cuenta o no."""
+        if self.autor:
+            return self.autor.get_username()
+        return self.autor_username or 'desconocido'
 
     def __str__(self):
         return f"{self.equipo} — {self.fecha:%Y-%m-%d}"

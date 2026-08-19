@@ -8,7 +8,7 @@ from django.test import TestCase, override_settings
 from django.urls import reverse
 from django.utils import timezone
 
-from .forms import ExencionForm
+from .forms import DocumentoForm, ExencionForm
 from .models import (
     Criterio, Documento, Equipo, Evaluacion, EvidenciaEsperada,
     ExencionDocumental, GrupoCriterio, Respuesta,
@@ -203,6 +203,28 @@ class EvidenciaDocumental(TestCase):
         self.assertNotIn('CE', ofrecidos)
         self.assertIn('RM', ofrecidos)
 
+    def test_no_se_puede_subir_un_documento_de_un_tipo_eximido(self):
+        """El equipo no puede decir dos cosas contrarias a la vez."""
+        ExencionDocumental.objects.create(
+            equipo=self.equipo, tipo='RM', motivo='Taller externo sin registro.',
+        )
+        form = DocumentoForm(
+            {'tipo': 'RM', 'titulo': 'Parte de mantenimiento', 'publico': False},
+            {'fichero': SimpleUploadedFile('p.pdf', b'%PDF-1.4 falso')},
+            equipo=Equipo.objects.get(pk=self.equipo.pk),
+        )
+        self.assertFalse(form.is_valid())
+        self.assertIn('tipo', form.errors)
+
+    def test_no_se_puede_eximir_un_tipo_que_ya_esta_subido(self):
+        Documento.objects.create(
+            equipo=self.equipo, tipo='RM',
+            fichero=SimpleUploadedFile('p.pdf', b'%PDF-1.4 falso'),
+        )
+        form = ExencionForm(equipo=Equipo.objects.get(pk=self.equipo.pk))
+        ofrecidos = [codigo for codigo, _ in form.fields['tipo'].choices if codigo]
+        self.assertNotIn('RM', ofrecidos)
+
     def test_una_exencion_sin_motivo_se_rechaza(self):
         form = ExencionForm(
             {'tipo': 'RM', 'motivo': '   '}, equipo=self.equipo,
@@ -315,6 +337,32 @@ class RegistroDeIncidencias(TestCase):
         self.assertIsNone(incidencia.autor)
         self.vigente.refresh_from_db()
         self.assertTrue(self.vigente.en_revision)
+
+    def test_la_firma_sobrevive_al_borrado_de_la_cuenta(self):
+        """Lo normal es desactivar al técnico, no borrarlo.
+
+        Pero si alguien lo borra de verdad, la incidencia tiene que seguir
+        diciendo quién la registró: si no, queda una evaluación tumbada sin
+        saber por quién.
+        """
+        self.registrar()
+        User.objects.get(username='tecnico').delete()
+        incidencia = self.equipo.incidencias.get()
+        self.assertIsNone(incidencia.autor)
+        self.assertEqual(incidencia.firma, 'tecnico')
+
+    def test_desactivar_al_tecnico_conserva_todo(self):
+        self.registrar()
+        usuario = User.objects.get(username='tecnico')
+        usuario.is_active = False
+        usuario.save(update_fields=['is_active'])
+
+        incidencia = self.equipo.incidencias.get()
+        self.assertEqual(incidencia.firma, 'tecnico')
+        self.assertIsNotNone(incidencia.autor)
+        # Y esa cuenta ya no entra.
+        self.client.logout()
+        self.assertFalse(self.client.login(username='tecnico', password='x'))
 
     def test_registrar_incidencias_exige_sesion(self):
         self.client.logout()

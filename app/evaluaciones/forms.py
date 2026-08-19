@@ -108,7 +108,8 @@ class DocumentoForm(forms.ModelForm):
     """Subida de un documento a la ficha de un equipo (RF-09).
 
     El equipo no es un campo: viene de la dirección, igual que la evaluación
-    en MedidaForm.
+    en MedidaForm. Sí hace falta conocerlo para rechazar un tipo que se haya
+    declarado «no procede» en ese equipo.
     """
 
     EXTENSIONES = ('.pdf', '.jpg', '.jpeg', '.png')
@@ -118,7 +119,8 @@ class DocumentoForm(forms.ModelForm):
         model = Documento
         fields = ['tipo', 'tipo_otro', 'titulo', 'fichero', 'publico']
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, equipo, **kwargs):
+        self.equipo = equipo
         super().__init__(*args, **kwargs)
         for nombre, campo in self.fields.items():
             if isinstance(campo.widget, forms.CheckboxInput):
@@ -173,6 +175,18 @@ class DocumentoForm(forms.ModelForm):
             self.add_error(
                 'tipo_otro',
                 'Indique de qué documento se trata al elegir «Otro».',
+            )
+
+        # Un documento de un tipo declarado «no procede» deja al equipo
+        # diciendo dos cosas contrarias a la vez, y el aviso de evidencia
+        # documental se apagaría por la exención mientras el documento está
+        # ahí. Se corta aquí y se dice cuál de las dos hay que retirar.
+        tipo = datos.get('tipo')
+        if tipo and tipo in self.equipo.tipos_eximidos:
+            self.add_error(
+                'tipo',
+                'Este equipo tiene declarado que ese documento no procede. '
+                'Retire primero esa declaración desde la ficha del equipo.',
             )
         return datos
 
@@ -232,11 +246,18 @@ class ExencionForm(forms.ModelForm):
     def __init__(self, *args, equipo, **kwargs):
         super().__init__(*args, **kwargs)
 
-        ya_eximidos = equipo.tipos_eximidos
+        # Se retiran los tipos ya eximidos, para no ofrecer una declaración
+        # que la restricción de unicidad rechazaría después con un error de
+        # base de datos, y los que el equipo ya tiene subidos: declarar que no
+        # procede algo que está ahí es contradecirse.
+        self.equipo = equipo
+        fuera = equipo.tipos_eximidos | {
+            documento.tipo for documento in equipo.documentos.all()
+        }
         self.fields['tipo'].choices = [
             (codigo, nombre)
             for codigo, nombre in self.fields['tipo'].choices
-            if codigo not in ya_eximidos
+            if codigo not in fuera
         ]
 
         for campo in self.fields.values():

@@ -200,8 +200,8 @@
   "fields": {
     "equipo": 16,
     "fecha": "2026-07-20T16:35:19.738Z",
-    "en_revision": false,
-    "motivo_revision": ""
+    "en_revision": true,
+    "motivo_revision": "I"
   }
 },
 {
@@ -210,8 +210,8 @@
   "fields": {
     "equipo": 11,
     "fecha": "2026-08-18T18:58:46.076Z",
-    "en_revision": false,
-    "motivo_revision": ""
+    "en_revision": true,
+    "motivo_revision": "I"
   }
 },
 {
@@ -1955,19 +1955,6 @@
   }
 },
 {
-  "model": "evaluaciones.documento",
-  "pk": 9,
-  "fields": {
-    "equipo": 17,
-    "tipo": "RM",
-    "tipo_otro": "",
-    "titulo": "Parte de mantenimiento preventivo",
-    "fichero": "documentos/17/parte.pdf",
-    "publico": false,
-    "fecha_subida": "2026-08-19T17:14:26.319Z"
-  }
-},
-{
   "model": "evaluaciones.exenciondocumental",
   "pk": 1,
   "fields": {
@@ -1975,6 +1962,28 @@
     "tipo": "RM",
     "motivo": "No se hace registro de este mantenimiento, aunque si se hace mantenimiento",
     "fecha": "2026-08-19T16:48:39.977Z"
+  }
+},
+{
+  "model": "evaluaciones.incidencia",
+  "pk": 1,
+  "fields": {
+    "equipo": 16,
+    "autor": null,
+    "autor_username": "tecnico",
+    "descripcion": "Durante la maniobra de descenso, el gancho se ha detenido de forma brusca. El operario informa de un ruido metálico en el reductor. Equipo retirado de servicio.",
+    "fecha": "2026-08-07T17:52:16.306Z"
+  }
+},
+{
+  "model": "evaluaciones.incidencia",
+  "pk": 2,
+  "fields": {
+    "equipo": 11,
+    "autor": null,
+    "autor_username": "tecnico",
+    "descripcion": "El pulsador de parada de emergencia se queda enclavado y hay que forzarlo para rearmarlo.",
+    "fecha": "2026-08-16T17:52:16.314Z"
   }
 }
 ]
