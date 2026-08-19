@@ -5,14 +5,21 @@
 
 {% block contenido %}
     {# Cada filtro es una dirección propia: se puede enlazar y compartir. #}
-    <div class="btn-group btn-group-sm mb-3" role="group" aria-label="Filtrar por estado">
-        <a class="btn {% if estado == 'abiertas' %}btn-primary{% else %}btn-outline-primary{% endif %}"
+    {% comment %}
+    No es un btn-group de Bootstrap: ese componente mantiene los botones
+    pegados en una sola línea y no se parte nunca, de modo que con seis
+    filtros se salía de la pantalla en un móvil y arrastraba la página
+    entera en horizontal. Aquí envuelven, y de paso cada botón conserva su
+    tamaño en vez de estrujarse hasta partir la palabra.
+    {% endcomment %}
+    <div class="d-flex flex-wrap gap-1 mb-3" role="group" aria-label="Filtrar por estado">
+        <a class="btn btn-sm {% if estado == 'abiertas' %}btn-primary{% else %}btn-outline-primary{% endif %}"
            href="{% url 'evaluaciones:medidas' %}?estado=abiertas">Abiertas</a>
         {% for clave, nombre in estados %}
-            <a class="btn {% if estado == clave %}btn-primary{% else %}btn-outline-primary{% endif %}"
+            <a class="btn btn-sm {% if estado == clave %}btn-primary{% else %}btn-outline-primary{% endif %}"
                href="{% url 'evaluaciones:medidas' %}?estado={{ clave }}">{{ nombre }}</a>
         {% endfor %}
-        <a class="btn {% if estado == 'todas' %}btn-primary{% else %}btn-outline-primary{% endif %}"
+        <a class="btn btn-sm {% if estado == 'todas' %}btn-primary{% else %}btn-outline-primary{% endif %}"
            href="{% url 'evaluaciones:medidas' %}?estado=todas">Todas</a>
     </div>
 
