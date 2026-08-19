@@ -17,6 +17,7 @@
     </div>
 
     {% if medidas %}
+        <div class="table-responsive">
         <table class="table table-sm table-bordered align-middle bg-white">
             <thead class="table-light">
                 <tr>
@@ -35,7 +36,7 @@
                         <a href="{% url 'evaluaciones:equipo_detalle' pk=medida.evaluacion.equipo.pk %}">{{ medida.evaluacion.equipo.codigo }}</a>
                     </td>
                     <td>
-                        {{ medida.descripcion }}
+                        {{ medida.descripcion|capfirst }}
                         <div class="small text-secondary">
                             <a href="{% url 'evaluaciones:evaluacion_detalle' pk=medida.evaluacion.pk %}">Evaluación del {{ medida.evaluacion.fecha|date:"d/m/Y" }}</a>
                         </div>
@@ -84,6 +85,7 @@
             {% endfor %}
             </tbody>
         </table>
+        </div>
     {% else %}
         <div class="alert alert-info">
             No hay ninguna medida que mostrar con este filtro.

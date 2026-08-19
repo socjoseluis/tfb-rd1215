@@ -44,7 +44,8 @@
     {% if user.is_authenticated %}
         <h2 class="h6">Histórico de evaluaciones</h2>
         {% if evaluaciones %}
-            <table class="table table-sm table-bordered align-middle bg-white">
+            <div class="table-responsive">
+        <table class="table table-sm table-bordered align-middle bg-white">
                 <thead class="table-light">
                     <tr>
                         <th scope="col">Fecha</th>
@@ -74,7 +75,7 @@
                         <td>
                             {% for medida in evaluacion.medidas.all %}
                                 {% if medida.estado == 'P' or medida.estado == 'EC' %}
-                                    <div>{{ medida.descripcion|truncatewords:10 }}
+                                    <div>{{ medida.descripcion|capfirst|truncatewords:10 }}
                                         <span class="text-secondary">({{ medida.get_estado_display }})</span>
                                     </div>
                                 {% endif %}
@@ -86,6 +87,7 @@
                 {% endfor %}
                 </tbody>
             </table>
+        </div>
         {% else %}
             <p class="text-secondary">Este equipo no se ha evaluado todavía.</p>
         {% endif %}

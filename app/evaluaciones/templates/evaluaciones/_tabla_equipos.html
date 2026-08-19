@@ -26,15 +26,15 @@ base.html, sobre la clase tabla-equipos.
                 {% if equipo.tipos.all %}
                     {{ equipo.tipos.all|join:", " }}
                 {% elif equipo.tipos_confirmados %}
-                    ninguno
+                    Ninguno
                 {% else %}
-                    <span class="badge text-bg-warning">sin confirmar</span>
+                    <span class="badge text-bg-warning">Sin confirmar</span>
                 {% endif %}
             </td>
             <td>
                 {% with ev=equipo.ultima_evaluacion %}
                     {% if not ev %}
-                        <span class="text-secondary">sin evaluar</span>
+                        <span class="text-secondary">Sin evaluar</span>
                         {% comment %}
                         Una incidencia en un equipo sin evaluar no tiene
                         evaluación que marcar, así que sin esto no aparecería
@@ -61,7 +61,7 @@ base.html, sobre la clase tabla-equipos.
                             <span class="badge text-bg-warning">{{ ev.get_motivo_revision_display|default:"En revisión" }}</span>
                         {% endif %}
                         <span class="text-secondary small">
-                            último dictamen: {{ ev.dictamen|lower }} · {{ ev.fecha|date:"d/m/Y" }}
+                            Último dictamen: {{ ev.dictamen|lower }} · {{ ev.fecha|date:"d/m/Y" }}
                         </span>
                     {% elif ev.dictamen == "Conforme" %}
                         {% comment %}
@@ -90,11 +90,11 @@ base.html, sobre la clase tabla-equipos.
                             {% if sin_medida %}
                                 <div class="small">
                                     <span class="text-danger">{{ sin_medida|length }} sin medida</span>
-                                    · <a href="{% url 'evaluaciones:medida_nueva' pk=ev.pk %}">añadir medida</a>
+                                    · <a href="{% url 'evaluaciones:medida_nueva' pk=ev.pk %}">Añadir medida</a>
                                 </div>
                             {% else %}
                                 <div class="small text-secondary">
-                                    todas con medida{% if ev.fecha_prevista_limite %},
+                                    Todas con medida{% if ev.fecha_prevista_limite %},
                                     prevista hasta el {{ ev.fecha_prevista_limite|date:"d/m/Y" }}{% endif %}
                                 </div>
                             {% endif %}
@@ -116,7 +116,7 @@ base.html, sobre la clase tabla-equipos.
                         <div class="small">
                             <a href="{% url 'evaluaciones:equipo_detalle' pk=equipo.pk %}"
                                title="{% for criterio, documento in faltan %}{{ documento }}{% if not forloop.last %}, {% endif %}{% endfor %}">
-                                falta{{ faltan|pluralize:"n" }} {{ faltan|length }}
+                                Falta{{ faltan|pluralize:"n" }} {{ faltan|length }}
                                 documento{{ faltan|pluralize }}
                             </a>
                         </div>

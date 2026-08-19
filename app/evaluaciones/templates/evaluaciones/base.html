@@ -11,6 +11,12 @@
            producción: así sus columnas quedan alineadas entre sí. Los anchos
            solo se respetan con table-layout fijo. */
         .tabla-equipos { table-layout: fixed; }
+
+        /* Con anchos fijos, una cadena larga y sin espacios —un código de
+           equipo tecleado del tirón— no cabe en su celda y se sale encima de
+           la de al lado. El navegador solo parte por espacios si no se le
+           dice otra cosa. */
+        .tabla-equipos td, .tabla-equipos th { overflow-wrap: anywhere; }
         .tabla-equipos th:nth-child(1), .tabla-equipos td:nth-child(1) { width: 16%; }
         .tabla-equipos th:nth-child(2), .tabla-equipos td:nth-child(2) { width: 34%; }
         .tabla-equipos th:nth-child(3), .tabla-equipos td:nth-child(3) { width: 25%; }
