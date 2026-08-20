@@ -74,7 +74,7 @@
   "fields": {
     "codigo": "EQ-004",
     "token": "435948a2-6060-42ed-9550-c0c659763cf2",
-    "linea": null,
+    "linea": 6,
     "nombre": "Compresor",
     "marca_modelo": "",
     "num_serie": "",
@@ -165,6 +165,23 @@
   }
 },
 {
+  "model": "evaluaciones.equipo",
+  "pk": 20,
+  "fields": {
+    "codigo": "EQ-010",
+    "token": "2cc1aa9b-50ab-4a98-bb61-613a5c6fd0b9",
+    "linea": null,
+    "nombre": "Transpaleta eléctrica",
+    "marca_modelo": "ACME TE15",
+    "num_serie": "TE15-2291",
+    "anio": 2021,
+    "tipos_confirmados": true,
+    "tipos": [
+      1
+    ]
+  }
+},
+{
   "model": "evaluaciones.evaluacion",
   "pk": 5,
   "fields": {
@@ -222,6 +239,36 @@
     "fecha": "2026-08-18T19:00:21.682Z",
     "en_revision": true,
     "motivo_revision": "T"
+  }
+},
+{
+  "model": "evaluaciones.evaluacion",
+  "pk": 13,
+  "fields": {
+    "equipo": 17,
+    "fecha": "2026-08-20T13:07:20.644Z",
+    "en_revision": false,
+    "motivo_revision": ""
+  }
+},
+{
+  "model": "evaluaciones.evaluacion",
+  "pk": 14,
+  "fields": {
+    "equipo": 20,
+    "fecha": "2026-08-20T13:07:20.776Z",
+    "en_revision": false,
+    "motivo_revision": ""
+  }
+},
+{
+  "model": "evaluaciones.evaluacion",
+  "pk": 15,
+  "fields": {
+    "equipo": 15,
+    "fecha": "2026-08-20T13:07:20.906Z",
+    "en_revision": false,
+    "motivo_revision": ""
   }
 },
 {
@@ -1805,6 +1852,876 @@
   }
 },
 {
+  "model": "evaluaciones.respuesta",
+  "pk": 324,
+  "fields": {
+    "evaluacion": 13,
+    "criterio": 1,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 325,
+  "fields": {
+    "evaluacion": 13,
+    "criterio": 2,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 326,
+  "fields": {
+    "evaluacion": 13,
+    "criterio": 3,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 327,
+  "fields": {
+    "evaluacion": 13,
+    "criterio": 34,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 328,
+  "fields": {
+    "evaluacion": 13,
+    "criterio": 4,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 329,
+  "fields": {
+    "evaluacion": 13,
+    "criterio": 5,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 330,
+  "fields": {
+    "evaluacion": 13,
+    "criterio": 6,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 331,
+  "fields": {
+    "evaluacion": 13,
+    "criterio": 7,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 332,
+  "fields": {
+    "evaluacion": 13,
+    "criterio": 8,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 333,
+  "fields": {
+    "evaluacion": 13,
+    "criterio": 9,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 334,
+  "fields": {
+    "evaluacion": 13,
+    "criterio": 10,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 335,
+  "fields": {
+    "evaluacion": 13,
+    "criterio": 11,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 336,
+  "fields": {
+    "evaluacion": 13,
+    "criterio": 12,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 337,
+  "fields": {
+    "evaluacion": 13,
+    "criterio": 13,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 338,
+  "fields": {
+    "evaluacion": 13,
+    "criterio": 14,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 339,
+  "fields": {
+    "evaluacion": 13,
+    "criterio": 15,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 340,
+  "fields": {
+    "evaluacion": 13,
+    "criterio": 16,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 341,
+  "fields": {
+    "evaluacion": 13,
+    "criterio": 17,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 342,
+  "fields": {
+    "evaluacion": 13,
+    "criterio": 18,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 343,
+  "fields": {
+    "evaluacion": 13,
+    "criterio": 19,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 344,
+  "fields": {
+    "evaluacion": 13,
+    "criterio": 20,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 345,
+  "fields": {
+    "evaluacion": 13,
+    "criterio": 21,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 346,
+  "fields": {
+    "evaluacion": 13,
+    "criterio": 22,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 347,
+  "fields": {
+    "evaluacion": 13,
+    "criterio": 23,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 348,
+  "fields": {
+    "evaluacion": 13,
+    "criterio": 24,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 349,
+  "fields": {
+    "evaluacion": 13,
+    "criterio": 25,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 350,
+  "fields": {
+    "evaluacion": 13,
+    "criterio": 26,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 351,
+  "fields": {
+    "evaluacion": 13,
+    "criterio": 27,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 352,
+  "fields": {
+    "evaluacion": 13,
+    "criterio": 28,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 353,
+  "fields": {
+    "evaluacion": 13,
+    "criterio": 29,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 354,
+  "fields": {
+    "evaluacion": 13,
+    "criterio": 30,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 355,
+  "fields": {
+    "evaluacion": 13,
+    "criterio": 31,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 356,
+  "fields": {
+    "evaluacion": 13,
+    "criterio": 32,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 357,
+  "fields": {
+    "evaluacion": 13,
+    "criterio": 33,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 358,
+  "fields": {
+    "evaluacion": 14,
+    "criterio": 1,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 359,
+  "fields": {
+    "evaluacion": 14,
+    "criterio": 2,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 360,
+  "fields": {
+    "evaluacion": 14,
+    "criterio": 3,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 361,
+  "fields": {
+    "evaluacion": 14,
+    "criterio": 34,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 362,
+  "fields": {
+    "evaluacion": 14,
+    "criterio": 4,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 363,
+  "fields": {
+    "evaluacion": 14,
+    "criterio": 5,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 364,
+  "fields": {
+    "evaluacion": 14,
+    "criterio": 6,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 365,
+  "fields": {
+    "evaluacion": 14,
+    "criterio": 7,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 366,
+  "fields": {
+    "evaluacion": 14,
+    "criterio": 8,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 367,
+  "fields": {
+    "evaluacion": 14,
+    "criterio": 9,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 368,
+  "fields": {
+    "evaluacion": 14,
+    "criterio": 10,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 369,
+  "fields": {
+    "evaluacion": 14,
+    "criterio": 11,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 370,
+  "fields": {
+    "evaluacion": 14,
+    "criterio": 12,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 371,
+  "fields": {
+    "evaluacion": 14,
+    "criterio": 13,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 372,
+  "fields": {
+    "evaluacion": 14,
+    "criterio": 14,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 373,
+  "fields": {
+    "evaluacion": 14,
+    "criterio": 15,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 374,
+  "fields": {
+    "evaluacion": 14,
+    "criterio": 16,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 375,
+  "fields": {
+    "evaluacion": 14,
+    "criterio": 17,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 376,
+  "fields": {
+    "evaluacion": 14,
+    "criterio": 18,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 377,
+  "fields": {
+    "evaluacion": 14,
+    "criterio": 19,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 378,
+  "fields": {
+    "evaluacion": 14,
+    "criterio": 20,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 379,
+  "fields": {
+    "evaluacion": 14,
+    "criterio": 21,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 380,
+  "fields": {
+    "evaluacion": 14,
+    "criterio": 22,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 381,
+  "fields": {
+    "evaluacion": 14,
+    "criterio": 23,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 382,
+  "fields": {
+    "evaluacion": 14,
+    "criterio": 24,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 383,
+  "fields": {
+    "evaluacion": 14,
+    "criterio": 25,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 384,
+  "fields": {
+    "evaluacion": 14,
+    "criterio": 26,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 385,
+  "fields": {
+    "evaluacion": 14,
+    "criterio": 27,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 386,
+  "fields": {
+    "evaluacion": 14,
+    "criterio": 28,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 387,
+  "fields": {
+    "evaluacion": 14,
+    "criterio": 29,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 388,
+  "fields": {
+    "evaluacion": 15,
+    "criterio": 1,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 389,
+  "fields": {
+    "evaluacion": 15,
+    "criterio": 2,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 390,
+  "fields": {
+    "evaluacion": 15,
+    "criterio": 3,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 391,
+  "fields": {
+    "evaluacion": 15,
+    "criterio": 34,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 392,
+  "fields": {
+    "evaluacion": 15,
+    "criterio": 4,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 393,
+  "fields": {
+    "evaluacion": 15,
+    "criterio": 5,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 394,
+  "fields": {
+    "evaluacion": 15,
+    "criterio": 6,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 395,
+  "fields": {
+    "evaluacion": 15,
+    "criterio": 7,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 396,
+  "fields": {
+    "evaluacion": 15,
+    "criterio": 8,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 397,
+  "fields": {
+    "evaluacion": 15,
+    "criterio": 9,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 398,
+  "fields": {
+    "evaluacion": 15,
+    "criterio": 10,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 399,
+  "fields": {
+    "evaluacion": 15,
+    "criterio": 11,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 400,
+  "fields": {
+    "evaluacion": 15,
+    "criterio": 12,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 401,
+  "fields": {
+    "evaluacion": 15,
+    "criterio": 13,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 402,
+  "fields": {
+    "evaluacion": 15,
+    "criterio": 14,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 403,
+  "fields": {
+    "evaluacion": 15,
+    "criterio": 15,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 404,
+  "fields": {
+    "evaluacion": 15,
+    "criterio": 16,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 405,
+  "fields": {
+    "evaluacion": 15,
+    "criterio": 17,
+    "resultado": "NC",
+    "indicaciones": "El cuadro carece de protección diferencial propia."
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 406,
+  "fields": {
+    "evaluacion": 15,
+    "criterio": 18,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 407,
+  "fields": {
+    "evaluacion": 15,
+    "criterio": 19,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 408,
+  "fields": {
+    "evaluacion": 15,
+    "criterio": 20,
+    "resultado": "NC",
+    "indicaciones": "Falta la señalización de riesgo de radiación del arco."
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 409,
+  "fields": {
+    "evaluacion": 15,
+    "criterio": 21,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
+  "model": "evaluaciones.respuesta",
+  "pk": 410,
+  "fields": {
+    "evaluacion": 15,
+    "criterio": 22,
+    "resultado": "C",
+    "indicaciones": ""
+  }
+},
+{
   "model": "evaluaciones.medida",
   "pk": 1,
   "fields": {
@@ -1847,6 +2764,36 @@
     "fecha_cierre": null,
     "no_conformidades": [
       247
+    ]
+  }
+},
+{
+  "model": "evaluaciones.medida",
+  "pk": 4,
+  "fields": {
+    "evaluacion": 6,
+    "descripcion": "Instalar seta de parada de emergencia accesible desde el puesto de mando.",
+    "fecha_alta": "2026-08-20T13:06:55.934Z",
+    "fecha_prevista": "2026-07-31",
+    "estado": "R",
+    "fecha_cierre": "2026-07-24",
+    "no_conformidades": [
+      136
+    ]
+  }
+},
+{
+  "model": "evaluaciones.medida",
+  "pk": 5,
+  "fields": {
+    "evaluacion": 6,
+    "descripcion": "Sustituir el cuadro eléctrico por uno con grado de protección IP54.",
+    "fecha_alta": "2026-08-20T13:06:55.941Z",
+    "fecha_prevista": "2026-11-30",
+    "estado": "D",
+    "fecha_cierre": "2026-08-10",
+    "no_conformidades": [
+      150
     ]
   }
 },
@@ -1955,6 +2902,84 @@
   }
 },
 {
+  "model": "evaluaciones.documento",
+  "pk": 10,
+  "fields": {
+    "equipo": 11,
+    "tipo": "MF",
+    "tipo_otro": "",
+    "titulo": "Manual de instrucciones del fabricante",
+    "fichero": "documentos/11/manual_de_instrucciones_del_fabricante.pdf",
+    "publico": true,
+    "fecha_subida": "2026-08-20T13:36:48.879Z"
+  }
+},
+{
+  "model": "evaluaciones.documento",
+  "pk": 11,
+  "fields": {
+    "equipo": 12,
+    "tipo": "CE",
+    "tipo_otro": "",
+    "titulo": "Declaracion CE de conformidad",
+    "fichero": "documentos/12/declaracion_ce_de_conformidad.pdf",
+    "publico": true,
+    "fecha_subida": "2026-08-20T13:36:48.885Z"
+  }
+},
+{
+  "model": "evaluaciones.documento",
+  "pk": 12,
+  "fields": {
+    "equipo": 13,
+    "tipo": "MF",
+    "tipo_otro": "",
+    "titulo": "Manual de instrucciones del fabricante",
+    "fichero": "documentos/13/manual_de_instrucciones_del_fabricante.pdf",
+    "publico": true,
+    "fecha_subida": "2026-08-20T13:36:48.890Z"
+  }
+},
+{
+  "model": "evaluaciones.documento",
+  "pk": 13,
+  "fields": {
+    "equipo": 15,
+    "tipo": "MF",
+    "tipo_otro": "",
+    "titulo": "Manual de instrucciones del fabricante",
+    "fichero": "documentos/15/manual_de_instrucciones_del_fabricante.pdf",
+    "publico": true,
+    "fecha_subida": "2026-08-20T13:36:48.895Z"
+  }
+},
+{
+  "model": "evaluaciones.documento",
+  "pk": 14,
+  "fields": {
+    "equipo": 16,
+    "tipo": "RC",
+    "tipo_otro": "",
+    "titulo": "Acta de comprobacion periodica 2026",
+    "fichero": "documentos/16/acta_de_comprobacion_periodica_2026.pdf",
+    "publico": false,
+    "fecha_subida": "2026-08-20T13:36:48.900Z"
+  }
+},
+{
+  "model": "evaluaciones.documento",
+  "pk": 15,
+  "fields": {
+    "equipo": 20,
+    "tipo": "MF",
+    "tipo_otro": "",
+    "titulo": "Manual de instrucciones del fabricante",
+    "fichero": "documentos/20/manual_de_instrucciones_del_fabricante.pdf",
+    "publico": true,
+    "fecha_subida": "2026-08-20T13:36:48.905Z"
+  }
+},
+{
   "model": "evaluaciones.exenciondocumental",
   "pk": 1,
   "fields": {
@@ -1962,6 +2987,16 @@
     "tipo": "RM",
     "motivo": "No se hace registro de este mantenimiento, aunque si se hace mantenimiento",
     "fecha": "2026-08-19T16:48:39.977Z"
+  }
+},
+{
+  "model": "evaluaciones.exenciondocumental",
+  "pk": 2,
+  "fields": {
+    "equipo": 20,
+    "tipo": "IU",
+    "motivo": "Las condiciones de utilización de la transpaleta se imparten en la formación inicial del puesto y se repasan en el reciclaje anual, con registro de asistencia. No existe documento escrito específico del equipo.",
+    "fecha": "2026-08-20T13:07:20.897Z"
   }
 },
 {
