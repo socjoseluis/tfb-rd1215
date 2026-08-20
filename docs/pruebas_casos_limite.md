@@ -65,7 +65,7 @@ ningún tipo» de «nadie ha comprobado el tipo» — lo dice su propio `help_te
 Consecuencia concreta: la guarda de `views.py:173`, que impide evaluar un equipo
 con tipos sin confirmar, **nunca se dispara para un equipo dado de alta a mano**.
 Si el técnico se salta la sección de tipos al dar de alta una carretilla, el
-sistema la evalúa con los 22 criterios generales en vez de 33 y emite un dictamen
+sistema la evalúa con los 23 criterios generales en vez de 34 y emite un dictamen
 de apariencia válida al que le faltan los criterios del Anexo I.2.1 y I.2.2.
 
 Lo que hoy sostiene la decisión: el campo `tipos` lleva el `help_text` «Marque

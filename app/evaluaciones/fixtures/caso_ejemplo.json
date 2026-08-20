@@ -170,8 +170,8 @@
   "fields": {
     "equipo": 17,
     "fecha": "2026-07-20T16:25:13.164Z",
-    "en_revision": false,
-    "motivo_revision": ""
+    "en_revision": true,
+    "motivo_revision": "T"
   }
 },
 {
@@ -180,8 +180,8 @@
   "fields": {
     "equipo": 10,
     "fecha": "2026-07-20T16:27:25.781Z",
-    "en_revision": false,
-    "motivo_revision": ""
+    "en_revision": true,
+    "motivo_revision": "T"
   }
 },
 {
@@ -220,8 +220,8 @@
   "fields": {
     "equipo": 12,
     "fecha": "2026-08-18T19:00:21.682Z",
-    "en_revision": false,
-    "motivo_revision": ""
+    "en_revision": true,
+    "motivo_revision": "T"
   }
 },
 {

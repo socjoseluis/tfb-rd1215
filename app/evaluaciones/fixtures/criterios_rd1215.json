@@ -150,6 +150,15 @@
   },
   {
     "model": "evaluaciones.criterio",
+    "pk": 34,
+    "fields": {
+      "grupo": 1,
+      "enunciado": "¿Se ha facilitado a los trabajadores, preferentemente por escrito, información sobre las condiciones y la forma correcta de utilización del equipo?",
+      "orden": 4
+    }
+  },
+  {
+    "model": "evaluaciones.criterio",
     "pk": 4,
     "fields": {
       "grupo": 2,
@@ -449,6 +458,14 @@
     "fields": {
       "criterio": 3,
       "tipo": "MF"
+    }
+  },
+  {
+    "model": "evaluaciones.evidenciaesperada",
+    "pk": 5,
+    "fields": {
+      "criterio": 34,
+      "tipo": "IU"
     }
   }
 ]

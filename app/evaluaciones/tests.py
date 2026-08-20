@@ -11,7 +11,7 @@ from django.utils import timezone
 from .forms import DocumentoForm, ExencionForm
 from .models import (
     Criterio, Documento, Equipo, Evaluacion, EvidenciaEsperada,
-    ExencionDocumental, GrupoCriterio, Respuesta,
+    ExencionDocumental, GrupoCriterio, Respuesta, TipoEquipo,
 )
 
 TMP = tempfile.mkdtemp()
@@ -431,3 +431,39 @@ class ConsultaPorQR(TestCase):
         # sitio: tiene que ir el servidor delante.
         self.assertIn(f'http://testserver{self.url}', respuesta.context['destino'])
         self.assertIn('<svg', respuesta.context['qr_svg'])
+
+
+class CriteriosDelFixtureTest(TestCase):
+    """Comprobaciones sobre el cuestionario del RD 1215/1997.
+
+    Es el único sitio donde se carga `criterios_rd1215.json`: el resto de
+    pruebas construye sus criterios a mano porque solo les importa la lógica.
+    Aquí importa el dato. Estos recuentos son parte del contrato del fichero:
+    si se separan de él, el cuestionario deja de ser el del RD 1215/1997.
+    """
+
+    fixtures = ['criterios_rd1215.json']
+
+    def criterios_de(self, equipo):
+        return Criterio.objects.filter(grupo__in=equipo.grupos_aplicables())
+
+    def test_un_equipo_sin_tipos_aplica_solo_los_generales(self):
+        equipo = Equipo.objects.create(
+            codigo='PR-001', nombre='Prensa', tipos_confirmados=True,
+        )
+        self.assertEqual(self.criterios_de(equipo).count(), 23)
+
+    def test_una_carretilla_aplica_ademas_los_del_anexo_I_2(self):
+        equipo = Equipo.objects.create(
+            codigo='CA-001', nombre='Carretilla', tipos_confirmados=True,
+        )
+        equipo.tipos.set(TipoEquipo.objects.all())
+        self.assertEqual(self.criterios_de(equipo).count(), 34)
+
+    def test_la_informacion_de_utilizacion_la_reclama_un_criterio(self):
+        # El tipo «IU» existía desde el RF-09 y no lo pedía ningún criterio:
+        # se podía subir una evidencia que nada reclamaba, y el artículo 5.2
+        # no se preguntaba en ninguna parte del cuestionario.
+        criterios = Criterio.objects.filter(evidencias_esperadas__tipo='IU')
+        self.assertEqual(criterios.count(), 1)
+        self.assertEqual(criterios.get().grupo.nombre, 'GC-00 Documentación y marcado')
