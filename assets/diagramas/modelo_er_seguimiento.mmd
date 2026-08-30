@@ -1,0 +1,71 @@
+%% Modelo entidad-relación, segunda mitad: seguimiento de medidas,
+%% incidencias y documentación. La primera mitad está en modelo_er.mmd.
+%% ---
+%% EQUIPO, EVALUACION y RESPUESTA se repiten aquí solo con su clave primaria:
+%% son las mismas tablas de la primera mitad y aparecen únicamente como punto
+%% de enganche, no como entidades nuevas. Sus columnas se dibujan allí.
+%% ---
+%% USUARIO es la tabla auth_user de Django: no la define la aplicación, pero
+%% INCIDENCIA apunta a ella y sin dibujarla la clave ajena no se entendería.
+%% MEDIDA_NO_CONFORMIDAD es la tabla intermedia que Django crea para la
+%% relación de muchos a muchos entre medidas y respuestas no conformes.
+erDiagram
+  EVALUACION ||--o{ MEDIDA : origina
+  MEDIDA ||--o{ MEDIDA_NO_CONFORMIDAD : ataca
+  RESPUESTA ||--o{ MEDIDA_NO_CONFORMIDAD : ""
+  EQUIPO ||--o{ INCIDENCIA : sufre
+  USUARIO ||--o{ INCIDENCIA : firma
+  EQUIPO ||--o{ DOCUMENTO : "se documenta con"
+  EQUIPO ||--o{ EXENCION_DOCUMENTAL : "declara no procede"
+  EQUIPO {
+    int id PK
+  }
+  EVALUACION {
+    int id PK
+  }
+  RESPUESTA {
+    int id PK
+  }
+  MEDIDA {
+    int id PK
+    int evaluacion_id FK
+    text descripcion
+    datetime fecha_alta
+    date fecha_prevista "nullable"
+    string estado
+    date fecha_cierre "nullable"
+  }
+  MEDIDA_NO_CONFORMIDAD {
+    int id PK
+    int medida_id FK
+    int respuesta_id FK
+  }
+  INCIDENCIA {
+    int id PK
+    int equipo_id FK
+    int autor_id "FK,nullable"
+    string autor_username
+    text descripcion
+    datetime fecha
+  }
+  USUARIO {
+    int id PK
+    string username UK
+  }
+  DOCUMENTO {
+    int id PK
+    int equipo_id FK
+    string tipo
+    string tipo_otro
+    string titulo
+    string fichero "ruta en media/"
+    bool publico
+    datetime fecha_subida
+  }
+  EXENCION_DOCUMENTAL {
+    int id PK
+    int equipo_id FK
+    string tipo "UK con equipo_id"
+    text motivo
+    datetime fecha
+  }

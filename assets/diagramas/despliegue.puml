@@ -20,9 +20,11 @@ node "Dispositivo cliente" <<device>> as cliente {
 node "Servidor de aplicación" <<device>> as servidor {
   node "Django 5.2.16 LTS\nservidor de desarrollo\nPython 3.12" <<execution environment>> as django
   artifact "Ficheros estáticos\nBootstrap 5.3.3" as estaticos
-}
-
-node "Almacenamiento" as almacenamiento {
+  ' La base de datos va DENTRO del servidor, no en un nodo aparte: SQLite es un
+  ' fichero en el disco de esa misma máquina, no un equipo distinto. Dibujarla
+  ' fuera sugería un tercer nodo de hardware que no existe, y además obligaba a
+  ' la flecha a entrar por el borde superior del nodo, justo donde va su
+  ' rótulo, que quedaba atravesado.
   database "SQLite\nfichero local" as base
 }
 

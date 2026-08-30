@@ -1,9 +1,19 @@
+%% Modelo entidad-relación, primera mitad: inventario, criterios y evaluación.
+%% La segunda mitad —seguimiento, incidencias y documentación— está en
+%% modelo_er_seguimiento.mmd. Se parte en dos porque las dieciséis tablas en
+%% una sola figura salen a 3519 px de ancho: reducidas a la caja de texto, el
+%% interior queda en 1,3 pt y no se lee.
+%% ---
+%% Las relaciones de muchos a muchos se dibujan con su tabla intermedia
+%% explícita (EQUIPO_TIPO, GRUPO_TIPO), que es lo que existe de verdad en la
+%% base de datos.
 erDiagram
   LINEA ||--o{ EQUIPO : agrupa
   EQUIPO ||--o{ EVALUACION : "es objeto de"
   EVALUACION ||--o{ RESPUESTA : contiene
   CRITERIO ||--o{ RESPUESTA : "se responde en"
   GRUPO_CRITERIO ||--o{ CRITERIO : agrupa
+  CRITERIO ||--o{ EVIDENCIA_ESPERADA : "se acredita con"
   EQUIPO ||--o{ EQUIPO_TIPO : "es de"
   GRUPO_CRITERIO ||--o{ GRUPO_TIPO : "aplica a"
   TIPO_EQUIPO ||--o{ EQUIPO_TIPO : ""
@@ -16,6 +26,7 @@ erDiagram
   EQUIPO {
     int id PK
     string codigo UK
+    uuid token UK
     int linea_id "FK,nullable"
     string nombre
     string marca_modelo
@@ -49,11 +60,17 @@ erDiagram
     string enunciado
     int orden
   }
+  EVIDENCIA_ESPERADA {
+    int id PK
+    int criterio_id FK
+    string tipo "UK con criterio_id"
+  }
   EVALUACION {
     int id PK
     int equipo_id FK
     datetime fecha
     bool en_revision
+    string motivo_revision
   }
   RESPUESTA {
     int id PK

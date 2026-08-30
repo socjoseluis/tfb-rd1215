@@ -1,7 +1,8 @@
 @startuml componentes
-' Diagrama de COMPONENTES en notación UML (PlantUML).
-' Transcripción de assets/diagramas/componentes.mmd: mismos componentes, mismas
-' capas y mismas dependencias definidas por el autor; solo cambia la notación.
+' Diagrama de COMPONENTES en notación UML (PlantUML). Es la fuente vigente.
+' assets/diagramas/componentes.mmd (Mermaid, flowchart) se conserva como
+' versión anterior y ya NO coincide: describe la aplicación de siete modelos,
+' sin autenticación, medidas, incidencias ni documentación.
 ' Trazado con Graphviz (dot). Si se regenera en una máquina sin Graphviz,
 ' descomentar la línea siguiente para usar el motor interno de PlantUML; el
 ' resultado es peor (las flechas mueren en el marco del paquete, no en el
@@ -19,6 +20,11 @@ skinparam shadowing false
 skinparam defaultFontSize 24
 skinparam nodesep 20
 skinparam ranksep 30
+' Trazado ortogonal: con el trazado curvo por defecto, las dependencias que
+' bajan hacia el dominio cruzaban por encima de los rótulos «Capa de dominio»
+' y «Capa de persistencia». En ortogonal las flechas corren por canales
+' verticales y horizontales y pasan al lado de los rótulos, no por encima.
+skinparam linetype ortho
 skinparam packageStyle rectangle
 skinparam ArrowColor #333333
 skinparam ComponentBackgroundColor #FDFDFD
@@ -35,31 +41,42 @@ package "Cliente" {
 }
 
 package "Capa de lógica de aplicación" {
-  [urls.py\nenrutado] as enrutado
-  [views.py\n8 vistas · formset\nde respuestas] as vistas
-  [forms.py\n2 formularios\n(ModelForm)] as formularios
+  ' El middleware va delante del enrutado, no dentro de las vistas: exige
+  ' sesión en toda la aplicación y las excepciones se marcan una a una.
+  [Autenticación de Django\nLoginRequiredMiddleware\nLoginView · LogoutView] as autenticacion
+  [urls.py\nenrutado · 20 rutas] as enrutado
+  [views.py\n19 vistas · formset\nde respuestas] as vistas
+  [forms.py\n7 formularios\n(ModelForm · login)] as formularios
   [importador.py\nopenpyxl · csv] as importador
+  [segno\ngeneración del QR] as qr
   [Admin de Django\ntrastienda] as admin
 }
 
 package "Capa de presentación" {
-  [Plantillas Django\nbase.html + 8 páginas] as plantillas
+  [Plantillas Django\nbase.html + 17 páginas] as plantillas
   [Bootstrap 5.3.3\nservido en local] as bootstrap
 }
 
 package "Capa de dominio" {
-  [models.py\n7 modelos y reglas\ndel Anexo I.2] as modelos
   ' El fichero de criterios son DATOS, no código: en UML es un artefacto.
   ' El «loaddata» va en la propia etiqueta del artefacto, no en una nota ni en
   ' la flecha: como nota ensanchaba el diagrama ~180 pt (y al reducirlo para
   ' caber en la caja de texto el interior quedaba a 5 pt), y como etiqueta de
   ' flecha el trazado la dejaba junto a la de models.py -> ORM.
-  artifact "criterios_rd1215.json\n11 grupos · 33 criterios\n(carga con loaddata)" as criterios
+  '
+  ' El artefacto se declara ANTES que models.py a propósito: así models.py cae
+  ' a la derecha del paquete y las cuatro dependencias que entran en él no
+  ' aterrizan sobre el rótulo «Capa de dominio», que va centrado arriba.
+  artifact "criterios_rd1215.json\n11 grupos · 34 criterios\n(carga con loaddata)" as criterios
+  [models.py\n12 modelos y reglas\ndel Anexo I.2] as modelos
 }
 
 package "Capa de persistencia" {
   [ORM de Django] as orm
   database "SQLite" as sqlite
+  ' Los documentos subidos no caben en la base de datos: la fila guarda la
+  ' ruta y el fichero vive en el sistema de ficheros.
+  folder "media/\nficheros de los documentos" as media
 }
 
 ' Declarada al final para que el trazado no la lleve al lateral derecho y sus
@@ -69,11 +86,13 @@ package "Configuración" {
 }
 
 ' Dependencias (en UML, flecha discontinua con punta abierta).
-navegador ..> enrutado : HTTP
+navegador ..> autenticacion : HTTP
+autenticacion ..> enrutado
 
 enrutado ..> vistas
 vistas ..> formularios
 vistas ..> importador
+vistas ..> qr
 vistas ..> plantillas
 vistas ..> modelos
 formularios ..> modelos
@@ -82,6 +101,7 @@ admin ..> modelos
 plantillas ..> bootstrap
 
 modelos .down.> orm
+modelos .down.> media : ficheros
 criterios .down.> orm
 orm .down.> sqlite
 

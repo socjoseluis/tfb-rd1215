@@ -1,3 +1,19 @@
+%% Diagrama de clases del dominio (modelos de app/evaluaciones/models.py).
+%%
+%% Convenio de las relaciones, por pertenencia y no por on_delete:
+%%   *--  composición: la parte pertenece al todo y no existe sin él. Una
+%%        respuesta pertenece a su evaluación; un criterio, a su grupo.
+%%   o--  agregación:  el todo solo referencia algo que vive por su cuenta. Un
+%%        equipo puede no tener línea; una respuesta apunta a un criterio que
+%%        existe antes que ella; una incidencia, al usuario que la firma.
+%%   --   asociación de muchos a muchos (ManyToManyField).
+%% Coincide con on_delete salvo en Criterio, que es PROTECT y aun así es parte
+%% de su grupo: la clave ajena es obligatoria, así que no puede quedar suelto.
+%%
+%% Se omite __str__ en todas las clases. De los métodos de dominio se dibujan
+%% los que implementan un requisito; se dejan fuera los auxiliares de
+%% presentación (tipo_mostrado) y los que solo delegan en otro objeto
+%% (Equipo.evidencias_pendientes, que llama al de su última evaluación).
 classDiagram
     direction TB
 
@@ -12,6 +28,7 @@ classDiagram
 
     class Equipo {
         +CharField codigo
+        +UUIDField token
         +CharField nombre
         +CharField marca_modelo
         +CharField num_serie
@@ -32,10 +49,17 @@ classDiagram
         +PositiveIntegerField orden
     }
 
+    class EvidenciaEsperada {
+        +CharField tipo
+    }
+
     class Evaluacion {
         +DateTimeField fecha
         +BooleanField en_revision
+        +CharField motivo_revision
         +dictamen() str
+        +no_conformidades_sin_medida() list
+        +evidencias_pendientes() list
     }
 
     class Respuesta {
@@ -43,10 +67,52 @@ classDiagram
         +TextField indicaciones
     }
 
+    class Medida {
+        +TextField descripcion
+        +DateTimeField fecha_alta
+        +DateField fecha_prevista
+        +CharField estado
+        +DateField fecha_cierre
+    }
+
+    class Incidencia {
+        +TextField descripcion
+        +DateTimeField fecha
+        +CharField autor_username
+        +firma() str
+    }
+
+    class Documento {
+        +CharField tipo
+        +CharField tipo_otro
+        +CharField titulo
+        +FileField fichero
+        +BooleanField publico
+        +DateTimeField fecha_subida
+    }
+
+    class ExencionDocumental {
+        +CharField tipo
+        +TextField motivo
+        +DateTimeField fecha
+    }
+
+    class User {
+        <<django.contrib.auth>>
+        +CharField username
+    }
+
     Linea "0..1" o-- "0..*" Equipo : linea
     Equipo "0..*" -- "0..*" TipoEquipo : tipos
     GrupoCriterio "0..*" -- "0..*" TipoEquipo : tipos_aplicables
     GrupoCriterio "1" *-- "0..*" Criterio : grupo
+    Criterio "1" *-- "0..*" EvidenciaEsperada : criterio
     Equipo "1" *-- "0..*" Evaluacion : equipo
     Evaluacion "1" *-- "0..*" Respuesta : evaluacion
     Criterio "1" o-- "0..*" Respuesta : criterio
+    Evaluacion "1" *-- "0..*" Medida : evaluacion
+    Medida "0..*" -- "0..*" Respuesta : no_conformidades
+    Equipo "1" *-- "0..*" Incidencia : equipo
+    User "0..1" o-- "0..*" Incidencia : autor
+    Equipo "1" *-- "0..*" Documento : equipo
+    Equipo "1" *-- "0..*" ExencionDocumental : equipo
