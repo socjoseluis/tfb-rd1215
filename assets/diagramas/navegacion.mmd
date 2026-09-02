@@ -26,10 +26,10 @@ config:
 %% Fuente: las rutas de app/evaluaciones/urls.py, los enlaces de las plantillas
 %% de app/evaluaciones/templates/evaluaciones/ y las redirecciones de
 %% app/evaluaciones/views.py. Cada caja es una pantalla y lleva el nombre que
-%% muestra su propio encabezado, no el de la vista que la sirve. Única
-%% excepción: exencion_nueva.html se encabeza «Declarar un documento que no
-%% procede» y en el dibujo va como «Exención documental», porque el encabezado
-%% entero obliga a una caja de cuatro líneas que descoloca toda la fila.
+%% muestra su propio encabezado, no el de la vista que la sirve. Sin
+%% excepciones: el rótulo más largo, el de exencion_nueva.html, cuesta un 1,7 %
+%% de ancho y un 2,3 % de alto, que no es precio para que el dibujo llame a una
+%% pantalla de otra manera que la propia pantalla.
 
 %% El color distingue las dos zonas de acceso, que es como está implementado el
 %% control: LoginRequiredMiddleware exige sesión en toda la aplicación y solo la
@@ -70,9 +70,11 @@ config:
 %% junta el abanico de la ficha en un tronco único y deja de verse de qué caja
 %% sale cada flecha, que es justo lo que el dibujo tiene que mostrar.
 
-%% El dibujo es apaisado (sale a ~1,75:1) y en la memoria va en una página
+%% El dibujo es apaisado (sale a ~1,72:1) y en la memoria va en una página
 %% apaisada suelta, con pdflscape, igual que el Gantt del capítulo 4. Ahí el
-%% ancho disponible pasa de 15 a 22 cm. Eso es lo que fija fontSize: lo que
+%% ancho disponible pasa de 15 a 24,7 cm, de los que el dibujo usa 22,6: lo que
+%% acaba limitando no es el ancho sino el alto, que comparte con el pie de la
+%% figura. Eso es lo que fija fontSize: lo que
 %% importa no es el tamaño del dibujo, que se escala, sino la proporción entre
 %% la letra y el ancho total; a 26 px la letra sale a algo más de 5 pt sobre el
 %% papel, y subirla más ensancha las cajas y el dibujo entero sin ganar nada.
@@ -85,7 +87,6 @@ config:
 %% Quedan fuera la trastienda de administración de Django y la retirada de una
 %% exención documental, que no tienen pantalla: es un botón de la ficha que
 %% devuelve a la ficha.
-%%{init: {"flowchart": {"nodeSpacing": 40, "rankSpacing": 55, "padding": 8, "wrappingWidth": 260}, "themeVariables": {"fontSize": "22px"}}}%%
 flowchart TB
     QR("Etiqueta QR pegada al equipo,<br/>impresa desde «Etiqueta del equipo»")
     CAMPO["Consulta en campo"]
@@ -105,7 +106,7 @@ flowchart TB
     EDITAR["Editar equipo"]
     INCIDENCIA["Registrar incidencia"]
     SUBIR["Subir documento"]
-    EXENCION["Exención documental"]
+    EXENCION["Declarar un documento que no procede"]
     RETIRAR["Retirar documento"]
     ETIQUETA["Etiqueta del equipo"]
 
