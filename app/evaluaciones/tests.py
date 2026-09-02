@@ -433,6 +433,93 @@ class ConsultaPorQR(TestCase):
         self.assertIn('<svg', respuesta.context['qr_svg'])
 
 
+class SeguimientoDeMedidas(TestCase):
+    """Medidas correctivas derivadas de no conformidades (RF-06).
+
+    El seguimiento es lo que separa una lista de arreglos propuestos de un
+    registro de lo que se ha hecho, así que lo que se comprueba no es que la
+    medida se guarde, sino de qué cuelga y qué pasa al cerrarla.
+    """
+
+    def setUp(self):
+        self.equipo = Equipo.objects.create(codigo='EQ-300', nombre='Sierra')
+        grupo = GrupoCriterio.objects.create(nombre='GC-01')
+        self.criterio = Criterio.objects.create(
+            grupo=grupo, enunciado='¿Los órganos de accionamiento son visibles?',
+        )
+        self.evaluacion = Evaluacion.objects.create(equipo=self.equipo)
+        self.no_conformidad = Respuesta.objects.create(
+            evaluacion=self.evaluacion, criterio=self.criterio, resultado='NC',
+        )
+        User.objects.create_user('tecnico', password='x')
+        self.client.login(username='tecnico', password='x')
+
+    def test_una_medida_nace_pendiente_y_cuelga_de_su_no_conformidad(self):
+        # Se da de alta por la vista y no con el ORM: creada a mano solo se
+        # comprobaría que Django guarda una fila. Por la vista se recorre la
+        # dirección, el formulario, el guardado y la redirección.
+        respuesta = self.client.post(
+            reverse('evaluaciones:medida_nueva', args=[self.evaluacion.pk]),
+            {
+                'descripcion': 'Reponer el pulsador de parada de emergencia',
+                'no_conformidades': [self.no_conformidad.pk],
+                'estado': 'P',
+            },
+        )
+        self.assertEqual(respuesta.status_code, 302)
+
+        medida = self.evaluacion.medidas.get()
+        self.assertEqual(medida.estado, 'P')
+        self.assertIsNone(medida.fecha_cierre)
+        # Lo que sostiene el «derivadas de las no conformidades» del RF-06:
+        # sin esto la prueba solo diría que se guarda texto.
+        self.assertEqual(
+            list(medida.no_conformidades.all()), [self.no_conformidad]
+        )
+
+    def crear_medida(self):
+        """Medida ya dada de alta, para las pruebas que van del cierre.
+
+        Aquí sí se crea con el ORM: lo que se prueba es el cambio de estado, y
+        pasar por el formulario solo añadiría ruido a la prueba.
+        """
+        medida = self.evaluacion.medidas.create(
+            descripcion='Reponer el pulsador de parada de emergencia',
+        )
+        medida.no_conformidades.set([self.no_conformidad])
+        return medida
+
+    def test_cerrar_una_medida_le_pone_fecha_y_reabrirla_se_la_quita(self):
+        medida = self.crear_medida()
+        url = reverse('evaluaciones:medida_estado', args=[medida.pk])
+
+        self.client.post(url, {'estado': 'R'})
+        medida.refresh_from_db()
+        self.assertEqual(medida.estado, 'R')
+        # La fecha la pone la vista, no el formulario: tecleada a mano acabaría
+        # habiendo medidas realizadas sin fecha.
+        self.assertEqual(medida.fecha_cierre, timezone.localdate())
+
+        self.client.post(url, {'estado': 'P'})
+        medida.refresh_from_db()
+        self.assertEqual(medida.estado, 'P')
+        self.assertIsNone(medida.fecha_cierre)
+
+    def test_cerrar_una_medida_no_cambia_el_dictamen(self):
+        # Donde el RF-06 se cruza con el RF-03: el histórico no se reescribe,
+        # así que la conformidad se recupera evaluando de nuevo y la medida
+        # cerrada queda como rastro de por qué cambió.
+        medida = self.crear_medida()
+        self.assertEqual(self.evaluacion.dictamen, 'No conforme')
+
+        self.client.post(
+            reverse('evaluaciones:medida_estado', args=[medida.pk]),
+            {'estado': 'R'},
+        )
+
+        self.assertEqual(self.evaluacion.dictamen, 'No conforme')
+
+
 class CriteriosDelFixtureTest(TestCase):
     """Comprobaciones sobre el cuestionario del RD 1215/1997.
 
