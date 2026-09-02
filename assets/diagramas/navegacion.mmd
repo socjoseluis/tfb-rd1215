@@ -1,4 +1,22 @@
+---
+config:
+  layout: elk
+  flowchart:
+    wrappingWidth: 300
+    padding: 10
+  themeVariables:
+    fontSize: "26px"
+---
 %% Secuencia de navegación entre las pantallas del prototipo.
+
+%% El bloque de arriba tiene que ser LO PRIMERO del fichero, antes que estos
+%% comentarios: Mermaid solo reconoce la cabecera de configuración si empieza en
+%% la línea 1. Sustituye a la directiva %%{init: ...}%% que iba antes del
+%% flowchart, porque «layout» solo se puede fijar desde aquí.
+
+%% Se genera con:
+%%   npx -y -p @mermaid-js/mermaid-cli mmdc -p pptr.json \
+%%       -i navegacion.mmd -o navegacion.pdf --pdfFit
 
 %% Ojo al editar: en un flowchart, una línea de comentario vacía («%%» a secas)
 %% rompe el analizador de Mermaid, que junta esas marcas con la palabra
@@ -8,7 +26,10 @@
 %% Fuente: las rutas de app/evaluaciones/urls.py, los enlaces de las plantillas
 %% de app/evaluaciones/templates/evaluaciones/ y las redirecciones de
 %% app/evaluaciones/views.py. Cada caja es una pantalla y lleva el nombre que
-%% muestra su propio encabezado, no el de la vista que la sirve.
+%% muestra su propio encabezado, no el de la vista que la sirve. Única
+%% excepción: exencion_nueva.html se encabeza «Declarar un documento que no
+%% procede» y en el dibujo va como «Exención documental», porque el encabezado
+%% entero obliga a una caja de cuatro líneas que descoloca toda la fila.
 
 %% El color distingue las dos zonas de acceso, que es como está implementado el
 %% control: LoginRequiredMiddleware exige sesión en toda la aplicación y solo la
@@ -21,11 +42,15 @@
 %% interesan: las cuatro que atraviesan la frontera del control de acceso.
 
 %% Las siete pantallas que cuelgan de la ficha se dibujan con la flecha de ida y
-%% no con la de vuelta, que la leyenda enuncia de una vez: dibujarlas también de
+%% no con la de vuelta, que el pie enuncia de una vez: dibujarlas también de
 %% vuelta son siete líneas más hacia la misma caja, que ya recibe nueve. Sí se
 %% dibujan las dos transiciones que NO vuelven a la ficha, porque son la
-%% excepción: la de tipos hacia el cuestionario y la del dictamen hacia la
-%% subida de un documento.
+%% excepción: la de tipos hacia el cuestionario, cuando se llegó a tipos desde
+%% el propio cuestionario (rama «if evaluar» de equipo_tipos, views.py), y la
+%% del cuestionario hacia el dictamen, que al enviarse lleva siempre allí.
+%% La del dictamen hacia la subida de un documento NO es una excepción:
+%% documento_subir redirige a la ficha como las demás; esa flecha es solo otra
+%% vía de entrada a esa pantalla.
 
 %% La barra de navegación se dibuja una vez, como caja aparte, porque base.html
 %% la pinta en todas las pantallas con sesión.
@@ -34,26 +59,34 @@
 %% flecha desde «Etiqueta del equipo»: esa flecha es la única que cierra un
 %% circuito y obligaba al resto del dibujo a rodearla.
 
-%% Los espaciados van apretados y la letra, agrandada, a propósito. El dibujo se
-%% reduce al ancho de la caja de texto donde se inserta, así que lo que importa
-%% no es su tamaño sino la proporción entre la letra y el ancho total: con los
-%% valores por omisión sale a 2700 px y la letra queda por debajo de la de los
-%% demás diagramas. Apretar los espaciados encoge el dibujo sin encoger el
-%% texto, y subir fontSize agranda la letra más de lo que crecen las cajas, que
-%% es la otra cuarta parte de la ganancia.
+%% La leyenda NO se dibuja: va en el pie de la figura, que es texto de la
+%% memoria. Dentro del dibujo ocupaba una caja del tamaño de cuatro pantallas y
+%% el ajuste de línea la partía en columnas de tres líneas, ilegibles.
+
+%% El layout es ELK y no el dagre por omisión. Con dagre, la ficha del equipo
+%% concentra nueve entradas y nueve salidas y las aristas salen como curvas
+%% largas que cruzan el dibujo de lado a lado por zonas vacías; ELK las traza en
+%% ortogonal y cada una se puede seguir con el dedo. No se activa mergeEdges:
+%% junta el abanico de la ficha en un tronco único y deja de verse de qué caja
+%% sale cada flecha, que es justo lo que el dibujo tiene que mostrar.
+
+%% El dibujo es apaisado (sale a ~1,75:1) y en la memoria va en una página
+%% apaisada suelta, con pdflscape, igual que el Gantt del capítulo 4. Ahí el
+%% ancho disponible pasa de 15 a 22 cm. Eso es lo que fija fontSize: lo que
+%% importa no es el tamaño del dibujo, que se escala, sino la proporción entre
+%% la letra y el ancho total; a 26 px la letra sale a algo más de 5 pt sobre el
+%% papel, y subirla más ensancha las cajas y el dibujo entero sin ganar nada.
+
+%% wrappingWidth manda sobre la forma de las cajas: por debajo de ~200 px los
+%% rótulos de dos palabras largas se parten en cuatro y cinco líneas y salen
+%% cajas altas y estrechas, que es lo que enreda las filas. Los saltos que sí
+%% se quieren se escriben a mano con <br/>.
 
 %% Quedan fuera la trastienda de administración de Django y la retirada de una
 %% exención documental, que no tienen pantalla: es un botón de la ficha que
 %% devuelve a la ficha.
-%%{init: {"flowchart": {"nodeSpacing": 32, "rankSpacing": 40, "padding": 5, "wrappingWidth": 140}, "themeVariables": {"fontSize": "22px"}}}%%
+%%{init: {"flowchart": {"nodeSpacing": 40, "rankSpacing": 55, "padding": 8, "wrappingWidth": 260}, "themeVariables": {"fontSize": "22px"}}}%%
 flowchart TB
-    subgraph leyenda["Cómo leer el diagrama"]
-        L1["Amarillo: sin sesión · Azul: con sesión"]
-        L2["Continua: enlace o botón · Punteada: redirección"]
-        L3["Lo que sale de la ficha vuelve a ella al guardar"]
-        L1 ~~~ L2 ~~~ L3
-    end
-
     QR("Etiqueta QR pegada al equipo,<br/>impresa desde «Etiqueta del equipo»")
     CAMPO["Consulta en campo"]
     ENTRAR["Entrar"]
@@ -72,7 +105,7 @@ flowchart TB
     EDITAR["Editar equipo"]
     INCIDENCIA["Registrar incidencia"]
     SUBIR["Subir documento"]
-    EXENCION["Declarar un documento que no procede"]
+    EXENCION["Exención documental"]
     RETIRAR["Retirar documento"]
     ETIQUETA["Etiqueta del equipo"]
 
@@ -119,7 +152,5 @@ flowchart TB
 
     classDef publico fill:#fdf3d8,stroke:#b8860b,stroke-width:1.5px,color:#333
     classDef privado fill:#e6ecff,stroke:#4a5fa5,stroke-width:1.5px,color:#333
-    classDef nota fill:none,stroke:none,color:#333
     class QR,CAMPO,ENTRAR,DOCUMENTO publico
     class NAV,INICIO,ALTA,IMPORTAR,FICHA,CUESTIONARIO,DICTAMEN,MEDIDAS,MEDIDA,TIPOS,EDITAR,INCIDENCIA,SUBIR,EXENCION,RETIRAR,ETIQUETA privado
-    class L1,L2,L3 nota
