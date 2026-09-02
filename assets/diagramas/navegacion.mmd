@@ -1,0 +1,125 @@
+%% Secuencia de navegación entre las pantallas del prototipo.
+
+%% Ojo al editar: en un flowchart, una línea de comentario vacía («%%» a secas)
+%% rompe el analizador de Mermaid, que junta esas marcas con la palabra
+%% siguiente. Los párrafos de esta cabecera se separan con líneas en blanco de
+%% verdad. En los diagramas de clases y entidad-relación no pasa.
+
+%% Fuente: las rutas de app/evaluaciones/urls.py, los enlaces de las plantillas
+%% de app/evaluaciones/templates/evaluaciones/ y las redirecciones de
+%% app/evaluaciones/views.py. Cada caja es una pantalla y lleva el nombre que
+%% muestra su propio encabezado, no el de la vista que la sirve.
+
+%% El color distingue las dos zonas de acceso, que es como está implementado el
+%% control: LoginRequiredMiddleware exige sesión en toda la aplicación y solo la
+%% consulta en campo y la entrega de un documento se marcan con
+%% @login_not_required. Al documento se llega desde las dos zonas: sin sesión se
+%% entregan solo los marcados como públicos y con sesión, cualquiera.
+
+%% Las zonas van por color y no dentro de dos recuadros porque Mermaid recorta
+%% en el borde del recuadro las flechas que lo cruzan, y son justo las que
+%% interesan: las cuatro que atraviesan la frontera del control de acceso.
+
+%% Las siete pantallas que cuelgan de la ficha se dibujan con la flecha de ida y
+%% no con la de vuelta, que la leyenda enuncia de una vez: dibujarlas también de
+%% vuelta son siete líneas más hacia la misma caja, que ya recibe nueve. Sí se
+%% dibujan las dos transiciones que NO vuelven a la ficha, porque son la
+%% excepción: la de tipos hacia el cuestionario y la del dictamen hacia la
+%% subida de un documento.
+
+%% La barra de navegación se dibuja una vez, como caja aparte, porque base.html
+%% la pinta en todas las pantallas con sesión.
+
+%% El ciclo de la etiqueta se cuenta dentro de la caja del QR en vez de con una
+%% flecha desde «Etiqueta del equipo»: esa flecha es la única que cierra un
+%% circuito y obligaba al resto del dibujo a rodearla.
+
+%% Los espaciados van apretados y la letra, agrandada, a propósito. El dibujo se
+%% reduce al ancho de la caja de texto donde se inserta, así que lo que importa
+%% no es su tamaño sino la proporción entre la letra y el ancho total: con los
+%% valores por omisión sale a 2700 px y la letra queda por debajo de la de los
+%% demás diagramas. Apretar los espaciados encoge el dibujo sin encoger el
+%% texto, y subir fontSize agranda la letra más de lo que crecen las cajas, que
+%% es la otra cuarta parte de la ganancia.
+
+%% Quedan fuera la trastienda de administración de Django y la retirada de una
+%% exención documental, que no tienen pantalla: es un botón de la ficha que
+%% devuelve a la ficha.
+%%{init: {"flowchart": {"nodeSpacing": 32, "rankSpacing": 40, "padding": 5, "wrappingWidth": 140}, "themeVariables": {"fontSize": "22px"}}}%%
+flowchart TB
+    subgraph leyenda["Cómo leer el diagrama"]
+        L1["Amarillo: sin sesión · Azul: con sesión"]
+        L2["Continua: enlace o botón · Punteada: redirección"]
+        L3["Lo que sale de la ficha vuelve a ella al guardar"]
+        L1 ~~~ L2 ~~~ L3
+    end
+
+    QR("Etiqueta QR pegada al equipo,<br/>impresa desde «Etiqueta del equipo»")
+    CAMPO["Consulta en campo"]
+    ENTRAR["Entrar"]
+    DOCUMENTO[/"Documento"/]
+
+    NAV["Barra de navegación"]
+    INICIO["Equipos por línea de producción"]
+    ALTA["Alta de equipo"]
+    IMPORTAR["Importación por lotes de equipos"]
+    FICHA["Ficha del equipo"]
+    CUESTIONARIO["Evaluación: cuestionario"]
+    DICTAMEN["Evaluación: dictamen y respuestas"]
+    MEDIDAS["Seguimiento de medidas correctivas"]
+    MEDIDA["Nueva medida correctiva"]
+    TIPOS["Tipos del equipo"]
+    EDITAR["Editar equipo"]
+    INCIDENCIA["Registrar incidencia"]
+    SUBIR["Subir documento"]
+    EXENCION["Declarar un documento que no procede"]
+    RETIRAR["Retirar documento"]
+    ETIQUETA["Etiqueta del equipo"]
+
+    QR -->|"escaneo"| CAMPO
+    CAMPO -->|"solo los públicos"| DOCUMENTO
+    CAMPO --> ENTRAR
+    CAMPO -->|"con sesión"| FICHA
+    ENTRAR -.->|"autenticado"| INICIO
+
+    NAV --> INICIO
+    NAV --> ALTA
+    NAV --> IMPORTAR
+    NAV --> MEDIDAS
+    NAV -.->|"Salir"| ENTRAR
+
+    INICIO --> FICHA
+    INICIO -->|"Añadir medida"| MEDIDA
+    ALTA --> IMPORTAR
+    ALTA -.->|"equipo creado"| FICHA
+    IMPORTAR --> ALTA
+
+    FICHA --> TIPOS
+    FICHA --> EDITAR
+    FICHA --> INCIDENCIA
+    FICHA --> SUBIR
+    FICHA --> EXENCION
+    FICHA --> RETIRAR
+    FICHA --> ETIQUETA
+    FICHA -->|"cualquiera"| DOCUMENTO
+
+    FICHA --> CUESTIONARIO
+    FICHA -->|"histórico"| DICTAMEN
+    CUESTIONARIO -.->|"tipos sin confirmar"| TIPOS
+    TIPOS -.->|"si venía a evaluar"| CUESTIONARIO
+    CUESTIONARIO -.-> DICTAMEN
+    DICTAMEN -->|"evaluar de nuevo"| CUESTIONARIO
+    DICTAMEN -->|"falta evidencia"| SUBIR
+    DICTAMEN --> MEDIDA
+    MEDIDA -.-> DICTAMEN
+
+    MEDIDAS --> FICHA
+    MEDIDAS --> DICTAMEN
+    MEDIDAS -.->|"cambiar estado"| MEDIDAS
+
+    classDef publico fill:#fdf3d8,stroke:#b8860b,stroke-width:1.5px,color:#333
+    classDef privado fill:#e6ecff,stroke:#4a5fa5,stroke-width:1.5px,color:#333
+    classDef nota fill:none,stroke:none,color:#333
+    class QR,CAMPO,ENTRAR,DOCUMENTO publico
+    class NAV,INICIO,ALTA,IMPORTAR,FICHA,CUESTIONARIO,DICTAMEN,MEDIDAS,MEDIDA,TIPOS,EDITAR,INCIDENCIA,SUBIR,EXENCION,RETIRAR,ETIQUETA privado
+    class L1,L2,L3 nota
