@@ -12,6 +12,31 @@
                     <span class="fw-normal text-secondary">· {{ linea.ubicacion }}</span>
                 {% endif %}
             </h2>
+            {% comment %}
+            Evaluación a nivel de línea (RF-05). La regla vive en el modelo
+            (Linea.dictamen); aquí solo se pinta, con los mismos colores que
+            la columna de última evaluación para que se lea igual. El
+            recuento dice de dónde sale el dictamen: una línea «sin
+            dictamen» lo es porque algún equipo está sin evaluar o en
+            revisión, y eso es lo que hay que ver de un vistazo.
+            {% endcomment %}
+            {% with recuento=linea.recuento dictamen=linea.dictamen %}
+                <p class="small mb-2">
+                    {% if dictamen == "Conforme" %}
+                        <span class="badge text-bg-success">Línea conforme</span>
+                    {% elif dictamen == "No conforme" %}
+                        <span class="badge text-bg-danger">Línea no conforme</span>
+                    {% else %}
+                        <span class="badge text-bg-secondary">Línea sin dictamen</span>
+                    {% endif %}
+                    <span class="text-secondary">
+                        {{ recuento.conformes }} conforme{{ recuento.conformes|pluralize }} ·
+                        {{ recuento.no_conformes }} no conforme{{ recuento.no_conformes|pluralize }} ·
+                        {{ recuento.en_revision }} en revisión ·
+                        {{ recuento.sin_evaluar }} sin evaluar
+                    </span>
+                </p>
+            {% endwith %}
             {% include "evaluaciones/_tabla_equipos.html" with equipos=linea.equipos.all %}
         {% endfor %}
 

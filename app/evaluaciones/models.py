@@ -63,6 +63,55 @@ class Linea(models.Model):
     def __str__(self):
         return self.nombre
 
+    @property
+    def recuento(self):
+        """Cuántos equipos de la línea hay en cada estado (RF-05).
+
+        Se recorren los equipos y evaluaciones que la portada ya ha traído
+        con prefetch, por el mismo motivo que Equipo.ultima_evaluacion: una
+        consulta por línea multiplicaría el coste de la pantalla.
+
+        Un equipo cuyo último dictamen es no conforme cuenta como tal aunque
+        la evaluación esté en revisión: el incumplimiento se comprobó, y lo
+        que está en duda es si sigue igual, no si existió.
+        """
+        recuento = {
+            'conformes': 0,
+            'no_conformes': 0,
+            'en_revision': 0,
+            'sin_evaluar': 0,
+        }
+        for equipo in self.equipos.all():
+            evaluacion = equipo.ultima_evaluacion
+            if evaluacion is None:
+                recuento['sin_evaluar'] += 1
+            elif evaluacion.dictamen == 'No conforme':
+                recuento['no_conformes'] += 1
+            elif evaluacion.en_revision:
+                recuento['en_revision'] += 1
+            else:
+                recuento['conformes'] += 1
+        return recuento
+
+    @property
+    def dictamen(self):
+        """Dictamen de la línea a partir de sus equipos (RF-05).
+
+        Misma regla que el dictamen del equipo: basta una no conformidad para
+        que el conjunto lo sea. «Conforme» solo cuando todos los equipos
+        tienen evaluación vigente, no en revisión y conforme. En cualquier
+        otro caso, incluida la línea sin equipos, «Sin dictamen»: no se
+        afirma lo que no se ha comprobado.
+        """
+        recuento = self.recuento
+        if recuento['no_conformes']:
+            return 'No conforme'
+        if recuento['en_revision'] or recuento['sin_evaluar']:
+            return 'Sin dictamen'
+        if recuento['conformes']:
+            return 'Conforme'
+        return 'Sin dictamen'
+
 
 class TipoEquipo(models.Model):
     """Tipo de equipo a efectos del Anexo I.2 del RD 1215/1997.

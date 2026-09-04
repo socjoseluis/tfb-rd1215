@@ -11,7 +11,7 @@ from django.utils import timezone
 from .forms import DocumentoForm, ExencionForm
 from .models import (
     Criterio, Documento, Equipo, Evaluacion, EvidenciaEsperada,
-    ExencionDocumental, GrupoCriterio, Respuesta, TipoEquipo,
+    ExencionDocumental, GrupoCriterio, Linea, Respuesta, TipoEquipo,
 )
 
 TMP = tempfile.mkdtemp()
@@ -518,6 +518,62 @@ class SeguimientoDeMedidas(TestCase):
         )
 
         self.assertEqual(self.evaluacion.dictamen, 'No conforme')
+
+
+class EvaluacionPorLinea(TestCase):
+    """Evaluación a nivel de línea de producción (RF-05).
+
+    La línea no se evalúa aparte: su dictamen sale del de sus equipos con la
+    misma regla que el del equipo sale de sus respuestas. Basta un equipo
+    para cada estado, así que las pruebas usan dos y un solo criterio.
+    """
+
+    def setUp(self):
+        self.linea = Linea.objects.create(nombre='Línea de prueba')
+        grupo = GrupoCriterio.objects.create(nombre='GC-01')
+        self.criterio = Criterio.objects.create(
+            grupo=grupo, enunciado='¿Los órganos de accionamiento son visibles?',
+        )
+        self.prensa = Equipo.objects.create(
+            codigo='EQ-400', nombre='Prensa', linea=self.linea,
+        )
+        self.cizalla = Equipo.objects.create(
+            codigo='EQ-401', nombre='Cizalla', linea=self.linea,
+        )
+
+    def evaluar(self, equipo, resultado):
+        evaluacion = Evaluacion.objects.create(equipo=equipo)
+        Respuesta.objects.create(
+            evaluacion=evaluacion, criterio=self.criterio, resultado=resultado,
+        )
+        return evaluacion
+
+    def linea_leida(self):
+        # Se relee la línea, como la lee la portada, para no responder con
+        # lo que el objeto tuviera en caché de antes de evaluar.
+        return Linea.objects.get(pk=self.linea.pk)
+
+    def test_todos_conformes_da_linea_conforme(self):
+        self.evaluar(self.prensa, 'C')
+        self.evaluar(self.cizalla, 'C')
+        linea = self.linea_leida()
+        self.assertEqual(linea.dictamen, 'Conforme')
+        self.assertEqual(linea.recuento['conformes'], 2)
+
+    def test_una_no_conformidad_hace_la_linea_no_conforme(self):
+        self.evaluar(self.prensa, 'C')
+        self.evaluar(self.cizalla, 'NC')
+        linea = self.linea_leida()
+        self.assertEqual(linea.dictamen, 'No conforme')
+        self.assertEqual(linea.recuento['no_conformes'], 1)
+
+    def test_un_equipo_sin_evaluar_deja_la_linea_sin_dictamen(self):
+        # No se afirma lo que no se ha comprobado: un equipo conforme y otro
+        # sin evaluar no hacen una línea conforme.
+        self.evaluar(self.prensa, 'C')
+        linea = self.linea_leida()
+        self.assertEqual(linea.dictamen, 'Sin dictamen')
+        self.assertEqual(linea.recuento['sin_evaluar'], 1)
 
 
 class CriteriosDelFixtureTest(TestCase):
