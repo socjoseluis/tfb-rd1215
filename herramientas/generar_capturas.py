@@ -113,8 +113,13 @@ def recorte(pag, nombre, ruta=None, al_final=False):
     if ruta is not None:
         pag.goto(BASE + ruta, wait_until='networkidle')
     if al_final:
+        # Se baja hasta el botón de enviar y no hasta scrollHeight: la página
+        # sigue reajustándose tras networkidle y un solo scrollTo se quedaba
+        # corto, dejando fuera el último grupo de criterios y el botón.
+        pag.locator(ENVIAR).scroll_into_view_if_needed()
+        pag.wait_for_timeout(500)
         pag.evaluate('window.scrollTo(0, document.documentElement.scrollHeight)')
-        pag.wait_for_timeout(250)
+        pag.wait_for_timeout(500)
     _guardar(pag, nombre)
 
 
@@ -171,10 +176,15 @@ def main():
         completa(pag, 'rf01-alta-formulario', '/equipos/alta/')
         completa(pag, 'rf01-editar-1', f'/equipos/{ids["EQ-004"]}/editar/')
         completa(pag, 'rf01-editar-2', f'/equipos/{ids["EQ-001"]}/editar/')
-        completa(pag, 'rf04-tipos', f'/equipos/{ids["EQ-005"]}/tipos/')
+        # La ficha, no la pantalla de tipos: lo que se quiere enseñar es el
+        # indicador «Sin confirmar» y el enlace «Cambiar» que llevan a ella.
+        completa(pag, 'rf04-tipos', f'/equipos/{ids["EQ-005"]}/')
         completa(pag, 'rf03-desfasada', f'/equipos/{ids["EQ-003"]}/')
         completa(pag, 'rf03-historico', f'/equipos/{ids["EQ-007"]}/')
-        completa(pag, 'rf10-ficha-completa', f'/equipos/{ids["EQ-008"]}/')
+        # La segunda capa del QR (RF-10) es la consulta en campo CON sesión,
+        # no la ficha de gestión: es la misma dirección que la consulta
+        # pública, vista ahora con la sesión abierta.
+        completa(pag, 'rf10-ficha-completa', f'/q/{token}/')
         completa(pag, 'rf06-medidas', '/medidas/')
         completa(pag, 'rf06-medidas-todas', '/medidas/?estado=todas')
         completa(pag, 'rf06-medida-nueva', f'/evaluaciones/{ev_noconforme}/medidas/nueva/')
@@ -203,6 +213,22 @@ def main():
         recorte(pag, 'rf04-resultado-noconforme', f'/evaluaciones/{ev_noconforme}/')
         recorte(pag, 'rf07-evaluacion-en-duda', f'/evaluaciones/{ev_en_duda}/')
 
+        # --- Móvil: ancho distinto A PROPÓSITO, es otro dispositivo --------
+        # Demuestra el RNF-01: por debajo de 768 px se oculta la columna de
+        # tipos y la barra de navegación se parte en varias líneas.
+        # Va ANTES de la importación de rechazos: esa importación mete en la
+        # base de datos las filas válidas del fichero de ejemplo y, hasta que
+        # se limpian al final, la portada enseñaría un equipo que no es del
+        # caso de estudio.
+        mov = nav.new_context(
+            viewport=MOVIL, device_scale_factor=3, is_mobile=True, has_touch=True,
+        )
+        pag_movil = mov.new_page()
+        entrar(pag_movil)
+        pag_movil.goto(f'{BASE}/', wait_until='networkidle')
+        _guardar(pag_movil, 'rnf01-movil-portada')
+        mov.close()
+
         # La de rechazos va la última: importa de verdad, y las filas válidas
         # del fichero de ejemplo entran en la base de datos. Se limpian abajo.
         pag.set_viewport_size({'width': ANCHO, 'height': 200})
@@ -215,17 +241,6 @@ def main():
         pag.wait_for_load_state('networkidle')
         completa(pag, 'rf02-importacion-rechazos')
         ctx.close()
-
-        # --- Móvil: ancho distinto A PROPÓSITO, es otro dispositivo --------
-        # Demuestra el RNF-01: por debajo de 768 px se oculta la columna de
-        # tipos y la barra de navegación se parte en varias líneas.
-        mov = nav.new_context(
-            viewport=MOVIL, device_scale_factor=3, is_mobile=True, has_touch=True,
-        )
-        pag = mov.new_page()
-        entrar(pag)
-        pag.goto(f'{BASE}/', wait_until='networkidle')
-        _guardar(pag, 'rnf01-movil-portada')
         nav.close()
 
     sobran = Equipo.objects.exclude(codigo__in=codigos_antes)
