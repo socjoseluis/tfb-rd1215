@@ -578,8 +578,7 @@ def exencion_retirar(request, pk):
 def equipo_publico(request, token):
     """Consulta en campo de un equipo por su código QR (RF-08, 09 y 10).
 
-    Una sola pantalla con dos capas, que es como la describe la tarea T15 de
-    la planificación:
+    Una sola pantalla con dos capas:
 
     - Sin sesión (RF-09): datos básicos del equipo y los documentos marcados
       como públicos. El artículo 5.2 del RD 1215/1997 obliga a poner esa
