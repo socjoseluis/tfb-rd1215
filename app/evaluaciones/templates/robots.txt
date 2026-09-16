@@ -1,0 +1,6 @@
+{% comment %}
+Herramienta interna: nada de lo que sirve debe aparecer en buscadores. La
+consulta anónima por QR (RF-09) es pública por diseño, pero está pensada
+para quien tiene la etiqueta delante, no para quien busca en internet.
+{% endcomment %}User-agent: *
+Disallow: /

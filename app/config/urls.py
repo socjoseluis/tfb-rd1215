@@ -16,12 +16,23 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
+from django.contrib.auth.decorators import login_not_required
 from django.urls import include, path
+from django.views.generic import TemplateView
 
 from evaluaciones.forms import AutenticacionForm
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    # Los buscadores lo piden sin sesión, así que queda fuera de la exigencia
+    # de autenticación que impone LoginRequiredMiddleware al resto.
+    path(
+        'robots.txt',
+        login_not_required(
+            TemplateView.as_view(template_name='robots.txt', content_type='text/plain')
+        ),
+        name='robots',
+    ),
     # Las dos vistas se declaran una a una en vez de incluir
     # django.contrib.auth.urls entero: ese include trae además el flujo de
     # recuperación de contraseña, y no hay servidor de correo que lo sirva.

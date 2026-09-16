@@ -1,0 +1,18 @@
+{% extends "evaluaciones/base.html" %}
+{% comment %}
+Página de «no encontrado» propia. Django la busca con este nombre en la raíz
+de las plantillas cuando DEBUG está desactivado; sin ella muestra un «Not
+Found» sin estilo ni enlace de vuelta. La causa habitual en este prototipo es
+una etiqueta QR de un equipo que ya no existe (RF-08), así que la salida útil
+es la portada.
+{% endcomment %}
+
+{% block titulo %}Página no encontrada{% endblock %}
+{% block encabezado %}Página no encontrada{% endblock %}
+
+{% block contenido %}
+    <p>La dirección <code>{{ request_path }}</code> no corresponde a ninguna
+    pantalla de la aplicación. Si ha llegado desde una etiqueta QR, puede que
+    el equipo se haya retirado del inventario.</p>
+    <a class="btn btn-primary" href="{% url 'evaluaciones:inicio' %}">Volver a la portada</a>
+{% endblock %}
