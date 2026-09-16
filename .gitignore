@@ -1,0 +1,31 @@
+# .gitignore del repositorio público tfb-rd1215, que contiene solo el código
+# del prototipo. En el repositorio de trabajo se llama .gitignore-publico y la
+# exportación lo renombra a .gitignore.
+
+# ---- Python / Django ----
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+db.sqlite3
+db.sqlite3-journal
+*.log
+media/
+staticfiles/
+
+# Los documentos SINTÉTICOS del caso de ejemplo sí se versionan: la guía de
+# instalación indica copiarlos a app/media/documentos/.
+!app/evaluaciones/fixtures/documentos_ejemplo/
+!app/evaluaciones/fixtures/documentos_ejemplo/**
+
+# ---- Secretos (NUNCA versionar) ----
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# ---- Editor / OS ----
+.vscode/
+.DS_Store
+*.swp

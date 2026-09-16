@@ -6,11 +6,16 @@ Prototipo funcional en Django para evaluar la conformidad de los equipos de
 trabajo frente al Real Decreto 1215/1997, organizarlos por líneas de producción
 y dar acceso a su documentación desde el taller mediante un código QR.
 
+El repositorio público `tfb-rd1215` contiene el código fuente del prototipo
+y su historial. La memoria del trabajo se entrega por separado y solo está en
+el repositorio de trabajo del autor.
+
 ## Estructura
 - `app/` — Proyecto Django (prototipo funcional)
-- `memoria/` — Memoria en LaTeX (KOMA-Script, biblatex/APA 7)
-- `docs/` — Notas de trabajo en Markdown (insumo)
-- `assets/` — Diagramas y capturas
+- `assets/` — Diagramas del software y capturas de pantalla
+- `docs/` — Notas de diseño y ficheros de ejemplo para la importación
+- `herramientas/` — Script que genera las capturas de pantalla
+- `memoria/` — Memoria en LaTeX (solo en el repositorio de trabajo)
 
 ## Requisitos
 Python 3.12 y SQLite. No hace falta ningún servidor de base de datos: la
