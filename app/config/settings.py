@@ -41,6 +41,20 @@ CSRF_TRUSTED_ORIGINS = config(
     cast=Csv(),
 )
 
+# Desplegada tras un proxy que termina el HTTPS, la petición llega a Django
+# por HTTP y el proxy avisa con esta cabecera. Sin ella, build_absolute_uri
+# daría direcciones http:// y el QR del RF-08 apuntaría a un esquema que el
+# proxy redirige. La cabecera solo es fiable si nadie puede saltarse el
+# proxy: el servidor de aplicación debe escuchar solo en localhost.
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Con SOLO_HTTPS=True el navegador no envía la cookie de sesión ni la de CSRF
+# por HTTP en claro. Se controla por variable y no se ata a DEBUG para poder
+# probar con DEBUG=False en local, donde no hay HTTPS.
+SOLO_HTTPS = config('SOLO_HTTPS', default=False, cast=bool)
+SESSION_COOKIE_SECURE = SOLO_HTTPS
+CSRF_COOKIE_SECURE = SOLO_HTTPS
+
 
 # Application definition
 
@@ -56,6 +70,10 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    # Sirve los estáticos reunidos en STATIC_ROOT desde el propio proceso, que
+    # es lo que Django deja de hacer con DEBUG=False. Va justo después del de
+    # seguridad, como indica la documentación de whitenoise.
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -150,6 +168,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+
+# Carpeta donde `collectstatic` reúne los estáticos de todas las apps para
+# servirlos en despliegue. Se genera, no se versiona (está en el .gitignore).
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 
 # Ficheros subidos por el usuario: la documentación de los equipos (RF-09).
